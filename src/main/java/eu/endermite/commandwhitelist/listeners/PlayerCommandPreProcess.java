@@ -16,7 +16,7 @@ public class PlayerCommandPreProcess implements Listener {
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
-        if (player.hasPermission("commandwhitelist.bypass:")) {
+        if (player.hasPermission("commandwhitelist.bypass")) {
             return;
         }
 
