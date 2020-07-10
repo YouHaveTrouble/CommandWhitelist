@@ -3,6 +3,11 @@ messages:
   command-denied: "No such command."
 
 commands:
+  # Permissions that control what commands players can use
+  # you can add unlimited amount of whitelists
+
+  # commandwhitelist.commands.default
+  # this will be automatically given to players by default
   default:
     - ?
     - help
@@ -18,3 +23,6 @@ commands:
     - tpaccept
     - tpdeny
     - warp
+  # commandwhitelist.commands.example
+  example:
+    - example
