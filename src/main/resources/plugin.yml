@@ -1,0 +1,11 @@
+name: CommandWhitelist
+version: ${project.version}
+main: eu.endermite.commandwhitelist.CommandWhitelist
+api-version: 1.16
+authors: [YouHaveTrouble]
+description: Control what commands players can use
+permissions:
+  commandwhitelist.bypass:
+    default: OP
+  commandwhitelist.commands.default:
+    default: true

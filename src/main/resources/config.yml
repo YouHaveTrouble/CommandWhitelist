@@ -1,0 +1,20 @@
+messages:
+  prefix: "CommandWhitelist >"
+  command-denied: "No such command."
+
+commands:
+  default:
+    - ?
+    - help
+    - spawn
+    - bal
+    - balance
+    - baltop
+    - pay
+    - r
+    - msg
+    - tpa
+    - tpahere
+    - tpaccept
+    - tpdeny
+    - warp
