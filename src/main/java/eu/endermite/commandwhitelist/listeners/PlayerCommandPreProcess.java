@@ -20,11 +20,12 @@ public class PlayerCommandPreProcess implements Listener {
             return;
         }
 
-        String command = event.getMessage();
+        String command = event.getMessage().toLowerCase();
 
         for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
             if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
                 for (String comm : s.getValue()) {
+                    comm = comm.toLowerCase();
                     if (command.startsWith("/" + comm)) {
                         return;
                     }
