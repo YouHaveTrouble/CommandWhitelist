@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class PlayerCommandPreProcess implements Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
@@ -34,7 +34,6 @@ public class PlayerCommandPreProcess implements Listener {
         }
         event.setCancelled(true);
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + " " + CommandWhitelist.getConfigCache().getCommandDenied()));
-
     }
 
 }
