@@ -26,7 +26,9 @@ public class PlayerCommandPreProcess implements Listener {
             if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
                 for (String comm : s.getValue()) {
                     comm = comm.toLowerCase();
-                    if (command.startsWith("/" + comm)) {
+                    if (command.equalsIgnoreCase("/"+comm))
+                        return;
+                    else if (command.startsWith("/" + comm + " ")) {
                         return;
                     }
                 }
