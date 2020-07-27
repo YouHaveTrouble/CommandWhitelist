@@ -13,7 +13,7 @@ public class PlayerCommandSend implements Listener {
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandSendEvent event) {
         Player player = event.getPlayer();
 
-        if (player.hasPermission("commandwhitelist.bypass:")) {
+        if (player.hasPermission("commandwhitelist.bypass")) {
             return;
         }
 
@@ -28,5 +28,7 @@ public class PlayerCommandSend implements Listener {
         event.getCommands().removeIf((cmd) -> !commandList.contains(cmd));
 
     }
+
+
 
 }

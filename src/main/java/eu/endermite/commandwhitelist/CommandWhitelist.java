@@ -1,11 +1,12 @@
 package eu.endermite.commandwhitelist;
 
+import eu.endermite.commandwhitelist.command.MainCommand;
 import eu.endermite.commandwhitelist.config.ConfigCache;
 import eu.endermite.commandwhitelist.listeners.PlayerCommandPreProcess;
 import eu.endermite.commandwhitelist.listeners.PlayerCommandSend;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class CommandWhitelist extends JavaPlugin {
+public class CommandWhitelist extends JavaPlugin {
 
     private static CommandWhitelist commandWhitelist;
     private static ConfigCache configCache;
@@ -18,19 +19,20 @@ public final class CommandWhitelist extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerCommandPreProcess(), this);
         getServer().getPluginManager().registerEvents(new PlayerCommandSend(), this);
+        getCommand("commandwhitelist").setExecutor(new MainCommand());
+        getCommand("commandwhitelist").setTabCompleter(new MainCommand());
 
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
     }
 
     public void reloadPluginConfig() {
         saveDefaultConfig();
-        configCache = new ConfigCache(this.getConfig());
+        configCache = new ConfigCache();
     }
 
     public static CommandWhitelist getPlugin() {return commandWhitelist;}
     public static ConfigCache getConfigCache() {return configCache;}
+
+    public static <T> T TODO(final String reason) {
+        throw new RuntimeException(reason);
+    }
 }

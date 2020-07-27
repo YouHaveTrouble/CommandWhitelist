@@ -4,7 +4,14 @@ main: eu.endermite.commandwhitelist.CommandWhitelist
 api-version: 1.13
 authors: [YouHaveTrouble]
 description: Control what commands players can use
+commands:
+  commandwhitelist:
+    aliases:
+      - cw
+    usage: /commandwhitelist [args]
 permissions:
+  commandwhitelist.reload:
+    default: OP
   commandwhitelist.bypass:
     default: OP
   commandwhitelist.commands.default:

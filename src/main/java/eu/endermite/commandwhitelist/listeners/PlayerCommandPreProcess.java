@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class PlayerCommandPreProcess implements Listener {
             }
         }
         event.setCancelled(true);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + " " + CommandWhitelist.getConfigCache().getCommandDenied()));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + CommandWhitelist.getConfigCache().getCommandDenied()));
     }
 
 }

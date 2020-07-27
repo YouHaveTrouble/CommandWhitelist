@@ -1,6 +1,9 @@
 messages:
-  prefix: "CommandWhitelist >"
+  prefix: "CommandWhitelist > "
   command-denied: "No such command."
+  no-permission: "&cYou don't have permission to do this."
+  no-such-subcommand: "&cNo subcommand by that name."
+  config-reloaded: "&eConfiguration reloaded."
 
 commands:
   # Permissions that control what commands players can use
