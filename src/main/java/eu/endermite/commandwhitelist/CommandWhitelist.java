@@ -2,8 +2,8 @@ package eu.endermite.commandwhitelist;
 
 import eu.endermite.commandwhitelist.command.MainCommand;
 import eu.endermite.commandwhitelist.config.ConfigCache;
-import eu.endermite.commandwhitelist.listeners.PlayerCommandPreProcess;
-import eu.endermite.commandwhitelist.listeners.PlayerCommandSend;
+import eu.endermite.commandwhitelist.listeners.PlayerCommandPreProcessListener;
+import eu.endermite.commandwhitelist.listeners.PlayerCommandSendListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,8 +21,8 @@ public class CommandWhitelist extends JavaPlugin {
         commandWhitelist = this;
         reloadPluginConfig();
 
-        getServer().getPluginManager().registerEvents(new PlayerCommandPreProcess(), this);
-        getServer().getPluginManager().registerEvents(new PlayerCommandSend(), this);
+        getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         getCommand("commandwhitelist").setExecutor(new MainCommand());
         getCommand("commandwhitelist").setTabCompleter(new MainCommand());
 
@@ -36,8 +36,6 @@ public class CommandWhitelist extends JavaPlugin {
 
     public void reloadPluginConfig(CommandSender sender) {
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            // Don't ask why it's called twice, it somehow breaks if it's called only once.
-            reloadPluginConfig();
             reloadPluginConfig();
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.updateCommands();

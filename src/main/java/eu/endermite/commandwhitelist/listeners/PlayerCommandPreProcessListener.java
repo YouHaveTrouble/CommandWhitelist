@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerCommandPreProcess implements Listener {
+public class PlayerCommandPreProcessListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {

@@ -7,7 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import java.util.*;
 
-public class PlayerCommandSend implements Listener {
+public class PlayerCommandSendListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandSendEvent event) {

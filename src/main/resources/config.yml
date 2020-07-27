@@ -12,7 +12,6 @@ commands:
   # commandwhitelist.commands.default
   # this will be automatically given to players by default
   default:
-    - ?
     - help
     - spawn
     - bal
