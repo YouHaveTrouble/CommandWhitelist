@@ -9,13 +9,12 @@ import java.util.Set;
 
 public class ConfigCache {
 
-    private Configuration config = CommandWhitelist.getPlugin().getConfig();
     private HashMap<String, List<String>> permList = new HashMap<>();
     private String prefix, commandDenied, noPermission, noSubCommand, configReloaded;
 
     public ConfigCache() {
 
-        CommandWhitelist.getPlugin().reloadConfig();
+        Configuration config = CommandWhitelist.getPlugin().getConfig();
 
         prefix = config.getString("messages.prefix");
         commandDenied = config.getString("messages.command-denied");

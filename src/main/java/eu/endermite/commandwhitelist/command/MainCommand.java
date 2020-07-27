@@ -17,9 +17,7 @@ public class MainCommand implements TabExecutor {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("commandwhitelist.reload")) {
-                    CommandWhitelist.getPlugin().reloadPluginConfig();
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + CommandWhitelist.getConfigCache().getConfigReloaded()));
-
+                    CommandWhitelist.getPlugin().reloadPluginConfig(sender);
                 } else {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + CommandWhitelist.getConfigCache().getNoPermission()));
                 }
