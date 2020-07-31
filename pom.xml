@@ -6,7 +6,7 @@
 
     <groupId>eu.endermite</groupId>
     <artifactId>CommandWhitelist</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <name>CommandWhitelist</name>
@@ -69,6 +69,12 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.16.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>1.15-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
