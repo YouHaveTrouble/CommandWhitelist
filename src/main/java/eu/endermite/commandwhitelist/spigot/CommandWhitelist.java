@@ -1,9 +1,9 @@
-package eu.endermite.commandwhitelist;
+package eu.endermite.commandwhitelist.spigot;
 
-import eu.endermite.commandwhitelist.command.MainCommand;
-import eu.endermite.commandwhitelist.config.ConfigCache;
-import eu.endermite.commandwhitelist.listeners.PlayerCommandPreProcessListener;
-import eu.endermite.commandwhitelist.listeners.PlayerCommandSendListener;
+import eu.endermite.commandwhitelist.spigot.command.MainCommand;
+import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
+import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandPreProcessListener;
+import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandSendListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

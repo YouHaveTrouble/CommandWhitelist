@@ -1,16 +1,14 @@
-package eu.endermite.commandwhitelist.listeners;
+package eu.endermite.commandwhitelist.bungee.listeners;
 
-import eu.endermite.commandwhitelist.CommandWhitelistBungee;
+import eu.endermite.commandwhitelist.bungee.CommandWhitelistBungee;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-
 import java.util.List;
 import java.util.Map;
 
 public class BungeeChatEventListener implements Listener {
-
 
     @EventHandler
     public void onChatEvent(net.md_5.bungee.api.event.ChatEvent event) {
@@ -42,13 +40,7 @@ public class BungeeChatEventListener implements Listener {
                     event.setCancelled(true);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelistBungee.getConfigCache().getPrefix() + CommandWhitelistBungee.getConfigCache().getCommandDenied()));
                 }
-
             }
-
-
-
         }
-
     }
-
 }

@@ -62,6 +62,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -76,6 +80,13 @@
             <artifactId>bungeecord-api</artifactId>
             <version>1.15-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.PaperMC</groupId>
+            <artifactId>Waterfall</artifactId>
+            <version>1.16</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/waterfall-366.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

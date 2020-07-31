@@ -1,6 +1,6 @@
-package eu.endermite.commandwhitelist.command;
+package eu.endermite.commandwhitelist.spigot.command;
 
-import eu.endermite.commandwhitelist.CommandWhitelist;
+import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -1,4 +1,4 @@
 name: CommandWhitelistBungee
 version: ${project.version}
-main: eu.endermite.commandwhitelist.CommandWhitelistBungee
+main: eu.endermite.commandwhitelist.bungee.CommandWhitelistBungee
 author: YouHaveTrouble
