@@ -1,10 +1,14 @@
 package eu.endermite.commandwhitelist.bungee;
 
 import com.google.common.io.ByteStreams;
+import eu.endermite.commandwhitelist.bungee.command.BungeeMainCommand;
 import eu.endermite.commandwhitelist.bungee.config.BungeeConfigCache;
 import eu.endermite.commandwhitelist.bungee.listeners.BungeeChatEventListener;
 import eu.endermite.commandwhitelist.bungee.listeners.BungeeTabCompleteListener;
+import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -32,7 +36,7 @@ public final class CommandWhitelistBungee extends Plugin {
         } else {
             getLogger().info("Bungee tab completion requires Waterfall, FlameCord or other Waterfall fork.");
         }
-
+        getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand());
 
     }
 
@@ -68,8 +72,12 @@ public final class CommandWhitelistBungee extends Plugin {
         }
     }
 
-    public void loadConfigAsync() {
-        getProxy().getScheduler().runAsync(this, this::loadConfig);
+    public void loadConfigAsync(CommandSender sender) {
+        getProxy().getScheduler().runAsync(this, () -> {
+            loadConfig();
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelistBungee.getConfigCache().getPrefix() + CommandWhitelistBungee.getConfigCache().getConfigReloaded()));
+
+        });
     }
 
 }

@@ -17,6 +17,11 @@ public class BungeeTabCompleteListener implements Listener {
 
         if (event.getReceiver() instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+
+            if (player.hasPermission("commandwhitelist.bypass")) {
+                return;
+            }
+
             List<String> commandList = new ArrayList<>();
             for (Map.Entry<String, List<String>> entry : CommandWhitelistBungee.getConfigCache().getPermList().entrySet()) {
                 if (player.hasPermission("commandwhitelist.commands."+entry.getKey())) {
