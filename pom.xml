@@ -82,11 +82,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.PaperMC</groupId>
-            <artifactId>Waterfall</artifactId>
-            <version>1.16</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/waterfall-366.jar</systemPath>
+            <groupId>io.github.waterfallmc</groupId>
+            <artifactId>waterfall-api</artifactId>
+            <version>1.15-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
