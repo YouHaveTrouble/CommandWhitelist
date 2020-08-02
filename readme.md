@@ -1,5 +1,5 @@
 Command  Whitelist is a plugin that allows you to control 
-precisely what commands players can  and use.
+precisely what commands players can see and use.
 
 <h3>Plugin Features</h3>
 
