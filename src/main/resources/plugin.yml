@@ -1,8 +1,9 @@
 name: CommandWhitelist
 version: ${project.version}
 main: eu.endermite.commandwhitelist.spigot.CommandWhitelist
-api-version: 1.13
 authors: [YouHaveTrouble]
+softdepend:
+  - ProtocolLib
 description: Control what commands players can use
 commands:
   commandwhitelist:

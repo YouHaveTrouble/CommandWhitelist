@@ -1,7 +1,10 @@
 package eu.endermite.commandwhitelist.spigot;
 
+import com.comphenix.protocol.ProtocolLib;
+import com.comphenix.protocol.ProtocolLibrary;
 import eu.endermite.commandwhitelist.spigot.command.MainCommand;
 import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
+import eu.endermite.commandwhitelist.spigot.listeners.LegacyPlayerTabChatCompleteListener;
 import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandPreProcessListener;
 import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandSendListener;
 import org.bukkit.Bukkit;
@@ -14,15 +17,30 @@ public class CommandWhitelist extends JavaPlugin {
 
     private static CommandWhitelist commandWhitelist;
     private static ConfigCache configCache;
+    private static boolean isLegacy;
 
     @Override
     public void onEnable() {
 
         commandWhitelist = this;
+
+        isLegacy = checkLegacy();
+
+
         reloadPluginConfig();
 
         getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
+        if (!isLegacy) {
+            getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
+        } else {
+            getLogger().info(ChatColor.AQUA+"Running in legacy mode...");
+            if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+                LegacyPlayerTabChatCompleteListener.protocol(this);
+            } else {
+                getLogger().info(ChatColor.YELLOW+"ProtocolLib is required for tab completion blocking!");
+            }
+        }
+
         getCommand("commandwhitelist").setExecutor(new MainCommand());
         getCommand("commandwhitelist").setTabCompleter(new MainCommand());
 
@@ -37,11 +55,44 @@ public class CommandWhitelist extends JavaPlugin {
     public void reloadPluginConfig(CommandSender sender) {
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
             reloadPluginConfig();
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.updateCommands();
+            if (!isLegacy()) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.updateCommands();
+                }
             }
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + CommandWhitelist.getConfigCache().getConfigReloaded()));
         });
+    }
+
+    public boolean isLegacy() {
+        return isLegacy;
+    }
+
+    private boolean checkLegacy() {
+
+        String version = getServer().getVersion();
+
+        if (version.contains("1.8")) {
+            return true;
+        } else if (version.contains("1.9")) {
+            return true;
+        } else if (version.contains("1.10")) {
+            return true;
+        } else if (version.contains("1.11")) {
+            return true;
+        } else if (version.contains("1.12")) {
+            return true;
+        } else if (version.contains("1.13")) {
+            return false;
+        } else if (version.contains("1.14")) {
+            return false;
+        } else if (version.contains("1.15")) {
+            return false;
+        } else if (version.contains("1.16")) {
+            return false;
+        }
+
+        return false;
     }
 
     public static CommandWhitelist getPlugin() {return commandWhitelist;}
