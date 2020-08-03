@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import eu.endermite.commandwhitelist.api.CommandsList;
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -36,16 +37,10 @@ public class LegacyPlayerTabChatCompleteListener {
                     PacketContainer packet = event.getPacket();
                     String[] message = packet.getSpecificModifier(String[].class).read(0);
 
-                    List<String> commandList = new ArrayList<>();
-                    for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
-                        if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
-                            commandList.addAll(s.getValue());
-                        }
-                    }
+                    List<String> commandList = CommandsList.getCommands(player);
 
                     List<String> finalList = new ArrayList<>();
                     int components = 0;
-
                     for (String cmd : message) {
                         for (String cmdFromList : commandList) {
                             if (cmd.equalsIgnoreCase("/" + cmdFromList) || !cmd.startsWith("/")) {
@@ -63,9 +58,7 @@ public class LegacyPlayerTabChatCompleteListener {
 
                     packet.getSpecificModifier(String[].class).write(0, toWrite);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception ignored) {}
 
             }
         });
@@ -97,8 +90,6 @@ public class LegacyPlayerTabChatCompleteListener {
                         }
                     }
                     event.setCancelled(true);
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

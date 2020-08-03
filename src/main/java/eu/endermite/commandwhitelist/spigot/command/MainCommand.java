@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,6 @@ public class MainCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("commandwhitelist.reload")) {
@@ -35,15 +33,12 @@ public class MainCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-
         List<String> list = new ArrayList<>();
-
         if(args.length == 1) {
             if ("restart".startsWith(args[0]) && sender.hasPermission("commandwhitelist.reload")) {
                 list.add("reload");
             }
         }
-
         return list;
     }
 }

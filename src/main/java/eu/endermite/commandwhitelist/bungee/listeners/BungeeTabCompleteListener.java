@@ -1,5 +1,6 @@
 package eu.endermite.commandwhitelist.bungee.listeners;
 
+import eu.endermite.commandwhitelist.api.CommandsList;
 import eu.endermite.commandwhitelist.bungee.CommandWhitelistBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -22,12 +23,8 @@ public class BungeeTabCompleteListener implements Listener {
                 return;
             }
 
-            List<String> commandList = new ArrayList<>();
-            for (Map.Entry<String, List<String>> entry : CommandWhitelistBungee.getConfigCache().getPermList().entrySet()) {
-                if (player.hasPermission("commandwhitelist.commands."+entry.getKey())) {
-                    commandList.addAll(entry.getValue());
-                }
-            }
+            List<String> commandList = CommandsList.getCommands(player);
+
             HashMap<String, Command> commandHashMap = new HashMap<>();
             for (String s : commandList) {
                 for (Map.Entry<String, Command> command : CommandWhitelistBungee.getPlugin().getProxy().getPluginManager().getCommands()) {
