@@ -6,10 +6,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BungeeTabCompleteListener implements Listener {
 
@@ -23,21 +21,17 @@ public class BungeeTabCompleteListener implements Listener {
                 return;
             }
 
-            List<String> commandList = CommandsList.getCommands(player);
-
             HashMap<String, Command> commandHashMap = new HashMap<>();
-            for (String s : commandList) {
-                for (Map.Entry<String, Command> command : CommandWhitelistBungee.getPlugin().getProxy().getPluginManager().getCommands()) {
-                    if (s.equalsIgnoreCase(command.getValue().getName())) {
-                        commandHashMap.put(command.getKey(), command.getValue());
-                    }
-                }
-            }
+            CommandsList.getCommands(player).forEach(cmdName ->
+                    CommandWhitelistBungee.getPlugin().getProxy().getPluginManager().getCommands()
+                            .stream()
+                            .filter(commandEntry -> cmdName.equalsIgnoreCase(commandEntry.getValue().getName()))
+                            .forEach(commandEntry -> commandHashMap.put(commandEntry.getKey(), commandEntry.getValue())));
+
             event.getCommands().values().removeIf((cmd) -> !commandHashMap.containsValue(cmd));
         }
 
 
-        
     }
 
 }
