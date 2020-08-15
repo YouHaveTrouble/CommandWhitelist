@@ -11,7 +11,8 @@ commands:
   # you can add unlimited amount of whitelists
 
   # commandwhitelist.commands.default
-  # this will be automatically given to players by default
+  # this will NOT be automatically given to players by default!
+  # you have to give this permission to default droup by yourself as there is no automatic way to do it for a plugin
   default:
     - glist
     - server
