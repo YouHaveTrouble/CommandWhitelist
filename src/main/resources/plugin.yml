@@ -1,4 +1,5 @@
-name: CommandWhitelist
+name: CommandWhitelistSpigot
+prefix: CommandWhitelist
 version: ${project.version}
 main: eu.endermite.commandwhitelist.spigot.CommandWhitelist
 authors: [YouHaveTrouble]

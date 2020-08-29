@@ -1,12 +1,11 @@
 package eu.endermite.commandwhitelist.spigot;
 
-import com.comphenix.protocol.ProtocolLib;
-import com.comphenix.protocol.ProtocolLibrary;
 import eu.endermite.commandwhitelist.spigot.command.MainCommand;
 import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
 import eu.endermite.commandwhitelist.spigot.listeners.LegacyPlayerTabChatCompleteListener;
 import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandPreProcessListener;
 import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandSendListener;
+import eu.endermite.commandwhitelist.spigot.metrics.BukkitMetrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -26,7 +25,6 @@ public class CommandWhitelist extends JavaPlugin {
 
         isLegacy = checkLegacy();
 
-
         reloadPluginConfig();
 
         getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
@@ -44,6 +42,8 @@ public class CommandWhitelist extends JavaPlugin {
         getCommand("commandwhitelist").setExecutor(new MainCommand());
         getCommand("commandwhitelist").setTabCompleter(new MainCommand());
 
+        int pluginId = 8705;
+        new BukkitMetrics(this, pluginId);
     }
 
     public void reloadPluginConfig() {

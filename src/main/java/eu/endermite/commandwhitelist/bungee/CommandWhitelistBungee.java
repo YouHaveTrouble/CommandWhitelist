@@ -5,10 +5,9 @@ import eu.endermite.commandwhitelist.bungee.command.BungeeMainCommand;
 import eu.endermite.commandwhitelist.bungee.config.BungeeConfigCache;
 import eu.endermite.commandwhitelist.bungee.listeners.BungeeChatEventListener;
 import eu.endermite.commandwhitelist.bungee.listeners.BungeeTabCompleteListener;
-import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
+import eu.endermite.commandwhitelist.bungee.metrics.BungeeMetrics;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -17,7 +16,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 
 public final class CommandWhitelistBungee extends Plugin {
 
@@ -37,6 +35,9 @@ public final class CommandWhitelistBungee extends Plugin {
             getLogger().info("Bungee tab completion requires Waterfall, FlameCord or other Waterfall fork.");
         }
         getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand());
+
+        int pluginId = 8704;
+        new BungeeMetrics(this, pluginId);
 
     }
 
