@@ -59,7 +59,6 @@ public class LegacyPlayerTabChatCompleteListener {
                     packet.getSpecificModifier(String[].class).write(0, toWrite);
 
                 } catch (Exception ignored) {}
-
             }
         });
     }
@@ -78,14 +77,14 @@ public class LegacyPlayerTabChatCompleteListener {
                     System.out.println(command);
 
                     for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
-                        if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
-                            for (String comm : s.getValue()) {
-                                comm = comm.toLowerCase();
-                                if (command.equalsIgnoreCase("/"+comm))
-                                    return;
-                                else if (command.startsWith("/" + comm + " ")) {
-                                    return;
-                                }
+                        if (!player.hasPermission("commandwhitelist.commands." + s.getKey()))
+                            continue;
+                        for (String comm : s.getValue()) {
+                            comm = comm.toLowerCase();
+                            if (command.equalsIgnoreCase("/" + comm))
+                                return;
+                            else if (command.startsWith("/" + comm + " ")) {
+                                return;
                             }
                         }
                     }
@@ -93,9 +92,7 @@ public class LegacyPlayerTabChatCompleteListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         });
     }
-
 }
