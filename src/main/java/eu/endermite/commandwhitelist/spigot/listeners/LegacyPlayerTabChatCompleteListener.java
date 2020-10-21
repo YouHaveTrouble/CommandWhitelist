@@ -11,7 +11,6 @@ import eu.endermite.commandwhitelist.api.CommandsList;
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,6 @@ public class LegacyPlayerTabChatCompleteListener {
                     }
                     PacketContainer packet = event.getPacket();
                     String command = packet.getSpecificModifier(String.class).read(0);
-                    System.out.println(command);
 
                     for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
                         if (!player.hasPermission("commandwhitelist.commands." + s.getKey()))
