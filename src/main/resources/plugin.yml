@@ -1,6 +1,7 @@
 name: CommandWhitelist
 prefix: CommandWhitelist
 version: ${project.version}
+api-version: 1.13
 main: eu.endermite.commandwhitelist.spigot.CommandWhitelist
 authors: [YouHaveTrouble]
 softdepend:
