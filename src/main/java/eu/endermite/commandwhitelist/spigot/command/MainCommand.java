@@ -83,6 +83,8 @@ public class MainCommand implements TabExecutor {
             }
             if ("add".startsWith(args[0]) && sender.hasPermission("commandwhitelist.admin")) {
                 list.add("add");
+            }
+            if ("remove".startsWith(args[0]) && sender.hasPermission("commandwhitelist.admin")) {
                 list.add("remove");
             }
         } else if (args.length == 2) {
