@@ -7,7 +7,7 @@ messages:
   config-reloaded: "&eConfiguration reloaded."
   added-to-whitelist: "&eWhitelisted command &6%s &efor permission &6%s"
   removed-from-whitelist: "&eRemoved command &6%s &efrom permission &6%s"
-  group-doesnt-exist: "&cGroup or command doesn't exist"
+  group-doesnt-exist: "&cGroup doesn't exist or error occured"
 
 commands:
   # Permissions that control what commands players can use
