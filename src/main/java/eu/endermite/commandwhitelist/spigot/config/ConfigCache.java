@@ -1,6 +1,5 @@
 package eu.endermite.commandwhitelist.spigot.config;
 
-import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
 import org.bukkit.configuration.Configuration;
 
 import java.util.HashMap;
@@ -11,13 +10,13 @@ public class ConfigCache {
 
     private HashMap<String, List<String>> permList = new HashMap<>();
     private String prefix, commandDenied, noPermission, noSubCommand, configReloaded;
+    private List<String> commandDeniedList;
 
-    public ConfigCache() {
-
-        Configuration config = CommandWhitelist.getPlugin().getConfig();
+    public ConfigCache(Configuration config) {
 
         prefix = config.getString("messages.prefix");
-        commandDenied = config.getString("messages.command-denied");
+        commandDenied = config.getString("messages.command-denied", null);
+        commandDeniedList = config.getStringList("messages.command-denied");
         noPermission = config.getString("messages.no-permission");
         noSubCommand = config.getString("messages.no-such-subcommand");
         configReloaded = config.getString("messages.config-reloaded");
@@ -32,11 +31,11 @@ public class ConfigCache {
         return permList;
     }
 
-    public List<String> getPerm(String s) {
-        return permList.get(s);
-    }
     public String getPrefix() {return prefix;}
     public String getCommandDenied() {return commandDenied;}
+    public List<String> getCommandDeniedList() {
+        return commandDeniedList;
+    }
     public String getNoPermission() {return noPermission;}
     public String getNoSubCommand() {return  noSubCommand;}
     public String getConfigReloaded() {return  configReloaded;}

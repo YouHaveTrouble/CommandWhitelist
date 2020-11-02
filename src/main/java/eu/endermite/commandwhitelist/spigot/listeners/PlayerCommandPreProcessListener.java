@@ -1,6 +1,8 @@
 package eu.endermite.commandwhitelist.spigot.listeners;
 
+import eu.endermite.commandwhitelist.api.RandomStuff;
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
+import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +37,8 @@ public class PlayerCommandPreProcessListener implements Listener {
             }
         }
         event.setCancelled(true);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + CommandWhitelist.getConfigCache().getCommandDenied()));
+        ConfigCache config = CommandWhitelist.getConfigCache();
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getCommandDenied())));
     }
 
 }

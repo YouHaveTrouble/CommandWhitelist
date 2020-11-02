@@ -49,7 +49,7 @@ public class CommandWhitelist extends JavaPlugin {
     public void reloadPluginConfig() {
         saveDefaultConfig();
         reloadConfig();
-        configCache = new ConfigCache();
+        configCache = new ConfigCache(getConfig());
     }
 
     public void reloadPluginConfig(CommandSender sender) {
