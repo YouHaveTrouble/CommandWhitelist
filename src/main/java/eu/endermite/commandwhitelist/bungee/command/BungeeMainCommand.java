@@ -114,11 +114,6 @@ public class BungeeMainCommand extends Command implements TabExecutor  {
                 for (Map.Entry<String, Command> command : CommandWhitelistBungee.getPlugin().getProxy().getPluginManager().getCommands()) {
                     if (!command.getKey().startsWith("/"))
                         list.add(command.getKey());
-
-                    for (String alias: command.getValue().getAliases()) {
-                        if (!alias.startsWith("/"))
-                            list.add(alias);
-                    }
                 }
             }
         }
