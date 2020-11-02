@@ -29,11 +29,13 @@ public final class CommandWhitelistBungee extends Plugin {
         getLogger().info("Running on "+ ChatColor.DARK_AQUA+getProxy().getName());
         loadConfig();
         this.getProxy().getPluginManager().registerListener(this, new BungeeChatEventListener());
-        if (this.getProxy().getName().contains("Waterfall") || getProxy().getName().contains("FlameCord")) {
+        try {
+            Class.forName("io.github.waterfallmc.waterfall.conf.WaterfallConfiguration");
             this.getProxy().getPluginManager().registerListener(this, new BungeeTabCompleteListener());
-        } else {
-            getLogger().info("Bungee tab completion requires Waterfall, FlameCord or other Waterfall fork.");
+        } catch (ClassNotFoundException e) {
+            getLogger().severe(ChatColor.DARK_RED+"Bungee tab completion blocker requires Waterfall other Waterfall fork.");
         }
+
         getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand());
 
         int pluginId = 8704;
@@ -77,7 +79,6 @@ public final class CommandWhitelistBungee extends Plugin {
         getProxy().getScheduler().runAsync(this, () -> {
             loadConfig();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelistBungee.getConfigCache().getPrefix() + CommandWhitelistBungee.getConfigCache().getConfigReloaded()));
-
         });
     }
 
