@@ -60,7 +60,6 @@ public class ConfigCache {
             return false;
         }
     }
-
     public String getPrefix() {return prefix;}
     public String getCommandDenied() {return commandDenied;}
     public List<String> getCommandDeniedList() {

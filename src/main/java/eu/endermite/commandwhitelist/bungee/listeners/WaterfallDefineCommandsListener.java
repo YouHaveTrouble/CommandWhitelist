@@ -9,7 +9,7 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.util.HashMap;
 
-public class BungeeTabCompleteListener implements Listener {
+public class WaterfallDefineCommandsListener implements Listener {
 
     @EventHandler
     public void onProxyDefineCommandsEvent(io.github.waterfallmc.waterfall.event.ProxyDefineCommandsEvent event) {

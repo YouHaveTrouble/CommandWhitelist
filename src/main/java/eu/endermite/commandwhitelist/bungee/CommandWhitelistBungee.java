@@ -4,7 +4,7 @@ import com.google.common.io.ByteStreams;
 import eu.endermite.commandwhitelist.bungee.command.BungeeMainCommand;
 import eu.endermite.commandwhitelist.bungee.config.BungeeConfigCache;
 import eu.endermite.commandwhitelist.bungee.listeners.BungeeChatEventListener;
-import eu.endermite.commandwhitelist.bungee.listeners.BungeeTabCompleteListener;
+import eu.endermite.commandwhitelist.bungee.listeners.WaterfallDefineCommandsListener;
 import eu.endermite.commandwhitelist.bungee.metrics.BungeeMetrics;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -31,12 +31,12 @@ public final class CommandWhitelistBungee extends Plugin {
         this.getProxy().getPluginManager().registerListener(this, new BungeeChatEventListener());
         try {
             Class.forName("io.github.waterfallmc.waterfall.conf.WaterfallConfiguration");
-            this.getProxy().getPluginManager().registerListener(this, new BungeeTabCompleteListener());
+            this.getProxy().getPluginManager().registerListener(this, new WaterfallDefineCommandsListener());
         } catch (ClassNotFoundException e) {
             getLogger().severe(ChatColor.DARK_RED+"Bungee tab completion blocker requires Waterfall other Waterfall fork.");
         }
 
-        getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand());
+        getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand("bcw"));
 
         int pluginId = 8704;
         new BungeeMetrics(this, pluginId);
