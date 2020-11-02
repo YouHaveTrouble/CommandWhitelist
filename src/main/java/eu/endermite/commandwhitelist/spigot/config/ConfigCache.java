@@ -1,7 +1,9 @@
 package eu.endermite.commandwhitelist.spigot.config;
 
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +45,9 @@ public class ConfigCache {
             this.permList.get(group).add(command);
             this.config.set("commands."+group, permList.get(group));
             config.save(CommandWhitelist.getPlugin().getDataFolder()+"/config.yml");
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.updateCommands();
+            }
             return true;
         } catch (Exception e) {
             return false;
@@ -53,6 +58,9 @@ public class ConfigCache {
             this.permList.get(group).remove(command);
             this.config.set("commands."+group, permList.get(group));
             config.save(CommandWhitelist.getPlugin().getDataFolder()+"/config.yml");
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.updateCommands();
+            }
             return true;
         } catch (Exception e) {
             return false;
