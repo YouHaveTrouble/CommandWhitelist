@@ -4,6 +4,9 @@ messages:
   no-permission: "&cYou don't have permission to do this."
   no-such-subcommand: "&cNo subcommand by that name."
   config-reloaded: "&eConfiguration reloaded."
+  added-to-whitelist: "&eWhitelisted command &6%s &efor permission &6%s"
+  removed-from-whitelist: "&eRemoved command &6%s &efrom permission &6%s"
+  group-doesnt-exist: "&cGroup or command doesn't exist"
 
 commands:
   # Permissions that control what commands players can use
