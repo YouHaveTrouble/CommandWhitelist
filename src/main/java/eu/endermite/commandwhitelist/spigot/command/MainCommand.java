@@ -78,20 +78,19 @@ public class MainCommand implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
-            if ("restart".startsWith(args[0]) && sender.hasPermission("commandwhitelist.reload")) {
+            if ("reload".startsWith(args[0]) && sender.hasPermission("commandwhitelist.reload")) {
                 list.add("reload");
             }
             if ("add".startsWith(args[0]) && sender.hasPermission("commandwhitelist.admin")) {
                 list.add("add");
-            }
-            if ("remove".startsWith(args[0]) && sender.hasPermission("commandwhitelist.admin")) {
                 list.add("remove");
             }
         } else if (args.length == 2) {
-
             if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")) {
+                if (!sender.hasPermission("commandwhitelist.admin"))
+                    return list;
                 for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
-                    if (s.getKey().startsWith(args[1]) && sender.hasPermission("commandwhitelist.admin")) {
+                    if (s.getKey().startsWith(args[1])) {
                         list.add(s.getKey());
                     }
                 }
@@ -130,10 +129,8 @@ public class MainCommand implements TabExecutor {
                         list.add(cmd);
                     }
                 }
-
                 return list;
             }
-
         }
         return list;
     }
