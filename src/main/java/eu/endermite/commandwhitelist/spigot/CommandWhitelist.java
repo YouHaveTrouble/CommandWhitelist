@@ -70,26 +70,18 @@ public class CommandWhitelist extends JavaPlugin {
 
     private boolean checkLegacy() {
 
-        String version = getServer().getVersion();
+        String version = Bukkit.getServer().getClass().getPackage().getName().replace("org.bukkit.craftbukkit", "").replace(".", "");
 
-        if (version.contains("1.8")) {
+        if (version.contains("v1_8")) {
             return true;
-        } else if (version.contains("1.9")) {
+        } else if (version.contains("v1_9")) {
             return true;
-        } else if (version.contains("1.10")) {
+        } else if (version.contains("v1_10")) {
             return true;
-        } else if (version.contains("1.11")) {
+        } else if (version.contains("v1_11")) {
             return true;
-        } else if (version.contains("1.12")) {
+        } else if (version.contains("v1_12")) {
             return true;
-        } else if (version.contains("1.13")) {
-            return false;
-        } else if (version.contains("1.14")) {
-            return false;
-        } else if (version.contains("1.15")) {
-            return false;
-        } else if (version.contains("1.16")) {
-            return false;
         }
 
         return false;
