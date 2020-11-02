@@ -45,7 +45,6 @@ public class ConfigCache {
             config.save(CommandWhitelist.getPlugin().getDataFolder()+"/config.yml");
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -56,7 +55,6 @@ public class ConfigCache {
             config.save(CommandWhitelist.getPlugin().getDataFolder()+"/config.yml");
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }

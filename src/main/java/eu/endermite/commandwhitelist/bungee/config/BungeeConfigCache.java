@@ -47,7 +47,6 @@ public class BungeeConfigCache {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, new File(CommandWhitelistBungee.getPlugin().getDataFolder(), "config.yml"));
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -58,7 +57,6 @@ public class BungeeConfigCache {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, new File(CommandWhitelistBungee.getPlugin().getDataFolder(), "config.yml"));
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
