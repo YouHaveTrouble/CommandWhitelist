@@ -127,6 +127,10 @@ public class MainCommand implements TabExecutor {
                         continue;
                     }
                     cmd = cmd.replace("/", "");
+
+                    if (CommandWhitelist.getConfigCache().getPermList().get(args[1]).contains(cmd))
+                        continue;
+
                     if (cmd.startsWith(args[2])) {
                         list.add(cmd);
                     }

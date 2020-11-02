@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class BungeeMainCommand extends Command implements TabExecutor  {
+public class BungeeMainCommand extends Command implements TabExecutor {
 
     public BungeeMainCommand(String name) {
         super(name);
@@ -112,7 +112,13 @@ public class BungeeMainCommand extends Command implements TabExecutor  {
                     return list;
 
                 for (Map.Entry<String, Command> command : CommandWhitelistBungee.getPlugin().getProxy().getPluginManager().getCommands()) {
-                    if (!command.getKey().startsWith("/"))
+                    if (command.getKey().startsWith("/"))
+                        continue;
+
+                    if (CommandWhitelistBungee.getConfigCache().getPermList().get(args[1]).contains(command.getKey()))
+                        continue;
+
+                    if (command.getKey().startsWith(args[2]))
                         list.add(command.getKey());
                 }
             }
