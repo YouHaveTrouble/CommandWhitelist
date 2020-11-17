@@ -11,7 +11,6 @@ import java.util.Map;
 public class CommandsList {
 
     public static List<String> getCommands(Player player) {
-
         List<String> commandList = new ArrayList<>();
         for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
             if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
@@ -22,7 +21,6 @@ public class CommandsList {
     }
 
     public static List<String> getCommands(ProxiedPlayer player) {
-
         List<String> commandList = new ArrayList<>();
         for (Map.Entry<String, List<String>> s : CommandWhitelistBungee.getConfigCache().getPermList().entrySet()) {
             if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
@@ -30,6 +28,28 @@ public class CommandsList {
             }
         }
         return commandList;
+    }
+
+    public static List<String> getSuggestions(Player player) {
+        List<String> suggestionList = new ArrayList<>();
+
+        for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermSubList().entrySet()) {
+            if (player.hasPermission("commandwhitelist.subcommands." + s.getKey()))
+                continue;
+            suggestionList.addAll(s.getValue());
+        }
+        return suggestionList;
+    }
+
+    public static String getLastArgument(String cmd) {
+        String[] parts = cmd.split(" ");
+        if (parts.length <= 1)
+            return "";
+        String last = "";
+        for (String part : parts) {
+            last = part;
+        }
+        return last;
     }
 
 }

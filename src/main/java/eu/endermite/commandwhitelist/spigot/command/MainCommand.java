@@ -69,6 +69,7 @@ public class MainCommand implements TabExecutor {
             }
             if (sender.hasPermission("commandwhitelist.admin")) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9/cw add <group> <command> &b- Add command to group"));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9/cw remove <group> <command> &b- Remove command from a group"));
             }
         }
         return true;

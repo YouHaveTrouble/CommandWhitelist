@@ -13,20 +13,22 @@ public class ConfigCache {
 
     private FileConfiguration config;
     private HashMap<String, List<String>> permList = new HashMap<>();
+    private HashMap<String, List<String>> permSubList = new HashMap<>();
     private final String prefix, commandDenied, noPermission, noSubCommand, configReloaded, whitelistedCommand,
-            removedWhitelistedCommand, noSuchGroup;
+            removedWhitelistedCommand, noSuchGroup, subCommandDenied;
     private final List<String> commandDeniedList;
 
     public ConfigCache(FileConfiguration config) {
 
         this.config = config;
 
-        prefix = config.getString("messages.prefix");
+        prefix = config.getString("messages.prefix", "");
         commandDenied = config.getString("messages.command-denied", null);
         commandDeniedList = config.getStringList("messages.command-denied");
-        noPermission = config.getString("messages.no-permission");
-        noSubCommand = config.getString("messages.no-such-subcommand");
-        configReloaded = config.getString("messages.config-reloaded");
+        subCommandDenied = config.getString("messages.subcommand-denied", "You cannot use this subcommand");
+        noPermission = config.getString("messages.no-permission", "&cYou don't have permission to do this.");
+        noSubCommand = config.getString("messages.no-such-subcommand", "&cNo subcommand by that name.");
+        configReloaded = config.getString("messages.config-reloaded", "&eConfiguration reloaded.");
         whitelistedCommand = config.getString("messages.added-to-whitelist", "&eWhitelisted command &6%s &efor permission &6%s");
         removedWhitelistedCommand = config.getString("messages.removed-from-whitelist", "&eRemoved command &6%s &efrom permission &6%s");
         noSuchGroup = config.getString("messages.group-doesnt-exist", "&cGroup %s doesn't exist");
@@ -35,10 +37,18 @@ public class ConfigCache {
         for (String s : perms) {
             this.permList.put(s, config.getStringList("commands."+s));
         }
+
+        Set<String> subperms = config.getConfigurationSection("tabcompletions").getKeys(false);
+        for (String s : subperms) {
+            this.permSubList.put(s, config.getStringList("tabcompletions."+s));
+        }
     }
 
     public HashMap<String, List<String>> getPermList() {
         return permList;
+    }
+    public HashMap<String, List<String>> getPermSubList() {
+        return permSubList;
     }
     public boolean addCommand(String command, String group) {
         try {
@@ -82,5 +92,8 @@ public class ConfigCache {
     }
     public String getNoSuchGroup() {
         return noSuchGroup;
+    }
+    public String getSubCommandDenied() {
+        return subCommandDenied;
     }
 }

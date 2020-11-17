@@ -25,7 +25,6 @@ public class LegacyPlayerTabChatCompleteListener {
         protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.TAB_COMPLETE) {
             @Override
             public void onPacketSending(PacketEvent event) {
-
                 try {
                     Player player = event.getPlayer();
                     if (player.hasPermission("commandwhitelist.bypass")) {

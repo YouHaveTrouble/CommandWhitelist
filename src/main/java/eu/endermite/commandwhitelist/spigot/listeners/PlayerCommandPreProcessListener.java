@@ -1,5 +1,6 @@
 package eu.endermite.commandwhitelist.spigot.listeners;
 
+import eu.endermite.commandwhitelist.api.CommandsList;
 import eu.endermite.commandwhitelist.api.RandomStuff;
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
 import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
@@ -17,28 +18,34 @@ public class PlayerCommandPreProcessListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-
         if (player.hasPermission("commandwhitelist.bypass"))
             return;
-
         String command = event.getMessage().toLowerCase();
-
         for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
             if (!player.hasPermission("commandwhitelist.commands." + s.getKey()))
                 continue;
-
             for (String comm : s.getValue()) {
                 comm = comm.toLowerCase();
-                if (command.equalsIgnoreCase("/" + comm))
-                    return;
-                else if (command.startsWith("/" + comm + " ")) {
+                if (command.equalsIgnoreCase("/" + comm) || command.startsWith("/" + comm + " ")) {
+                    String rawCmd = event.getMessage();
+                    List<String> bannedSubCommands = CommandsList.getSuggestions(player);
+                    for (String bannedSubCommand : bannedSubCommands) {
+                        if (rawCmd.equalsIgnoreCase("/"+bannedSubCommand) || rawCmd.equalsIgnoreCase("/"+bannedSubCommand+" ")) {
+                            event.setCancelled(true);
+                            ConfigCache config = CommandWhitelist.getConfigCache();
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getSubCommandDenied())));
+                            return;
+                        }
+                    }
                     return;
                 }
+
+
             }
         }
         event.setCancelled(true);
         ConfigCache config = CommandWhitelist.getConfigCache();
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getCommandDenied())));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getCommandDenied())));
     }
 
 }

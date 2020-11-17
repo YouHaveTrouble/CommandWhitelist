@@ -5,6 +5,7 @@ import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
 import eu.endermite.commandwhitelist.spigot.listeners.LegacyPlayerTabChatCompleteListener;
 import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandPreProcessListener;
 import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandSendListener;
+import eu.endermite.commandwhitelist.spigot.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.spigot.metrics.BukkitMetrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,6 +39,8 @@ public class CommandWhitelist extends JavaPlugin {
                 getLogger().info(ChatColor.YELLOW+"ProtocolLib is required for tab completion blocking!");
             }
         }
+
+        getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
 
         getCommand("commandwhitelist").setExecutor(new MainCommand());
         getCommand("commandwhitelist").setTabCompleter(new MainCommand());
