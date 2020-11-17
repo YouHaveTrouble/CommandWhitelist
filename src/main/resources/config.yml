@@ -36,6 +36,6 @@ commands:
 tabcompletions:
   # This one is working as a blacklist. Player will not be able
   # to see/use listed subcommands unless they have specified permission
-  # commandwhitelist.subcommands.default
-  default:
+  # commandwhitelist.subcommands.example
+  example:
     - help about
