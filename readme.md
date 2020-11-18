@@ -8,6 +8,7 @@ precisely what commands players can see and use.
 <li>Overwrites default "no such command" message with your branding
 <li>Blocks tab completion on spigot and bungeecord*</li>
 <li>Blocks command execution on spigot and bungeecord</li>
+<li>Blocks completion and execution of specific subcommands (spigot only)</li>
 </ul>
 
 \*This only works on Waterfall and its forks 
