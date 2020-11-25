@@ -30,7 +30,7 @@ public class PlayerCommandPreProcessListener implements Listener {
                     String rawCmd = event.getMessage();
                     List<String> bannedSubCommands = CommandsList.getSuggestions(player);
                     for (String bannedSubCommand : bannedSubCommands) {
-                        if (rawCmd.equalsIgnoreCase("/"+bannedSubCommand) || rawCmd.equalsIgnoreCase("/"+bannedSubCommand+" ")) {
+                        if (rawCmd.startsWith("/"+bannedSubCommand)) {
                             event.setCancelled(true);
                             ConfigCache config = CommandWhitelist.getConfigCache();
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getSubCommandDenied())));

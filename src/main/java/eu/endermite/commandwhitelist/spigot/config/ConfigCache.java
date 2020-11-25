@@ -52,6 +52,9 @@ public class ConfigCache {
     }
     public boolean addCommand(String command, String group) {
         try {
+            if (this.permList.get(group).contains(command)) {
+                return true;
+            }
             this.permList.get(group).add(command);
             this.config.set("commands."+group, permList.get(group));
             config.save(CommandWhitelist.getPlugin().getDataFolder()+"/config.yml");
