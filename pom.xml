@@ -6,7 +6,7 @@
 
     <groupId>eu.endermite</groupId>
     <artifactId>CommandWhitelist</artifactId>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
     <packaging>jar</packaging>
 
     <name>CommandWhitelist</name>

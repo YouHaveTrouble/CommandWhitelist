@@ -22,10 +22,12 @@ public class TabCompleteBlockerListener implements Listener {
             String slast = CommandsList.getLastArgument(s);
             String scommand = s.replace(slast, "");
             cmd = cmd.replace(CommandsList.getLastArgument(cmd), "");
-            if (cmd.startsWith("/"+scommand+" ")) {
+            if (cmd.startsWith("/" + scommand + " ")) {
                 continue;
             }
-            suggestions.remove(slast);
+            try {
+                suggestions.remove(slast);
+            } catch (Exception ignored) {}
         }
         event.setCompletions(suggestions);
     }
