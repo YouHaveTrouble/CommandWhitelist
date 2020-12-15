@@ -13,9 +13,10 @@ public class CommandsList {
     public static List<String> getCommands(Player player) {
         List<String> commandList = new ArrayList<>();
         for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
-            if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
+            if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue());
-            }
+            else if (player.hasPermission("commandwhitelist.commands." + s.getKey()))
+                    commandList.addAll(s.getValue());
         }
         return commandList;
     }
@@ -23,9 +24,10 @@ public class CommandsList {
     public static List<String> getCommands(ProxiedPlayer player) {
         List<String> commandList = new ArrayList<>();
         for (Map.Entry<String, List<String>> s : CommandWhitelistBungee.getConfigCache().getPermList().entrySet()) {
-            if (player.hasPermission("commandwhitelist.commands." + s.getKey())) {
+            if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue());
-            }
+            else if (player.hasPermission("commandwhitelist.commands." + s.getKey()))
+                commandList.addAll(s.getValue());
         }
         return commandList;
     }
