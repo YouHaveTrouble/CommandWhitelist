@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 public class BungeeMainCommand extends Command implements TabExecutor {
 
     public BungeeMainCommand(String name) {

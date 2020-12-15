@@ -27,9 +27,8 @@ public class LegacyPlayerTabChatCompleteListener {
             public void onPacketSending(PacketEvent event) {
                 try {
                     Player player = event.getPlayer();
-                    if (player.hasPermission("commandwhitelist.bypass")) {
+                    if (player.hasPermission("commandwhitelist.bypass"))
                         return;
-                    }
                     PacketContainer packet = event.getPacket();
                     String[] message = packet.getSpecificModifier(String[].class).read(0);
                     List<String> commandList = CommandsList.getCommands(player);
@@ -43,18 +42,14 @@ public class LegacyPlayerTabChatCompleteListener {
                             }
                         }
                     }
-
                     String[] toWrite = new String[components];
                     int counter = 0;
                     for (String cmd : finalList) {
                         toWrite[counter++] = cmd;
                     }
-
                     packet.getSpecificModifier(String[].class).write(0, toWrite);
-
                 } catch (Exception ignored) {}
             }
         });
     }
-
 }

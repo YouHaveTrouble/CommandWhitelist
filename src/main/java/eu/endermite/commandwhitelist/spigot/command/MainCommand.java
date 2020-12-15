@@ -58,7 +58,6 @@ public class MainCommand implements TabExecutor {
                 } else {
                     sender.sendMessage("/cw remove <group> <command>");
                 }
-
             } else {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelist.getConfigCache().getPrefix() + CommandWhitelist.getConfigCache().getNoSubCommand()));
             }

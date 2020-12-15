@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import java.util.List;
 
 public class TabCompleteBlockerListener implements Listener {
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCommandTabComplete(org.bukkit.event.server.TabCompleteEvent event) {
         if (!(event.getSender() instanceof Player))

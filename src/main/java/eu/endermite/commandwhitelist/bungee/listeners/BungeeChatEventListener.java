@@ -14,28 +14,20 @@ public class BungeeChatEventListener implements Listener {
 
     @EventHandler
     public void onChatEvent(net.md_5.bungee.api.event.ChatEvent event) {
-
         if (event.isCancelled())
             return;
-
         if (!(event.getSender() instanceof ProxiedPlayer))
             return;
-
         if (!event.isProxyCommand())
             return;
-
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-
-        if (player.hasPermission("commandwhitelist.bypass")) {
+        if (player.hasPermission("commandwhitelist.bypass"))
             return;
-        }
-
         String command = event.getMessage().toLowerCase();
         boolean found = false;
         for (Map.Entry<String, List<String>> s : CommandWhitelistBungee.getConfigCache().getPermList().entrySet()) {
             if (!player.hasPermission("commandwhitelist.commands." + s.getKey()))
                 continue;
-
             for (String comm : s.getValue()) {
                 comm = comm.toLowerCase();
                 if (command.equalsIgnoreCase("/" + comm)) {

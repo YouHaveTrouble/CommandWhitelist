@@ -24,7 +24,6 @@ public final class CommandWhitelistBungee extends Plugin {
 
     @Override
     public void onEnable() {
-
         plugin = this;
         getLogger().info("Running on "+ ChatColor.DARK_AQUA+getProxy().getName());
         loadConfig();
@@ -40,17 +39,14 @@ public final class CommandWhitelistBungee extends Plugin {
 
         int pluginId = 8704;
         new BungeeMetrics(this, pluginId);
-
     }
 
     public static CommandWhitelistBungee getPlugin() {
         return plugin;
     }
-
     public static BungeeConfigCache getConfigCache() {
         return configCache;
     }
-
 
     public void loadConfig() {
         try {
@@ -81,5 +77,4 @@ public final class CommandWhitelistBungee extends Plugin {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CommandWhitelistBungee.getConfigCache().getPrefix() + CommandWhitelistBungee.getConfigCache().getConfigReloaded()));
         });
     }
-
 }

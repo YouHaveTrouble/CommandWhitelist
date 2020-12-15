@@ -13,25 +13,17 @@ public class WaterfallDefineCommandsListener implements Listener {
 
     @EventHandler
     public void onProxyDefineCommandsEvent(io.github.waterfallmc.waterfall.event.ProxyDefineCommandsEvent event) {
-
         if (event.getReceiver() instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
-
-            if (player.hasPermission("commandwhitelist.bypass")) {
+            if (player.hasPermission("commandwhitelist.bypass"))
                 return;
-            }
-
             HashMap<String, Command> commandHashMap = new HashMap<>();
             CommandsList.getCommands(player).forEach(cmdName ->
                     CommandWhitelistBungee.getPlugin().getProxy().getPluginManager().getCommands()
                             .stream()
                             .filter(commandEntry -> cmdName.equalsIgnoreCase(commandEntry.getValue().getName()))
                             .forEach(commandEntry -> commandHashMap.put(commandEntry.getKey(), commandEntry.getValue())));
-
             event.getCommands().values().removeIf((cmd) -> !commandHashMap.containsValue(cmd));
         }
-
-
     }
-
 }

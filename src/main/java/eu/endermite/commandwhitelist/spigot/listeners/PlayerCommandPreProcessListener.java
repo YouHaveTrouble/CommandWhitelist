@@ -9,12 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
 import java.util.List;
 import java.util.Map;
 
 public class PlayerCommandPreProcessListener implements Listener {
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
@@ -39,13 +37,10 @@ public class PlayerCommandPreProcessListener implements Listener {
                     }
                     return;
                 }
-
-
             }
         }
         event.setCancelled(true);
         ConfigCache config = CommandWhitelist.getConfigCache();
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getCommandDenied())));
     }
-
 }
