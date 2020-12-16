@@ -1,0 +1,24 @@
+# This is velocity version of the config.
+[messages]
+prefix="CommandWhitelist > "
+command-denied="No such command."
+subcommand-denied="You cannot use this subcommand"
+no-permission="&cYou don't have permission to do this."
+no-such-subcommand="&cNo subcommand by that name."
+config-reloaded="&eConfiguration reloaded."
+added-to-whitelist="&eWhitelisted command &6%s &efor permission &6%s"
+removed-from-whitelist="&eRemoved command &6%s &efrom permission &6%s"
+group-doesnt-exist="&cGroup doesn't exist or error occured"
+
+# Permissions that control what commands players can use
+# you can add unlimited amount of whitelists
+[commands]
+# this will be automatically given to players by default
+default= [
+  "velocity",
+  "server",
+]
+# commandwhitelist.commands.example
+example= [
+  "example"
+]

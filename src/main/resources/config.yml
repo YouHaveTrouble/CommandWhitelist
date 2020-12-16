@@ -13,7 +13,6 @@ commands:
   # Permissions that control what commands players can use
   # you can add unlimited amount of whitelists
 
-  # commandwhitelist.commands.default
   # this will be automatically given to players by default
   default:
     - help
