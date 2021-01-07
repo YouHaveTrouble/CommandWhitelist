@@ -17,6 +17,7 @@ public class ConfigCache {
     private final String prefix, commandDenied, noPermission, noSubCommand, configReloaded, whitelistedCommand,
             removedWhitelistedCommand, noSuchGroup, subCommandDenied;
     private final List<String> commandDeniedList;
+    private boolean useProtocolLib;
 
     public ConfigCache(FileConfiguration config) {
 
@@ -32,6 +33,8 @@ public class ConfigCache {
         whitelistedCommand = config.getString("messages.added-to-whitelist", "&eWhitelisted command &6%s &efor permission &6%s");
         removedWhitelistedCommand = config.getString("messages.removed-from-whitelist", "&eRemoved command &6%s &efrom permission &6%s");
         noSuchGroup = config.getString("messages.group-doesnt-exist", "&cGroup %s doesn't exist");
+
+        useProtocolLib = config.getBoolean("use-protocollib-to-detect-commands", false);
 
         Set<String> perms = config.getConfigurationSection("commands").getKeys(false);
         for (String s : perms) {
@@ -98,5 +101,8 @@ public class ConfigCache {
     }
     public String getSubCommandDenied() {
         return subCommandDenied;
+    }
+    public boolean isUseProtocolLib() {
+        return useProtocolLib;
     }
 }

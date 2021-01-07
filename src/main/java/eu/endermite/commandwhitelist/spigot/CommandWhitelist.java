@@ -2,15 +2,13 @@ package eu.endermite.commandwhitelist.spigot;
 
 import eu.endermite.commandwhitelist.spigot.command.MainCommand;
 import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
-import eu.endermite.commandwhitelist.spigot.listeners.LegacyPlayerTabChatCompleteListener;
-import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandPreProcessListener;
-import eu.endermite.commandwhitelist.spigot.listeners.PlayerCommandSendListener;
-import eu.endermite.commandwhitelist.spigot.listeners.TabCompleteBlockerListener;
+import eu.endermite.commandwhitelist.spigot.listeners.*;
 import eu.endermite.commandwhitelist.spigot.metrics.BukkitMetrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandWhitelist extends JavaPlugin {
@@ -28,12 +26,20 @@ public class CommandWhitelist extends JavaPlugin {
 
         reloadPluginConfig();
 
-        getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
+        Plugin protocollib = getServer().getPluginManager().getPlugin("ProtocolLib");
+
+        getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         if (!isLegacy) {
-            getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
+            if (!getConfigCache().isUseProtocolLib() || protocollib == null || !protocollib.isEnabled()) {
+                getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
+            } else {
+                PacketCommandSendListener.protocol(this);
+                getLogger().info(ChatColor.AQUA+"Using ProtocolLib for command filter!");
+            }
+
         } else {
             getLogger().info(ChatColor.AQUA+"Running in legacy mode...");
-            if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+            if (protocollib != null) {
                 LegacyPlayerTabChatCompleteListener.protocol(this);
             } else {
                 getLogger().info(ChatColor.YELLOW+"ProtocolLib is required for tab completion blocking!");
