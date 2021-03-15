@@ -28,15 +28,15 @@ public class CommandWhitelist extends JavaPlugin {
 
         Plugin protocollib = getServer().getPluginManager().getPlugin("ProtocolLib");
 
-        getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         if (!isLegacy) {
             if (!getConfigCache().isUseProtocolLib() || protocollib == null || !protocollib.isEnabled()) {
                 getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
+                getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
             } else {
                 PacketCommandSendListener.protocol(this);
                 getLogger().info(ChatColor.AQUA+"Using ProtocolLib for command filter!");
             }
-
+            getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
         } else {
             getLogger().info(ChatColor.AQUA+"Running in legacy mode...");
             if (protocollib != null) {
@@ -45,8 +45,6 @@ public class CommandWhitelist extends JavaPlugin {
                 getLogger().info(ChatColor.YELLOW+"ProtocolLib is required for tab completion blocking!");
             }
         }
-
-        getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
 
         getCommand("commandwhitelist").setExecutor(new MainCommand());
         getCommand("commandwhitelist").setTabCompleter(new MainCommand());
