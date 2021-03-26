@@ -28,9 +28,10 @@ public class CommandWhitelist extends JavaPlugin {
 
         Plugin protocollib = getServer().getPluginManager().getPlugin("ProtocolLib");
 
+        getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
         if (!isLegacy) {
             if (!getConfigCache().isUseProtocolLib() || protocollib == null || !protocollib.isEnabled()) {
-                getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
+
                 getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
             } else {
                 PacketCommandSendListener.protocol(this);
