@@ -1,6 +1,9 @@
 Command  Whitelist is a plugin that allows you to control 
 precisely what commands players can see and use.
 
+<img src="https://img.shields.io/bstats/servers/8705?label=Spigot%20servers%20using%20CommandWhitelist&style=for-the-badge">
+<img src="https://img.shields.io/bstats/servers/8704?label=Proxy%20servers%20using%20CommandWhitelist&style=for-the-badge">
+
 <h3>Plugin Features</h3>
 
 <ul>
