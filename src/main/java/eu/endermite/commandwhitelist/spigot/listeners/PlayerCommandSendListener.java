@@ -1,6 +1,6 @@
 package eu.endermite.commandwhitelist.spigot.listeners;
 
-import eu.endermite.commandwhitelist.api.CommandsList;
+import eu.endermite.commandwhitelist.common.CommandsList;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

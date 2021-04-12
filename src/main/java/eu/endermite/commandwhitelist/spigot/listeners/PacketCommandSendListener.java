@@ -7,10 +7,10 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import eu.endermite.commandwhitelist.api.CommandsList;
-import eu.endermite.commandwhitelist.api.RandomStuff;
+import eu.endermite.commandwhitelist.common.CWGroup;
+import eu.endermite.commandwhitelist.common.CommandsList;
+import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
-import eu.endermite.commandwhitelist.spigot.config.ConfigCache;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -38,10 +38,10 @@ public class PacketCommandSendListener {
                 String cmd = string.replace("/", "");
                 String[] split = cmd.split("\\s+");
                 String command = split[0].toLowerCase();
-                for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
+                for (Map.Entry<String, CWGroup> s : CommandWhitelist.getConfigCache().getGroupList().entrySet()) {
                     if (!player.hasPermission("commandwhitelist.commands." + s.getKey()))
                         continue;
-                    for (String comm : s.getValue()) {
+                    for (String comm : s.getValue().getCommands()) {
                         comm = comm.toLowerCase();
                         if (command.equalsIgnoreCase(comm) || command.startsWith(comm + " ")) {
                             List<String> bannedSubCommands = CommandsList.getSuggestions(player);
@@ -49,7 +49,7 @@ public class PacketCommandSendListener {
                                 if (cmd.startsWith(bannedSubCommand)) {
                                     event.setCancelled(true);
                                     ConfigCache config = CommandWhitelist.getConfigCache();
-                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getSubCommandDenied())));
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.prefix + config.subcommand_denied));
                                     return;
                                 }
                             }
@@ -60,7 +60,7 @@ public class PacketCommandSendListener {
 
                 event.setCancelled(true);
                 ConfigCache config = CommandWhitelist.getConfigCache();
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getCommandDenied())));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.prefix + config.command_denied));
 
             }
         });

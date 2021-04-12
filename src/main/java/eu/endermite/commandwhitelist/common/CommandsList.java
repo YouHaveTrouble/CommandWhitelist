@@ -1,4 +1,4 @@
-package eu.endermite.commandwhitelist.api;
+package eu.endermite.commandwhitelist.common;
 
 import eu.endermite.commandwhitelist.bungee.CommandWhitelistBungee;
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
@@ -11,11 +11,11 @@ public class CommandsList {
 
     public static List<String> getCommands(org.bukkit.entity.Player player) {
         List<String> commandList = new ArrayList<>();
-        for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
+        for (Map.Entry<String, CWGroup> s : CommandWhitelist.getConfigCache().getGroupList().entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
-                commandList.addAll(s.getValue());
-            else if (player.hasPermission("commandwhitelist.commands." + s.getKey()))
-                    commandList.addAll(s.getValue());
+                commandList.addAll(s.getValue().getCommands());
+            else if (player.hasPermission("commandwhitelist.group." + s.getKey()))
+                    commandList.addAll(s.getValue().getCommands());
         }
         return commandList;
     }
@@ -44,10 +44,10 @@ public class CommandsList {
 
     public static List<String> getSuggestions(org.bukkit.entity.Player player) {
         List<String> suggestionList = new ArrayList<>();
-        for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermSubList().entrySet()) {
+        for (Map.Entry<String, CWGroup> s : CommandWhitelist.getConfigCache().getGroupList().entrySet()) {
             if (player.hasPermission("commandwhitelist.subcommands." + s.getKey()))
                 continue;
-            suggestionList.addAll(s.getValue());
+            suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;
     }

@@ -14,10 +14,8 @@ commands:
     usage: /commandwhitelist [args]
 permissions:
   commandwhitelist.reload:
-    default: OP
+    default: op
   commandwhitelist.admin:
-    default: OP
+    default: op
   commandwhitelist.bypass:
-    default: OP
-  commandwhitelist.commands.default:
-    default: true
+    default: op

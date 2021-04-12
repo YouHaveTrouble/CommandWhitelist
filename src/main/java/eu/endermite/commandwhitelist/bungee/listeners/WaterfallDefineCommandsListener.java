@@ -1,6 +1,6 @@
 package eu.endermite.commandwhitelist.bungee.listeners;
 
-import eu.endermite.commandwhitelist.api.CommandsList;
+import eu.endermite.commandwhitelist.common.CommandsList;
 import eu.endermite.commandwhitelist.bungee.CommandWhitelistBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import eu.endermite.commandwhitelist.api.CommandsList;
+import eu.endermite.commandwhitelist.common.CommandsList;
 import eu.endermite.commandwhitelist.spigot.CommandWhitelist;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
