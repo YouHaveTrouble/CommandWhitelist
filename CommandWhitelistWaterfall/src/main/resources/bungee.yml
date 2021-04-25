@@ -1,0 +1,4 @@
+name: CommandWhitelist
+version: ${project.version}
+main: eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall
+description: You decide what commands players can use or tab complete on your server!

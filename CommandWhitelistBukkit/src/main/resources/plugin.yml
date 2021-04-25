@@ -1,0 +1,21 @@
+name: CommandWhitelist
+prefix: CommandWhitelist
+version: ${project.version}
+api-version: 1.13
+main: eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit
+authors: [YouHaveTrouble]
+softdepend:
+  - ProtocolLib
+description: Control what commands players can use
+commands:
+  commandwhitelist:
+    aliases:
+      - cw
+    usage: /commandwhitelist [args]
+permissions:
+  commandwhitelist.reload:
+    default: OP
+  commandwhitelist.admin:
+    default: OP
+  commandwhitelist.bypass:
+    default: OP
