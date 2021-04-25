@@ -1,0 +1,9 @@
+{
+  "id":"commandwhitelist",
+  "name":"CommandWhitelist",
+  "version":"${project.version}",
+  "description":"You decide what commands players can use or tab complete on your server!",
+  "authors":["YouHaveTrouble"],
+  "dependencies":[],
+  "main":"eu.endermite.commandwhitelist.velocity.CommandWhitelistVelocity"
+}

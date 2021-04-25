@@ -1,0 +1,114 @@
+package eu.endermite.commandwhitelist.bukkit;
+
+import eu.endermite.commandwhitelist.bukkit.listeners.PacketCommandPreProcessListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
+import eu.endermite.commandwhitelist.common.CWGroup;
+import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.bukkit.command.MainCommand;
+import eu.endermite.commandwhitelist.bukkit.metrics.BukkitMetrics;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+public class CommandWhitelistBukkit extends JavaPlugin {
+
+    private static CommandWhitelistBukkit commandWhitelist;
+    private static ConfigCache configCache;
+    private static BukkitAudiences audiences;
+
+    @Override
+    public void onEnable() {
+
+        commandWhitelist = this;
+        audiences = BukkitAudiences.create(this);
+
+        reloadPluginConfig();
+
+        Plugin protocollib = getServer().getPluginManager().getPlugin("ProtocolLib");
+
+        if (!getConfigCache().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
+            getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
+            getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
+        } else {
+            PacketCommandPreProcessListener.protocol(this);
+            getLogger().info(ChatColor.AQUA + "Using ProtocolLib for command filter!");
+        }
+        getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
+
+        getCommand("commandwhitelist").setExecutor(new MainCommand());
+
+        int pluginId = 8705;
+        new BukkitMetrics(this, pluginId);
+    }
+
+    private void reloadPluginConfig() {
+        File configFile = new File("plugins/CommandWhitelist/config.yml");
+        configCache = new ConfigCache(configFile, true);
+
+    }
+
+    public void reloadPluginConfig(CommandSender sender) {
+        getServer().getScheduler().runTaskAsynchronously(this, () -> {
+            reloadPluginConfig();
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.updateCommands();
+            }
+            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.config_reloaded));
+        });
+    }
+
+    public static CommandWhitelistBukkit getPlugin() {
+        return commandWhitelist;
+    }
+
+    public static ConfigCache getConfigCache() {
+        return configCache;
+    }
+
+    public static BukkitAudiences getAudiences() {
+        return audiences;
+    }
+
+    /**
+     * @param player Bukkit Player
+     * @return commands available to the player
+     */
+    public static HashSet<String> getCommands(org.bukkit.entity.Player player, HashMap<String, CWGroup> groups) {
+        HashSet<String> commandList = new HashSet<>();
+        for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
+            if (s.getKey().equalsIgnoreCase("default"))
+                commandList.addAll(s.getValue().getCommands());
+            else if (player.hasPermission("commandwhitelist.group." + s.getKey()))
+                commandList.addAll(s.getValue().getCommands());
+        }
+        return commandList;
+    }
+
+    /**
+     * @param player Bukkit Player
+     * @return subcommands unavailable for the player
+     */
+    public static HashSet<String> getSuggestions(org.bukkit.entity.Player player, HashMap<String, CWGroup> groups) {
+        HashSet<String> suggestionList = new HashSet<>();
+        for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
+            if (s.getKey().equalsIgnoreCase("default"))
+                suggestionList.addAll(s.getValue().getSubCommands());
+            if (player.hasPermission("commandwhitelist.group." + s.getKey()))
+                continue;
+            suggestionList.addAll(s.getValue().getSubCommands());
+        }
+        return suggestionList;
+    }
+}
