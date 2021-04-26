@@ -6,13 +6,14 @@ import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
-import eu.endermite.commandwhitelist.bukkit.command.MainCommand;
+import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
 import eu.endermite.commandwhitelist.bukkit.metrics.BukkitMetrics;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,7 +48,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         }
         getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
 
-        getCommand("commandwhitelist").setExecutor(new MainCommand());
+        PluginCommand command = getCommand("commandwhitelist");
+        if (command != null) {
+            MainCommandExecutor executor = new MainCommandExecutor();
+            command.setExecutor(executor);
+            command.setTabCompleter(executor);
+        }
 
         int pluginId = 8705;
         new BukkitMetrics(this, pluginId);

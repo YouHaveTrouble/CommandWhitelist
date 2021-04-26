@@ -8,6 +8,8 @@ import java.util.*;
 
 public class ConfigCache {
 
+    //TODO probably rewrite this yet again
+
     private final File configFile;
     private final boolean canDoProtocolLib;
     private final HashMap<String, CWGroup> groupList = new LinkedHashMap<>();
@@ -55,7 +57,7 @@ public class ConfigCache {
         }
 
         groups.putIfAbsent("default", new CWGroup("default", defaultCommands, defaultSubcommands).serialize());
-
+        //TODO find a way to update groups
         data.putIfAbsent("groups", groups);
 
         DumperOptions dumperOptions = new DumperOptions();

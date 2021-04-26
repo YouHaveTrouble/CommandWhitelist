@@ -1,7 +1,9 @@
 package eu.endermite.commandwhitelist.waterfall.command;
 
+import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.CommandSender;
@@ -15,54 +17,59 @@ public class BungeeMainCommand extends Command implements TabExecutor {
     }
 
     public void execute(CommandSender sender, String[] args) {
+
+        String label = getName();
+        ConfigCache configCache = CommandWhitelistWaterfall.getConfigCache();
+        BungeeAudiences audiences = CommandWhitelistWaterfall.getAudiences();
+
         if (args.length == 0) {
-            // send help
+            audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
             return;
         }
 
         try {
-            CWCommand.CommandType commandType = CWCommand.CommandType.valueOf(args[0]);
+            CWCommand.CommandType commandType = CWCommand.CommandType.valueOf(args[0].toUpperCase());
             switch (commandType) {
                 case RELOAD:
                     if (!sender.hasPermission("commandwhitelist.reload")) {
-                        CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().no_permission));
+                        audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + configCache.no_permission));
                         return;
                     }
                     CommandWhitelistWaterfall.getPlugin().loadConfigAsync(sender);
                     return;
                 case ADD:
                     if (!sender.hasPermission("commandwhitelist.admin")) {
-                        CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().no_permission));
+                        audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.no_permission));
                         return;
                     }
                     if (args.length == 3) {
-                        if (CWCommand.addToWhitelist(CommandWhitelistWaterfall.getConfigCache(), args[2], args[1]))
-                            CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().added_to_whitelist));
+                        if (CWCommand.addToWhitelist(configCache, args[2], args[1]))
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.added_to_whitelist));
                         else
-                            CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().group_doesnt_exist));
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.group_doesnt_exist));
                     } else
-                        CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(Component.text("/cw add <group> <command>"));
+                        audiences.sender(sender).sendMessage(Component.text("/"+label+" add <group> <command>"));
                     return;
                 case REMOVE:
                     if (!sender.hasPermission("commandwhitelist.admin")) {
-                        CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().no_permission));
+                        audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.no_permission));
                         return;
                     }
                     if (args.length == 3) {
-                        if (CWCommand.removeFromWhitelist(CommandWhitelistWaterfall.getConfigCache(), args[2], args[1]))
-                            CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().removed_from_whitelist));
+                        if (CWCommand.removeFromWhitelist(configCache, args[2], args[1]))
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.removed_from_whitelist));
                         else
-                            CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().group_doesnt_exist));
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.group_doesnt_exist));
                     } else
-                        CommandWhitelistWaterfall.getAudiences().sender(sender).sendMessage(Component.text("/cw remove <group> <command>"));
+                        audiences.sender(sender).sendMessage(Component.text("/"+label+" remove <group> <command>"));
                     return;
                 case HELP:
                 default:
-                    // send help
+                    audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
             }
 
         } catch (IllegalArgumentException e) {
-            // send help
+            audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
         }
         return;
     }

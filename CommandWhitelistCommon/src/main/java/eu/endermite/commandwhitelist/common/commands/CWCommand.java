@@ -1,11 +1,13 @@
 package eu.endermite.commandwhitelist.common.commands;
 
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 
 public class CWCommand {
@@ -28,8 +30,8 @@ public class CWCommand {
         return true;
     }
 
-    public Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {
-        Component component = Component.text("CommandWhitelist by YouHaveTrouble").decorate(TextDecoration.BOLD).color(NamedTextColor.BLUE)
+    public static Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {
+        Component component = MiniMessage.markdown().parse("<rainbow><bold>CommandWhitelist by YouHaveTrouble")
                 .append(Component.newline());
         component = component.append(Component.text("Hover over the command to see what it does!").color(NamedTextColor.AQUA)).decoration(TextDecoration.BOLD, false).append(Component.newline());
         component = component.append(Component.text("/"+baseCommand+" help").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Displays this message"))));
