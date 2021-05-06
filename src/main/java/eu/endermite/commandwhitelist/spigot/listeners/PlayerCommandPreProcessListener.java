@@ -19,16 +19,18 @@ public class PlayerCommandPreProcessListener implements Listener {
         if (player.hasPermission("commandwhitelist.bypass"))
             return;
         String command = event.getMessage().toLowerCase();
+        if (command.startsWith("/"))
+            command = command.substring(1);
         for (Map.Entry<String, List<String>> s : CommandWhitelist.getConfigCache().getPermList().entrySet()) {
             if (!player.hasPermission("commandwhitelist.commands." + s.getKey()))
                 continue;
             for (String comm : s.getValue()) {
                 comm = comm.toLowerCase();
-                if (command.equalsIgnoreCase("/" + comm) || command.startsWith("/" + comm + " ")) {
+                if (command.equalsIgnoreCase(comm) || command.startsWith(comm + " ")) {
                     String rawCmd = event.getMessage();
                     List<String> bannedSubCommands = CommandsList.getSuggestions(player);
                     for (String bannedSubCommand : bannedSubCommands) {
-                        if (rawCmd.startsWith("/"+bannedSubCommand)) {
+                        if (rawCmd.startsWith(bannedSubCommand)) {
                             event.setCancelled(true);
                             ConfigCache config = CommandWhitelist.getConfigCache();
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getPrefix() + RandomStuff.getMessage(config.getCommandDeniedList(), config.getSubCommandDenied())));
