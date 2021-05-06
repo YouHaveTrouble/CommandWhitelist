@@ -2,13 +2,10 @@ package eu.endermite.commandwhitelist.common;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-
 import java.io.*;
 import java.util.*;
 
 public class ConfigCache {
-
-    //TODO probably rewrite this yet again
 
     private final File configFile;
     private final boolean canDoProtocolLib;
@@ -93,7 +90,7 @@ public class ConfigCache {
         this.config_reloaded = messages.get("config_reloaded");
         this.added_to_whitelist = messages.get("added_to_whitelist");
         this.removed_from_whitelist = messages.get("removed_from_whitelist");
-        this.group_doesnt_exist = messages.get("group_doesnt-exist");
+        this.group_doesnt_exist = messages.get("group_doesnt_exist");
         this.subcommand_denied = messages.get("subcommand_denied");
 
         if (canDoProtocolLib)
@@ -129,8 +126,8 @@ public class ConfigCache {
         messages.put("no_permission", stringOrDefault(no_permission, "<red>You don't have permission to do this."));
         messages.put("no_such_subcommand",  stringOrDefault(no_such_subcommand, "<red>No subcommand by that name."));
         messages.put("config_reloaded", stringOrDefault(config_reloaded, "<yellow>Configuration reloaded."));
-        messages.put("added_to_whitelist", stringOrDefault(added_to_whitelist, "<yellow>Whitelisted command <orange>%s <yellow>for permission <orange>%s"));
-        messages.put("removed_from_whitelist", stringOrDefault(removed_from_whitelist, "<yellow>Removed command <orange>%s <yellow>from permission <orange>%s"));
+        messages.put("added_to_whitelist", stringOrDefault(added_to_whitelist, "<yellow>Whitelisted command <gold>%s <yellow>for permission <gold>%s"));
+        messages.put("removed_from_whitelist", stringOrDefault(removed_from_whitelist, "<yellow>Removed command <gold>%s <yellow>from permission <gold>%s"));
         messages.put("group_doesnt_exist", stringOrDefault(group_doesnt_exist, "<red>Group doesn't exist or error occured"));
         return messages;
     }

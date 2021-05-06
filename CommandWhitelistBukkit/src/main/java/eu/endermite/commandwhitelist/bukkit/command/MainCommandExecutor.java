@@ -42,9 +42,9 @@ public class MainCommandExecutor implements TabExecutor {
                     }
                     if (args.length == 3) {
                         if (CWCommand.addToWhitelist(CommandWhitelistBukkit.getConfigCache(), args[2], args[1]))
-                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().added_to_whitelist));
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().added_to_whitelist, args[2], args[1])));
                         else
-                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().group_doesnt_exist));
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().group_doesnt_exist, args[1])));
                     } else
                         audiences.sender(sender).sendMessage(Component.text("/" + label + " add <group> <command>"));
                     return true;
@@ -55,9 +55,9 @@ public class MainCommandExecutor implements TabExecutor {
                     }
                     if (args.length == 3) {
                         if (CWCommand.removeFromWhitelist(CommandWhitelistBukkit.getConfigCache(), args[2], args[1]))
-                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().removed_from_whitelist));
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().removed_from_whitelist, args[2], args[1])));
                         else
-                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().group_doesnt_exist));
+                            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().group_doesnt_exist, args[1])));
                     } else
                         audiences.sender(sender).sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return true;
@@ -125,6 +125,9 @@ public class MainCommandExecutor implements TabExecutor {
                         continue;
                     }
                     cmd = cmd.replace("/", "");
+
+                    if (config.getGroupList().get(args[1]) == null)
+                        continue;
 
                     if (config.getGroupList().get(args[1]).getCommands().contains(cmd))
                         continue;

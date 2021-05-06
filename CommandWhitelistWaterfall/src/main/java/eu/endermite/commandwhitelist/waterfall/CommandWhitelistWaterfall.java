@@ -31,7 +31,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
         audiences = BungeeAudiences.create(this);
         this.getProxy().getPluginManager().registerListener(this, new BungeeChatEventListener());
         try {
-            Class.forName("io.github.waterfallmc.waterfall.conf.WaterfallConfiguration");
+            Class.forName("io.github.waterfallmc.waterfall.event.ProxyDefineCommandsEvent");
             this.getProxy().getPluginManager().registerListener(this, new WaterfallDefineCommandsListener());
         } catch (ClassNotFoundException e) {
             getLogger().severe(ChatColor.DARK_RED+"Bungee tab completion blocker requires Waterfall other Waterfall fork.");
