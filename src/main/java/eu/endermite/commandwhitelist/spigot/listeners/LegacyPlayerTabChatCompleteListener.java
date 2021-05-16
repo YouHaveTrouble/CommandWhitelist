@@ -19,6 +19,7 @@ public class LegacyPlayerTabChatCompleteListener {
     public static void protocol(CommandWhitelist plugin) {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         tabCompleteServerBound(protocolManager, plugin);
+        tabCompleteClientBound(protocolManager, plugin);
     }
 
     public static void tabCompleteServerBound(ProtocolManager protocolManager, Plugin plugin) {
@@ -49,6 +50,35 @@ public class LegacyPlayerTabChatCompleteListener {
                     }
                     packet.getSpecificModifier(String[].class).write(0, toWrite);
                 } catch (Exception ignored) {}
+            }
+        });
+    }
+
+    public static void tabCompleteClientBound(ProtocolManager protocolManager, Plugin plugin) {
+        protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Client.TAB_COMPLETE) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                try {
+                    Player player = event.getPlayer();
+                    if (player.hasPermission("commandwhitelist.bypass")) {
+                        return;
+                    }
+                    PacketContainer packet = event.getPacket();
+                    String command = packet.getSpecificModifier(String.class).read(0);
+                    String label = CommandsList.getCommandLabel(command);
+                    List<String> commandList = CommandsList.getCommands(player);
+                    if (command.equals("/"))
+                        return;
+                    for (String cmd : commandList) {
+                        if (cmd.startsWith("/"+label+" "))
+                            return;
+                    }
+                    event.setCancelled(true);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }

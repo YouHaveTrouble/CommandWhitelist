@@ -63,4 +63,11 @@ public class CommandsList {
         return last;
     }
 
+    public static String getCommandLabel(String cmd) {
+        String[] parts = cmd.split(" ");
+        if (parts[0].startsWith("/"))
+            parts[0] = parts[0].substring(1);
+        return parts[0];
+    }
+
 }
