@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import java.util.*;
 
 public class PlayerCommandSendListener implements Listener {
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandSendEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("commandwhitelist.bypass"))

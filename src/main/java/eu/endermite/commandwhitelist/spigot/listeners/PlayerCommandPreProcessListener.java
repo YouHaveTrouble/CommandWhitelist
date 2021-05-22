@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerCommandPreProcessListener implements Listener {
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("commandwhitelist.bypass"))
