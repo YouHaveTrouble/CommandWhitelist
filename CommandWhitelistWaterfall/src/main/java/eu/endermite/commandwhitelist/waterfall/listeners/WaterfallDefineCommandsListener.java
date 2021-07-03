@@ -17,7 +17,7 @@ public class WaterfallDefineCommandsListener implements Listener {
             if (player.hasPermission("commandwhitelist.bypass"))
                 return;
             HashMap<String, Command> commandHashMap = new HashMap<>();
-            CommandWhitelistWaterfall.getCommands(player, CommandWhitelistWaterfall.getConfigCache().getGroupList()).forEach(cmdName ->
+            CommandWhitelistWaterfall.getCommands(player).forEach(cmdName ->
                     CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().getCommands()
                             .stream()
                             .filter(commandEntry -> cmdName.equalsIgnoreCase(commandEntry.getValue().getName()))

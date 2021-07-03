@@ -29,14 +29,14 @@ public class BungeeChatEventListener implements Listener {
         BungeeAudiences audiences = CommandWhitelistWaterfall.getAudiences();
 
         String label = CommandUtil.getCommandLabel(command);
-        HashSet<String> commands = CommandWhitelistWaterfall.getCommands(player, configCache.getGroupList());
+        HashSet<String> commands = CommandWhitelistWaterfall.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
             CommandWhitelistWaterfall.getAudiences().player(player).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.command_denied));
             return;
         }
 
-        HashSet<String> bannedSubCommands = CommandWhitelistWaterfall.getSuggestions(player, configCache.getGroupList());
+        HashSet<String> bannedSubCommands = CommandWhitelistWaterfall.getSuggestions(player);
         for (String bannedSubCommand : bannedSubCommands) {
             if (command.toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                 event.setCancelled(true);

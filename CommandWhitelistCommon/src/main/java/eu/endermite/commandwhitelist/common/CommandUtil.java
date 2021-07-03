@@ -8,18 +8,22 @@ public class CommandUtil {
 
     /**
      * Filters blocked command suggestions from provided collection of strings
-     * @param buffer Command buffer
-     * @param suggestions Full suggestions list
+     *
+     * @param buffer             Command buffer
+     * @param suggestions        Full suggestions list
      * @param blockedSubCommands Subcommands to filter out
      * @return Filtered list of suggestions
      */
     public static List<String> filterSuggestions(String buffer, Collection<String> suggestions, Collection<String> blockedSubCommands) {
-        String cmd = buffer.replace(getLastArgument(buffer), "");
         for (String s : blockedSubCommands) {
-            String slast = getLastArgument(s.toLowerCase());
+            String slast = getLastArgument(s);
             String scommand = s.replace(slast, "");
-            cmd = cmd.replace(getLastArgument(cmd), "");
-            if (cmd.substring(1).startsWith("/" + scommand)) {
+            String[] cmdSplit = buffer.split(" ");
+            StringBuilder cmdBuilder = new StringBuilder();
+            for (int i = 0; i <= cmdSplit.length - 1; i++)
+                cmdBuilder.append(cmdSplit[i]).append(" ");
+            String cmd = cmdBuilder.toString();
+            if (cmd.startsWith("/" + scommand)) {
                 while (suggestions.contains(slast))
                     suggestions.remove(slast);
             }
@@ -33,8 +37,7 @@ public class CommandUtil {
      */
     public static String getLastArgument(String cmd) {
         String[] parts = cmd.split(" ");
-        if (parts.length <= 1)
-            return "";
+        if (parts.length <= 1) return "";
         String last = "";
         for (String part : parts) {
             last = part;

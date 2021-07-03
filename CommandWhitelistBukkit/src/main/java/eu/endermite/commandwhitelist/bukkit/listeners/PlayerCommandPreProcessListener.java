@@ -15,14 +15,12 @@ public class PlayerCommandPreProcessListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (player.hasPermission("commandwhitelist.bypass"))
-            return;
+        if (player.hasPermission("commandwhitelist.bypass")) return;
         String label = CommandUtil.getCommandLabel(event.getMessage().toLowerCase());
 
-        ConfigCache configCache = CommandWhitelistBukkit.getConfigCache();
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
 
-        HashSet<String> commands = CommandWhitelistBukkit.getCommands(player, configCache.getGroupList());
+        HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
             ConfigCache config = CommandWhitelistBukkit.getConfigCache();
@@ -30,7 +28,7 @@ public class PlayerCommandPreProcessListener implements Listener {
             return;
         }
 
-        HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player, configCache.getGroupList());
+        HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
         for (String bannedSubCommand : bannedSubCommands) {
             if (event.getMessage().toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                 event.setCancelled(true);

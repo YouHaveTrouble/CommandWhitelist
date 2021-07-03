@@ -15,6 +15,7 @@ import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.slf4j.Logger;
+
 import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Path;
@@ -28,16 +29,23 @@ public class CommandWhitelistVelocity {
     private static ProxyServer server;
     private static ConfigCache configCache;
     private static Path folder;
+    private static Logger logger;
 
     @Inject
     public CommandWhitelistVelocity(ProxyServer server, Logger logger, @DataDirectory final Path folder) {
         CommandWhitelistVelocity.server = server;
         CommandWhitelistVelocity.folder = folder;
         CommandWhitelistVelocity.plugin = this;
+        CommandWhitelistVelocity.logger = logger;
+
     }
 
     private static void reloadConfig() {
-        configCache = new ConfigCache(new File(String.valueOf(folder), "config.yml"), false);
+        if (configCache == null)
+            configCache = new ConfigCache(new File(String.valueOf(folder), "config.yml"), false, logger);
+        else
+            configCache.reloadConfig();
+
     }
 
     public static void reloadConfig(CommandSource source) {
@@ -56,9 +64,9 @@ public class CommandWhitelistVelocity {
 
     @Subscribe
     public void onUserCommandSendEvent(PlayerAvailableCommandsEvent event) {
-        if (event.getPlayer().hasPermission("commandwhitelist.bypass"))
-            return;
-        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(event.getPlayer(), configCache.getGroupList());
+        Player player = event.getPlayer();
+        if (player.hasPermission("commandwhitelist.bypass")) return;
+        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
         event.getRootNode().getChildren().removeIf((commandNode) ->
                  server.getCommandManager().hasCommand(commandNode.getName())
                         && !allowedCommands.contains(commandNode.getName())
@@ -67,14 +75,12 @@ public class CommandWhitelistVelocity {
 
     @Subscribe
     public void onUserCommandExecuteEvent(com.velocitypowered.api.event.command.CommandExecuteEvent event) {
-        if (!(event.getCommandSource() instanceof Player))
-            return;
+        if (!(event.getCommandSource() instanceof Player)) return;
         Player player = (Player) event.getCommandSource();
 
-        if (player.hasPermission("commandwhitelist.bypass"))
-            return;
+        if (player.hasPermission("commandwhitelist.bypass")) return;
 
-        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player, configCache.getGroupList());
+        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
         String command = event.getCommand().split(" ")[0];
         if (server.getCommandManager().hasCommand(command)
                 && !allowedCommands.contains(command))
@@ -89,7 +95,8 @@ public class CommandWhitelistVelocity {
      * @param player Velocity Player
      * @return commands available to the player
      */
-    public static HashSet<String> getCommands(Player player, HashMap<String, CWGroup> groups) {
+    public static HashSet<String> getCommands(Player player) {
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
         HashSet<String> commandList = new HashSet<>();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))

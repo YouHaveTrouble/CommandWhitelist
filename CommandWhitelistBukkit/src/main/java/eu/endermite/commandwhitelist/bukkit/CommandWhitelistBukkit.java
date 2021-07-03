@@ -61,8 +61,10 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
     private void reloadPluginConfig() {
         File configFile = new File("plugins/CommandWhitelist/config.yml");
-        configCache = new ConfigCache(configFile, true);
-
+        if (configCache == null)
+            configCache = new ConfigCache(configFile, true, getSLF4JLogger());
+        else
+            configCache.reloadConfig();
     }
 
     public void reloadPluginConfig(CommandSender sender) {
@@ -91,8 +93,9 @@ public class CommandWhitelistBukkit extends JavaPlugin {
      * @param player Bukkit Player
      * @return commands available to the player
      */
-    public static HashSet<String> getCommands(org.bukkit.entity.Player player, HashMap<String, CWGroup> groups) {
+    public static HashSet<String> getCommands(org.bukkit.entity.Player player) {
         HashSet<String> commandList = new HashSet<>();
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue().getCommands());
@@ -106,13 +109,13 @@ public class CommandWhitelistBukkit extends JavaPlugin {
      * @param player Bukkit Player
      * @return subcommands unavailable for the player
      */
-    public static HashSet<String> getSuggestions(org.bukkit.entity.Player player, HashMap<String, CWGroup> groups) {
+    public static HashSet<String> getSuggestions(org.bukkit.entity.Player player) {
         HashSet<String> suggestionList = new HashSet<>();
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());
-            if (player.hasPermission("commandwhitelist.group." + s.getKey()))
-                continue;
+            if (player.hasPermission("commandwhitelist.group." + s.getKey())) continue;
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;

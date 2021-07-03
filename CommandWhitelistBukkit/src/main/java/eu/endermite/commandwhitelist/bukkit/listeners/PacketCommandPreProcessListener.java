@@ -28,16 +28,12 @@ public class PacketCommandPreProcessListener {
             public void onPacketReceiving(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 String string = packet.getStrings().read(0);
-                if (!string.startsWith("/"))
-                    return;
+                if (!string.startsWith("/")) return;
                 Player player = event.getPlayer();
-                if (player.hasPermission("commandwhitelist.bypass"))
-                    return;
-
-                ConfigCache configCache = CommandWhitelistBukkit.getConfigCache();
+                if (player.hasPermission("commandwhitelist.bypass")) return;
 
                 String label = CommandUtil.getCommandLabel(string.toLowerCase());
-                HashSet<String> commands = CommandWhitelistBukkit.getCommands(player, configCache.getGroupList());
+                HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
                 if (!commands.contains(label)) {
                     event.setCancelled(true);
                     ConfigCache config = CommandWhitelistBukkit.getConfigCache();
@@ -45,7 +41,7 @@ public class PacketCommandPreProcessListener {
                     return;
                 }
 
-                HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player, configCache.getGroupList());
+                HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
                 for (String bannedSubCommand : bannedSubCommands) {
                     if (string.toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                         event.setCancelled(true);

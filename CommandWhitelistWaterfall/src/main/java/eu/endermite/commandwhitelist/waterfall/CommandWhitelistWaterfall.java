@@ -55,15 +55,10 @@ public final class CommandWhitelistWaterfall extends Plugin {
     }
 
     public void loadConfig() {
-        try {
-            if (!getDataFolder().exists()) {
-                getDataFolder().mkdir();
-            }
-
-            configCache = new ConfigCache(new File(getDataFolder(), "config.yml"), false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (configCache == null)
+            configCache = new ConfigCache(new File(getDataFolder(), "config.yml"), false, getLogger());
+        else
+            configCache.reloadConfig();
     }
 
     public void loadConfigAsync(CommandSender sender) {
@@ -77,8 +72,9 @@ public final class CommandWhitelistWaterfall extends Plugin {
      * @param player Bungee Player
      * @return commands available to the player
      */
-    public static HashSet<String> getCommands(ProxiedPlayer player, HashMap<String, CWGroup> groups) {
+    public static HashSet<String> getCommands(ProxiedPlayer player) {
         HashSet<String> commandList = new HashSet<>();
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue().getCommands());
@@ -92,7 +88,8 @@ public final class CommandWhitelistWaterfall extends Plugin {
      * @param player Bungee Player
      * @return subcommands unavailable for the player
      */
-    public static HashSet<String> getSuggestions(ProxiedPlayer player, HashMap<String, CWGroup> groups) {
+    public static HashSet<String> getSuggestions(ProxiedPlayer player) {
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
         HashSet<String> suggestionList = new HashSet<>();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
