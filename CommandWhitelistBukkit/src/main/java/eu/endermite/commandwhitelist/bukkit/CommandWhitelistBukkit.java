@@ -1,12 +1,12 @@
 package eu.endermite.commandwhitelist.bukkit;
 
+import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
 import eu.endermite.commandwhitelist.bukkit.listeners.PacketCommandPreProcessListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
-import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bstats.bukkit.Metrics;

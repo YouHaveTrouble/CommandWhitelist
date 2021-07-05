@@ -1,8 +1,8 @@
 package eu.endermite.commandwhitelist.bukkit.command;
 
+import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
-import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.help.HelpTopic;
+
 import java.util.ArrayList;
 import java.util.List;
 

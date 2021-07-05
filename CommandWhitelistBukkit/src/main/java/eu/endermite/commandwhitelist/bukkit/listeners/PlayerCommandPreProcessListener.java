@@ -1,7 +1,7 @@
 package eu.endermite.commandwhitelist.bukkit.listeners;
 
-import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
+import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
 import java.util.HashSet;
 
 public class PlayerCommandPreProcessListener implements Listener {

@@ -14,7 +14,6 @@ import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
-import org.bstats.charts.SimpleBarChart;
 import org.bstats.charts.SimplePie;
 import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
