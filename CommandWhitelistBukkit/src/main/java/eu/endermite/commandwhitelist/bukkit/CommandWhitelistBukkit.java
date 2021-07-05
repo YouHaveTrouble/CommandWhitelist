@@ -7,9 +7,9 @@ import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
-import eu.endermite.commandwhitelist.bukkit.metrics.BukkitMetrics;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -55,8 +55,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             command.setTabCompleter(executor);
         }
 
-        int pluginId = 8705;
-        new BukkitMetrics(this, pluginId);
+        new Metrics(this, 8705);
     }
 
     private void reloadPluginConfig() {

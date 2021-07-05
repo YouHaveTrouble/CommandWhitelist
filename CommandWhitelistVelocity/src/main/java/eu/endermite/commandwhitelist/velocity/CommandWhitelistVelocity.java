@@ -14,6 +14,9 @@ import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
+import org.bstats.charts.SimpleBarChart;
+import org.bstats.charts.SimplePie;
+import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -30,13 +33,15 @@ public class CommandWhitelistVelocity {
     private static ConfigCache configCache;
     private static Path folder;
     private static Logger logger;
+    private final Metrics.Factory metricsFactory;
 
     @Inject
-    public CommandWhitelistVelocity(ProxyServer server, Logger logger, @DataDirectory final Path folder) {
+    public CommandWhitelistVelocity(ProxyServer server, Logger logger, @DataDirectory final Path folder, Metrics.Factory metricsFactory) {
         CommandWhitelistVelocity.server = server;
         CommandWhitelistVelocity.folder = folder;
         CommandWhitelistVelocity.plugin = this;
         CommandWhitelistVelocity.logger = logger;
+        this.metricsFactory = metricsFactory;
 
     }
 
@@ -60,6 +65,8 @@ public class CommandWhitelistVelocity {
         reloadConfig();
         CommandMeta commandMeta = server.getCommandManager().metaBuilder("vcw").build();
         server.getCommandManager().register(commandMeta, new VelocityMainCommand());
+        Metrics metrics = metricsFactory.make(this, 8704);
+        metrics.addCustomChart(new SimplePie("proxy", ()-> "Velocity"));
     }
 
     @Subscribe

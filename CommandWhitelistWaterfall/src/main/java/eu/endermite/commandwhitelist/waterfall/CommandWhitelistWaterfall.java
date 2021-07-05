@@ -5,13 +5,15 @@ import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.waterfall.command.BungeeMainCommand;
 import eu.endermite.commandwhitelist.waterfall.listeners.BungeeChatEventListener;
 import eu.endermite.commandwhitelist.waterfall.listeners.WaterfallDefineCommandsListener;
-import eu.endermite.commandwhitelist.waterfall.metrics.BungeeMetrics;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
+import org.bstats.bungeecord.Metrics;
+import org.bstats.charts.SimplePie;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,8 +41,8 @@ public final class CommandWhitelistWaterfall extends Plugin {
 
         getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand("bcw"));
 
-        int pluginId = 8704;
-        new BungeeMetrics(this, pluginId);
+        Metrics metrics = new Metrics(this, 8704);
+        metrics.addCustomChart(new SimplePie("proxy", () -> "Bungee/Waterfall"));
     }
 
     public static CommandWhitelistWaterfall getPlugin() {
