@@ -15,7 +15,7 @@ public class CWCommand {
         if (cwGroup == null)
             return false;
         cwGroup.addCommand(command);
-        configCache.reloadConfig();
+        configCache.saveCWGroup(group, cwGroup);
         return true;
     }
 
@@ -24,7 +24,7 @@ public class CWCommand {
         if (cwGroup == null)
             return false;
         cwGroup.removeCommand(command);
-        configCache.reloadConfig();
+        configCache.saveCWGroup(group, cwGroup);
         return true;
     }
 

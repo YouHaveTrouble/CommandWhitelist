@@ -17,7 +17,7 @@ public class ConfigCache {
             removed_from_whitelist, group_doesnt_exist, subcommand_denied;
     public boolean useProtocolLib = false;
 
-    public ConfigCache(File configFile, boolean canDoProtocolLib, Object logger){
+    public ConfigCache(File configFile, boolean canDoProtocolLib, Object logger) {
         this.configFile = configFile;
         this.canDoProtocolLib = canDoProtocolLib;
         this.logger = logger;
@@ -27,7 +27,7 @@ public class ConfigCache {
 
     public boolean reloadConfig() {
 
-        boolean firstLoad = createFiles();
+        createFiles();
         config = ConfigFile.loadConfig(configFile);
 
         config.addDefault("messages.prefix", "CommandWhitelist > ");
@@ -45,17 +45,18 @@ public class ConfigCache {
         if (canDoProtocolLib)
             config.addDefault("use_protocollib", false, "Do not enable if you don't have issues with aliased commands.\nThis requires server restart to take effect.");
 
-        if (firstLoad) {
+        if (config.isNew()) {
             List<String> exampleCommands = new ArrayList<>();
             exampleCommands.add("example");
             List<String> exampleSubCommands = new ArrayList<>();
             exampleSubCommands.add("example of");
 
-            config.addDefault("groups.example.commands", exampleCommands, "This is the WHITELIST of commands that players will be able to see/use in the group \"example\"");
-            config.addDefault("groups.example.subcommands", exampleSubCommands, "This is the BLACKLIST of subcommands that players will NOT be able to see/use in the group \"example\"");
+            config.addExample("groups.example.commands", exampleCommands, "This is the WHITELIST of commands that players will be able to see/use in the group \"example\"");
+            config.addExample("groups.example.subcommands", exampleSubCommands, "This is the BLACKLIST of subcommands that players will NOT be able to see/use in the group \"example\"");
             config.addComment("groups.example", "All groups except from default require commandwhitelist.group.<group_name> permission\ncommandwhitelist.group.example in this case\n If you wish to leave the list empty, put \"commands: []\" or \"subcommands: []\"");
         }
 
+        config.makeSectionLenient("groups");
         List<String> defaultCommands = new ArrayList<>();
         defaultCommands.add("help");
         defaultCommands.add("spawn");
@@ -102,38 +103,37 @@ public class ConfigCache {
         }
     }
 
-    private boolean createFiles() {
-        boolean creatingFiles = false;
+    private void createFiles() {
         try {
             File parent = new File(configFile.getParent());
             if (!parent.exists())
                 parent.mkdir();
-            if (!configFile.exists()) {
+            if (!configFile.exists())
                 configFile.createNewFile();
-                creatingFiles = true;
-            }
-            return creatingFiles;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
     public CWGroup loadCWGroup(String id, ConfigSection section) {
         HashSet<String> commands = new HashSet<>();
-        for (String cmd : section.getStringList(id+".commands")) {
+        for (String cmd : section.getStringList(id + ".commands")) {
             if (cmd.contains(" ")) {
                 String[] cmdSplit = cmd.split(" ");
-                warn("CommandWhitelist - \""+cmd+"\" is not a command. Loading it as \""+cmdSplit[0]+"\".");
+                warn("CommandWhitelist - \"" + cmd + "\" is not a command. Loading it as \"" + cmdSplit[0] + "\".");
                 cmd = cmdSplit[0];
             }
-
             if (commands.contains(cmd)) continue;
             commands.add(cmd);
         }
 
-        List<String> subCommands = section.getStringList(id+".subcommands");
+        List<String> subCommands = section.getStringList(id + ".subcommands");
         return new CWGroup(id, commands, subCommands);
+    }
+
+    public void saveCWGroup(String id, CWGroup group) {
+        config.set("groups." + id + ".", group.serialize());
+        saveConfig();
     }
 
     public HashMap<String, CWGroup> getGroupList() {

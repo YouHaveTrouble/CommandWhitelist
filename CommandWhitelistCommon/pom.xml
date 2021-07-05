@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.github.Thatsmusic99</groupId>
             <artifactId>ConfigurationMaster</artifactId>
-            <version>v2.0.0-ALPHA-2</version>
+            <version>v2.0.0-ALPHA-3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
