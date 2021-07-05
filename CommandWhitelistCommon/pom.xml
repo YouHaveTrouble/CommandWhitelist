@@ -43,7 +43,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${name}-${artifactId}-${project.parent.version}</finalName>
+                            <finalName>${project.name}-${project.artifactId}-${project.parent.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>

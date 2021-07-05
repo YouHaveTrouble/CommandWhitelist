@@ -42,7 +42,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>${name}-${artifactId}-${project.parent.version}</finalName>
+                            <finalName>${project.name}-${project.artifactId}-${project.parent.version}</finalName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>eu.endermite.commandwhitelist</groupId>
             <artifactId>Common</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
