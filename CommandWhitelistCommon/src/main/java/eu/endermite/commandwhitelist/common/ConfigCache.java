@@ -89,7 +89,7 @@ public class ConfigCache {
 
         ConfigSection groupSection = config.getConfigSection("groups");
         for (String key : groupSection.getKeys(false)) {
-            groupList.put("key", loadCWGroup(key, groupSection));
+            groupList.put(key, loadCWGroup(key, groupSection));
         }
 
         return saveConfig();
