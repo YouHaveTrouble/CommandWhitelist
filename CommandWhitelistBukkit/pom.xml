@@ -3,13 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>eu.endermite.commandwhitelist</groupId>
+        <artifactId>CommandWhitelist</artifactId>
+        <version>2.0</version>
+    </parent>
 
-    <groupId>eu.endermite.bukkit</groupId>
-    <artifactId>CommandWhitelistBukkit</artifactId>
-    <version>2.0</version>
+    <artifactId>Bukkit</artifactId>
     <packaging>jar</packaging>
-
-    <name>CommandWhitelistBukkit</name>
+    <name>CommandWhitelist</name>
 
     <description>You decide what commands players can use or tab complete on your server!</description>
     <properties>
@@ -40,6 +42,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <finalName>${name}-${artifactId}-${project.parent.version}</finalName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
@@ -85,9 +88,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>eu.endermite</groupId>
+            <groupId>eu.endermite.commandwhitelist</groupId>
             <artifactId>Common</artifactId>
-            <version>2.0</version>
+            <version>${parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
