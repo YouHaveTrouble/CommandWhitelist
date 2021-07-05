@@ -44,7 +44,6 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <!-- Replace this with your package! -->
                                     <shadedPattern>eu.endermite.bstats</shadedPattern>
                                 </relocation>
                             </relocations>
