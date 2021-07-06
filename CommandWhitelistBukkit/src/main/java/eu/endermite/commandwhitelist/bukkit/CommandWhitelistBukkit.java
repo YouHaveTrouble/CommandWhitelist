@@ -6,7 +6,6 @@ import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessLis
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
-import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
