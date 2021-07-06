@@ -2,6 +2,7 @@ package eu.endermite.commandwhitelist.velocity.command;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.velocity.CommandWhitelistVelocity;
 import net.kyori.adventure.text.Component;
@@ -20,7 +21,7 @@ public class VelocityMainCommand implements SimpleCommand {
         String label = invocation.alias();
 
         if (args.length == 0) {
-            sender.sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
+            sender.sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
             return;
         }
 
@@ -28,14 +29,14 @@ public class VelocityMainCommand implements SimpleCommand {
             CWCommand.CommandType commandType = CWCommand.CommandType.valueOf(args[0].toUpperCase());
             switch (commandType) {
                 case RELOAD:
-                    if (!sender.hasPermission("commandwhitelist.reload")) {
+                    if (!sender.hasPermission(CWPermission.RELOAD.permission())) {
                         sender.sendMessage(MiniMessage.markdown().parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
                         return;
                     }
                     CommandWhitelistVelocity.reloadConfig(sender);
                     return;
                 case ADD:
-                    if (!sender.hasPermission("commandwhitelist.admin")) {
+                    if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
                         sender.sendMessage(MiniMessage.markdown().parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
                         return;
                     }
@@ -48,7 +49,7 @@ public class VelocityMainCommand implements SimpleCommand {
                         sender.sendMessage(Component.text("/"+label+" add <group> <command>"));
                     return;
                 case REMOVE:
-                    if (!sender.hasPermission("commandwhitelist.admin")) {
+                    if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
                         sender.sendMessage(MiniMessage.markdown().parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
                         return;
                     }
@@ -62,11 +63,11 @@ public class VelocityMainCommand implements SimpleCommand {
                     return;
                 case HELP:
                 default:
-                    sender.sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
+                    sender.sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
             }
 
         } catch (IllegalArgumentException e) {
-            sender.sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
+            sender.sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
         }
         return;
     }
@@ -78,7 +79,7 @@ public class VelocityMainCommand implements SimpleCommand {
         return CompletableFuture.supplyAsync(() -> {
             List<String> suggestions = new ArrayList<>();
             if (args.length == 1) {
-                if (source.hasPermission("commandwhitelist.reload") && "reload".startsWith(args[0]))
+                if (source.hasPermission(CWPermission.RELOAD.permission()) && "reload".startsWith(args[0]))
                     suggestions.add("reload");
             }
             return suggestions;

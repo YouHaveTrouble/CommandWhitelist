@@ -15,15 +15,12 @@ public class CommandUtil {
      * @return Filtered list of suggestions
      */
     public static List<String> filterSuggestions(String buffer, Collection<String> suggestions, Collection<String> blockedSubCommands) {
+        if (buffer.startsWith("/"))
+            buffer = buffer.substring(1);
         for (String s : blockedSubCommands) {
             String slast = getLastArgument(s);
-            String scommand = s.replace(slast, "");
-            String[] cmdSplit = buffer.split(" ");
-            StringBuilder cmdBuilder = new StringBuilder();
-            for (int i = 0; i <= cmdSplit.length - 1; i++)
-                cmdBuilder.append(cmdSplit[i]).append(" ");
-            String cmd = cmdBuilder.toString();
-            if (cmd.startsWith("/" + scommand)) {
+            String scommand = cutLastArgument(s);
+            if (buffer.startsWith(scommand)) {
                 while (suggestions.contains(slast))
                     suggestions.remove(slast);
             }
@@ -37,12 +34,20 @@ public class CommandUtil {
      */
     public static String getLastArgument(String cmd) {
         String[] parts = cmd.split(" ");
-        if (parts.length <= 1) return "";
-        String last = "";
-        for (String part : parts) {
-            last = part;
-        }
-        return last;
+        if (parts.length == 0) return "";
+        return parts[parts.length - 1];
+    }
+
+    /**
+     * @param cmd The command
+     * @return Command without the last argument.
+     */
+    public static String cutLastArgument(String cmd) {
+        String[] cmdSplit = cmd.split(" ");
+        StringBuilder cmdBuilder = new StringBuilder();
+        for (int i = 0; i <= cmdSplit.length - 2; i++)
+            cmdBuilder.append(cmdSplit[i]).append(" ");
+        return cmdBuilder.toString();
     }
 
     /**

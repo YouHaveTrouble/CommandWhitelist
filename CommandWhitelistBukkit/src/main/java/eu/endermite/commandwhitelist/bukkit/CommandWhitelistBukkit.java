@@ -6,6 +6,7 @@ import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessLis
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -114,7 +115,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());
-            if (player.hasPermission("commandwhitelist.group." + s.getKey())) continue;
+            if (player.hasPermission(s.getValue().getPermission())) continue;
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;

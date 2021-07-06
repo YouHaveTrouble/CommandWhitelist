@@ -8,6 +8,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class CWCommand {
 
     public static boolean addToWhitelist(ConfigCache configCache, String command, String group) {
@@ -48,6 +52,59 @@ public class CWCommand {
 
     public enum CommandType {
         ADD, REMOVE, HELP, RELOAD
+    }
+
+    public static List<String> commandSuggestions(ConfigCache config, Collection<String> serverCommands, String[] args, boolean reloadPerm, boolean adminPerm) {
+        List<String> list = new ArrayList<>();
+        switch (args.length) {
+            case 1:
+                if ("reload".startsWith(args[0]) && reloadPerm)
+                    list.add("reload");
+                if ("add".startsWith(args[0]) && adminPerm)
+                    list.add("add");
+                if ("remove".startsWith(args[0]) && adminPerm)
+                    list.add("remove");
+                return list;
+            case 2:
+                if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")) {
+                    if (!adminPerm) return list;
+                    for (String s : config.getGroupList().keySet()) {
+                        if (s.startsWith(args[1]))
+                            list.add(s);
+                    }
+                }
+                return list;
+            case 3:
+                if (args[0].equalsIgnoreCase("remove")) {
+                    if (!adminPerm) return list;
+                    try {
+                        for (String s : config.getGroupList().get(args[1]).getCommands()) {
+                            if (s.startsWith(args[2]))
+                                list.add(s);
+                        }
+                    } catch (NullPointerException ignored) {
+                    }
+                    return list;
+                }
+                if (args[0].equalsIgnoreCase("add")) {
+                    if (!adminPerm) return list;
+                    for (String cmd : serverCommands) {
+                        if (!cmd.startsWith("/")) continue;
+                        if (cmd.contains(":")) {
+                            String[] cmdSplit = cmd.split(":");
+                            if (cmdSplit.length < 2) continue;
+                            cmd = cmd.split(":")[1];
+                        }
+                        cmd = cmd.replace("/", "");
+                        if (config.getGroupList().get(args[1]) == null) continue;
+                        if (config.getGroupList().get(args[1]).getCommands().contains(cmd)) continue;
+                        if (cmd.startsWith(args[2]))
+                            list.add(cmd);
+                    }
+                    return list;
+                }
+        }
+        return list;
     }
 
 }

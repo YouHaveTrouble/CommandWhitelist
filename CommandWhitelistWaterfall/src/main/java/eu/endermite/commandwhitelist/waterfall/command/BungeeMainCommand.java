@@ -1,5 +1,6 @@
 package eu.endermite.commandwhitelist.waterfall.command;
 
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
@@ -23,7 +24,7 @@ public class BungeeMainCommand extends Command implements TabExecutor {
         BungeeAudiences audiences = CommandWhitelistWaterfall.getAudiences();
 
         if (args.length == 0) {
-            audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
+            audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
             return;
         }
 
@@ -31,14 +32,14 @@ public class BungeeMainCommand extends Command implements TabExecutor {
             CWCommand.CommandType commandType = CWCommand.CommandType.valueOf(args[0].toUpperCase());
             switch (commandType) {
                 case RELOAD:
-                    if (!sender.hasPermission("commandwhitelist.reload")) {
+                    if (!sender.hasPermission(CWPermission.RELOAD.permission())) {
                         audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + configCache.no_permission));
                         return;
                     }
                     CommandWhitelistWaterfall.getPlugin().loadConfigAsync(sender);
                     return;
                 case ADD:
-                    if (!sender.hasPermission("commandwhitelist.admin")) {
+                    if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
                         audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.no_permission));
                         return;
                     }
@@ -51,7 +52,7 @@ public class BungeeMainCommand extends Command implements TabExecutor {
                         audiences.sender(sender).sendMessage(Component.text("/"+label+" add <group> <command>"));
                     return;
                 case REMOVE:
-                    if (!sender.hasPermission("commandwhitelist.admin")) {
+                    if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
                         audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.no_permission));
                         return;
                     }
@@ -65,11 +66,11 @@ public class BungeeMainCommand extends Command implements TabExecutor {
                     return;
                 case HELP:
                 default:
-                    audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
+                    audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
             }
 
         } catch (IllegalArgumentException e) {
-            audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission("commandwhitelist.reload"), sender.hasPermission("commandwhitelist.admin")));
+            audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
         }
         return;
     }

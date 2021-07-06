@@ -1,5 +1,6 @@
 package eu.endermite.commandwhitelist.waterfall.listeners;
 
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
@@ -15,16 +16,15 @@ public class BungeeChatEventListener implements Listener {
 
     @EventHandler
     public void onChatEvent(net.md_5.bungee.api.event.ChatEvent event) {
-        if (event.isCancelled())
-            return;
-        if (!(event.getSender() instanceof ProxiedPlayer))
-            return;
-        if (!event.isProxyCommand())
-            return;
+        if (event.isCancelled()) return;
+        if (!(event.getSender() instanceof ProxiedPlayer)) return;
+        if (!event.isProxyCommand()) return;
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-        if (player.hasPermission("commandwhitelist.bypass"))
-            return;
+        if (player.hasPermission(CWPermission.BYPASS.permission())) return;
+
         String command = event.getMessage().toLowerCase();
+        if (command.startsWith("/"))
+            command = command.substring(1);
         ConfigCache configCache = CommandWhitelistWaterfall.getConfigCache();
         BungeeAudiences audiences = CommandWhitelistWaterfall.getAudiences();
 
@@ -38,7 +38,7 @@ public class BungeeChatEventListener implements Listener {
 
         HashSet<String> bannedSubCommands = CommandWhitelistWaterfall.getSuggestions(player);
         for (String bannedSubCommand : bannedSubCommands) {
-            if (command.toLowerCase().substring(1).startsWith(bannedSubCommand)) {
+            if (command.startsWith(bannedSubCommand)) {
                 event.setCancelled(true);
                 audiences.player(player).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.subcommand_denied));
                 return;

@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -31,13 +32,13 @@ public class PacketCommandPreProcessListener {
                 String string = packet.getStrings().read(0);
                 if (!string.startsWith("/")) return;
                 Player player = event.getPlayer();
-                if (player.hasPermission("commandwhitelist.bypass")) return;
+                if (player.hasPermission(CWPermission.BYPASS.permission())) return;
 
+                ConfigCache config = CommandWhitelistBukkit.getConfigCache();
                 String label = CommandUtil.getCommandLabel(string.toLowerCase());
                 HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
                 if (!commands.contains(label)) {
                     event.setCancelled(true);
-                    ConfigCache config = CommandWhitelistBukkit.getConfigCache();
                     CommandWhitelistBukkit.getAudiences().player(player).sendMessage(MiniMessage.markdown().parse(config.prefix + config.command_denied));
                     return;
                 }
@@ -46,7 +47,6 @@ public class PacketCommandPreProcessListener {
                 for (String bannedSubCommand : bannedSubCommands) {
                     if (string.toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                         event.setCancelled(true);
-                        ConfigCache config = CommandWhitelistBukkit.getConfigCache();
                         CommandWhitelistBukkit.getAudiences().player(player).sendMessage(MiniMessage.markdown().parse(config.prefix + config.subcommand_denied));
                         return;
                     }

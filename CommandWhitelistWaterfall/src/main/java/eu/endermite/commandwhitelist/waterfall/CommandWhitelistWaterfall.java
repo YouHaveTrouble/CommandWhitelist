@@ -4,6 +4,7 @@ import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.waterfall.command.BungeeMainCommand;
 import eu.endermite.commandwhitelist.waterfall.listeners.BungeeChatEventListener;
+import eu.endermite.commandwhitelist.waterfall.listeners.BungeeTabcompleteListener;
 import eu.endermite.commandwhitelist.waterfall.listeners.WaterfallDefineCommandsListener;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -36,9 +37,9 @@ public final class CommandWhitelistWaterfall extends Plugin {
             Class.forName("io.github.waterfallmc.waterfall.event.ProxyDefineCommandsEvent");
             this.getProxy().getPluginManager().registerListener(this, new WaterfallDefineCommandsListener());
         } catch (ClassNotFoundException e) {
-            getLogger().severe(ChatColor.DARK_RED+"Bungee tab completion blocker requires Waterfall other Waterfall fork.");
+            getLogger().severe(ChatColor.DARK_RED+"Bungee command completion blocker requires Waterfall other Waterfall fork.");
         }
-
+        this.getProxy().getPluginManager().registerListener(this, new BungeeTabcompleteListener());
         getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand("bcw"));
 
         Metrics metrics = new Metrics(this, 8704);
@@ -96,8 +97,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());
-            if (player.hasPermission("commandwhitelist.group." + s.getKey()))
-                continue;
+            if (player.hasPermission(s.getValue().getPermission())) continue;
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;

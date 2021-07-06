@@ -1,5 +1,6 @@
 package eu.endermite.commandwhitelist.waterfall.listeners;
 
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -14,7 +15,7 @@ public class WaterfallDefineCommandsListener implements Listener {
     public void onProxyDefineCommandsEvent(io.github.waterfallmc.waterfall.event.ProxyDefineCommandsEvent event) {
         if (event.getReceiver() instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
-            if (player.hasPermission("commandwhitelist.bypass"))
+            if (player.hasPermission(CWPermission.BYPASS.permission()))
                 return;
             HashMap<String, Command> commandHashMap = new HashMap<>();
             CommandWhitelistWaterfall.getCommands(player).forEach(cmdName ->

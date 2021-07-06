@@ -10,6 +10,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import eu.endermite.commandwhitelist.common.CWGroup;
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
 import net.kyori.adventure.identity.Identity;
@@ -71,7 +72,7 @@ public class CommandWhitelistVelocity {
     @Subscribe
     public void onUserCommandSendEvent(PlayerAvailableCommandsEvent event) {
         Player player = event.getPlayer();
-        if (player.hasPermission("commandwhitelist.bypass")) return;
+        if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
         event.getRootNode().getChildren().removeIf((commandNode) ->
                  server.getCommandManager().hasCommand(commandNode.getName())
@@ -84,7 +85,7 @@ public class CommandWhitelistVelocity {
         if (!(event.getCommandSource() instanceof Player)) return;
         Player player = (Player) event.getCommandSource();
 
-        if (player.hasPermission("commandwhitelist.bypass")) return;
+        if (player.hasPermission(CWPermission.BYPASS.permission())) return;
 
         HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
         String command = event.getCommand().split(" ")[0];
@@ -122,8 +123,7 @@ public class CommandWhitelistVelocity {
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());
-            if (player.hasPermission("commandwhitelist.group." + s.getKey()))
-                continue;
+            if (player.hasPermission(s.getValue().getPermission())) continue;
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;

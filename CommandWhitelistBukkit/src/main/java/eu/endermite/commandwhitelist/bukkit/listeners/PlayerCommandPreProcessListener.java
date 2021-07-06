@@ -18,13 +18,12 @@ public class PlayerCommandPreProcessListener implements Listener {
         Player player = event.getPlayer();
         if (player.hasPermission("commandwhitelist.bypass")) return;
         String label = CommandUtil.getCommandLabel(event.getMessage().toLowerCase());
-
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
+        ConfigCache config = CommandWhitelistBukkit.getConfigCache();
 
         HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            ConfigCache config = CommandWhitelistBukkit.getConfigCache();
             audiences.player(player).sendMessage(MiniMessage.markdown().parse(config.prefix + config.command_denied));
             return;
         }
@@ -33,7 +32,6 @@ public class PlayerCommandPreProcessListener implements Listener {
         for (String bannedSubCommand : bannedSubCommands) {
             if (event.getMessage().toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                 event.setCancelled(true);
-                ConfigCache config = CommandWhitelistBukkit.getConfigCache();
                 audiences.player(player).sendMessage(MiniMessage.markdown().parse(config.prefix + config.subcommand_denied));
                 return;
             }
