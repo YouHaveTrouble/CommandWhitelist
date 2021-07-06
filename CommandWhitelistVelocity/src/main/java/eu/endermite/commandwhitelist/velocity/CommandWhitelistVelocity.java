@@ -14,7 +14,7 @@ import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
 import net.kyori.adventure.identity.Identity;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bstats.charts.SimplePie;
 import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class CommandWhitelistVelocity {
     public static void reloadConfig(CommandSource source) {
         server.getScheduler().buildTask(plugin, () -> {
             reloadConfig();
-            source.sendMessage(Identity.nil(), Component.text(getConfigCache().config_reloaded));
+            source.sendMessage(Identity.nil(), MiniMessage.markdown().parse(getConfigCache().prefix+getConfigCache().config_reloaded));
         }).schedule();
     }
 
