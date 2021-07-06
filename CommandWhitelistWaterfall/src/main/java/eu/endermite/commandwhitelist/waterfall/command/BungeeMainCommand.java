@@ -11,6 +11,10 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class BungeeMainCommand extends Command implements TabExecutor {
 
     public BungeeMainCommand(String name) {
@@ -77,6 +81,10 @@ public class BungeeMainCommand extends Command implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        return null;
+        List<String> serverCommands = new ArrayList<>();
+        for (Map.Entry<String, Command> command : CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().getCommands()) {
+            serverCommands.add(command.getValue().getName());
+        }
+        return CWCommand.commandSuggestions(CommandWhitelistWaterfall.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()),sender.hasPermission(CWPermission.ADMIN.permission()));
     }
 }

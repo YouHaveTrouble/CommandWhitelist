@@ -77,12 +77,11 @@ public class VelocityMainCommand implements SimpleCommand {
         CommandSource source = invocation.source();
         String[] args = invocation.arguments();
         return CompletableFuture.supplyAsync(() -> {
-            List<String> suggestions = new ArrayList<>();
-            if (args.length == 1) {
-                if (source.hasPermission(CWPermission.RELOAD.permission()) && "reload".startsWith(args[0]))
-                    suggestions.add("reload");
-            }
-            return suggestions;
+            List<String> serverCommands = new ArrayList<>();
+            //TODO find out how to get all registered commands
+
+            // This is probably very broken now
+            return CWCommand.commandSuggestions(CommandWhitelistVelocity.getConfigCache(), serverCommands, args, source.hasPermission(CWPermission.RELOAD.permission()), source.hasPermission(CWPermission.ADMIN.permission()));
         });
     }
 }

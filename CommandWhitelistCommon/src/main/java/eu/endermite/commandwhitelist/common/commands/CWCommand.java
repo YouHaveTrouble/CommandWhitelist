@@ -36,16 +36,16 @@ public class CWCommand {
         Component component = MiniMessage.markdown().parse("<rainbow><bold>CommandWhitelist by YouHaveTrouble")
                 .append(Component.newline());
         component = component.append(Component.text("Hover over the command to see what it does!").color(NamedTextColor.AQUA)).decoration(TextDecoration.BOLD, false).append(Component.newline());
-        component = component.append(Component.text("/"+baseCommand+" help").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Displays this message"))));
+        component = component.append(Component.text("/" + baseCommand + " help").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Displays this message"))));
         if (showReloadCommand) {
             component = component.append(Component.newline());
-            component = component.append(Component.text("/"+baseCommand+" reload").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Reloads plugin configuration"))));
+            component = component.append(Component.text("/" + baseCommand + " reload").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Reloads plugin configuration"))));
         }
         if (showAdminCommands) {
             component = component.append(Component.newline());
-            component = component.append(Component.text("/"+baseCommand+" add <group> <command>").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Add a command to selected permission group"))));
+            component = component.append(Component.text("/" + baseCommand + " add <group> <command>").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Add a command to selected permission group"))));
             component = component.append(Component.newline());
-            component = component.append(Component.text("/"+baseCommand+" remove <group> <command>").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Removes a command from selected permission group"))));
+            component = component.append(Component.text("/" + baseCommand + " remove <group> <command>").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Removes a command from selected permission group"))));
         }
         return component;
     }
@@ -77,27 +77,27 @@ public class CWCommand {
             case 3:
                 if (args[0].equalsIgnoreCase("remove")) {
                     if (!adminPerm) return list;
-                    try {
-                        for (String s : config.getGroupList().get(args[1]).getCommands()) {
-                            if (s.startsWith(args[2]))
-                                list.add(s);
-                        }
-                    } catch (NullPointerException ignored) {
+                    CWGroup group = config.getGroupList().get(args[1]);
+                    if (group == null) return list;
+                    for (String s : group.getCommands()) {
+                        if (s.startsWith(args[2]))
+                            list.add(s);
                     }
                     return list;
                 }
                 if (args[0].equalsIgnoreCase("add")) {
                     if (!adminPerm) return list;
+                    CWGroup group = config.getGroupList().get(args[1]);
+                    if (group == null) return list;
                     for (String cmd : serverCommands) {
-                        if (!cmd.startsWith("/")) continue;
+                        if (cmd.startsWith("/"))
+                            cmd = cmd.substring(1);
                         if (cmd.contains(":")) {
                             String[] cmdSplit = cmd.split(":");
                             if (cmdSplit.length < 2) continue;
-                            cmd = cmd.split(":")[1];
+                            cmd = cmdSplit[1];
                         }
-                        cmd = cmd.replace("/", "");
-                        if (config.getGroupList().get(args[1]) == null) continue;
-                        if (config.getGroupList().get(args[1]).getCommands().contains(cmd)) continue;
+                        if (group.getCommands().contains(cmd)) continue;
                         if (cmd.startsWith(args[2]))
                             list.add(cmd);
                     }
