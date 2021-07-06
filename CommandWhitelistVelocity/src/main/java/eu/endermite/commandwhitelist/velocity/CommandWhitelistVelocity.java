@@ -50,7 +50,6 @@ public class CommandWhitelistVelocity {
             configCache = new ConfigCache(new File(String.valueOf(folder), "config.yml"), false, logger);
         else
             configCache.reloadConfig();
-
     }
 
     public static void reloadConfig(CommandSource source) {
@@ -108,7 +107,7 @@ public class CommandWhitelistVelocity {
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue().getCommands());
-            else if (player.hasPermission("commandwhitelist.group." + s.getKey()))
+            else if (player.hasPermission(s.getValue().getPermission()))
                 commandList.addAll(s.getValue().getCommands());
         }
         return commandList;

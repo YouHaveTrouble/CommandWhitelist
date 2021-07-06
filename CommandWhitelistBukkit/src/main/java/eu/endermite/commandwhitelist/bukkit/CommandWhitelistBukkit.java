@@ -99,7 +99,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue().getCommands());
-            else if (player.hasPermission("commandwhitelist.group." + s.getKey()))
+            else if (player.hasPermission(s.getValue().getPermission()))
                 commandList.addAll(s.getValue().getCommands());
         }
         return commandList;
