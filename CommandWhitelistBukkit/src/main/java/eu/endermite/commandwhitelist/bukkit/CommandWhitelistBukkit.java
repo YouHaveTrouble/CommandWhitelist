@@ -1,10 +1,7 @@
 package eu.endermite.commandwhitelist.bukkit;
 
 import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
-import eu.endermite.commandwhitelist.bukkit.listeners.PacketCommandPreProcessListener;
-import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
-import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
-import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.*;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -47,7 +44,13 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             PacketCommandPreProcessListener.protocol(this);
             getLogger().info(ChatColor.AQUA + "Using ProtocolLib for command filter!");
         }
-        getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
+        try {
+            Class.forName("com.destroystokyo.paper.event.server.AsyncTabCompleteEvent");
+            getServer().getPluginManager().registerEvents(new AsyncTabCompleteBlockerListener(), this);
+        } catch (ClassNotFoundException e) {
+            getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
+        }
+
 
         PluginCommand command = getCommand("commandwhitelist");
         if (command != null) {
