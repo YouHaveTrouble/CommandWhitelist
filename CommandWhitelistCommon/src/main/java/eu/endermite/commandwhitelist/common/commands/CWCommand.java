@@ -16,8 +16,7 @@ public class CWCommand {
 
     public static boolean addToWhitelist(ConfigCache configCache, String command, String group) {
         CWGroup cwGroup = configCache.getGroupList().get(group);
-        if (cwGroup == null)
-            return false;
+        if (cwGroup == null) return false;
         cwGroup.addCommand(command);
         configCache.saveCWGroup(group, cwGroup);
         return true;
@@ -57,6 +56,7 @@ public class CWCommand {
     public static List<String> commandSuggestions(ConfigCache config, Collection<String> serverCommands, String[] args, boolean reloadPerm, boolean adminPerm) {
         List<String> list = new ArrayList<>();
         switch (args.length) {
+            case 0:
             case 1:
                 if ("reload".startsWith(args[0]) && reloadPerm)
                     list.add("reload");

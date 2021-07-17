@@ -105,10 +105,11 @@ public class CommandWhitelistVelocity {
         HashMap<String, CWGroup> groups = configCache.getGroupList();
         HashSet<String> commandList = new HashSet<>();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
+            CWGroup group = s.getValue();
             if (s.getKey().equalsIgnoreCase("default"))
-                commandList.addAll(s.getValue().getCommands());
-            else if (player.hasPermission(s.getValue().getPermission()))
-                commandList.addAll(s.getValue().getCommands());
+                commandList.addAll(group.getCommands());
+            else if (player.hasPermission(group.getPermission()))
+                commandList.addAll(group.getCommands());
         }
         return commandList;
     }

@@ -42,11 +42,11 @@ public class VelocityMainCommand implements SimpleCommand {
                     }
                     if (args.length == 3) {
                         if (CWCommand.addToWhitelist(CommandWhitelistVelocity.getConfigCache(), args[2], args[1]))
-                            sender.sendMessage(MiniMessage.markdown().parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().added_to_whitelist));
+                            sender.sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().added_to_whitelist, args[2], args[1])));
                         else
-                            sender.sendMessage(MiniMessage.markdown().parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist));
+                            sender.sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist, args[1])));
                     } else
-                        sender.sendMessage(Component.text("/"+label+" add <group> <command>"));
+                        sender.sendMessage(Component.text("/" + label + " add <group> <command>"));
                     return;
                 case REMOVE:
                     if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
@@ -55,11 +55,11 @@ public class VelocityMainCommand implements SimpleCommand {
                     }
                     if (args.length == 3) {
                         if (CWCommand.removeFromWhitelist(CommandWhitelistVelocity.getConfigCache(), args[2], args[1]))
-                            sender.sendMessage(MiniMessage.markdown().parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().removed_from_whitelist));
+                            sender.sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().removed_from_whitelist, args[2], args[1])));
                         else
-                            sender.sendMessage(MiniMessage.markdown().parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist));
+                            sender.sendMessage(MiniMessage.markdown().parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist, args[1])));
                     } else
-                        sender.sendMessage(Component.text("/"+label+" remove <group> <command>"));
+                        sender.sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return;
                 case HELP:
                 default:
@@ -78,9 +78,6 @@ public class VelocityMainCommand implements SimpleCommand {
         String[] args = invocation.arguments();
         return CompletableFuture.supplyAsync(() -> {
             List<String> serverCommands = new ArrayList<>();
-            //TODO find out how to get all registered commands
-
-            // This is probably very broken now
             return CWCommand.commandSuggestions(CommandWhitelistVelocity.getConfigCache(), serverCommands, args, source.hasPermission(CWPermission.RELOAD.permission()), source.hasPermission(CWPermission.ADMIN.permission()));
         });
     }

@@ -26,7 +26,6 @@ public class MainCommandExecutor implements TabExecutor {
             audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
             return true;
         }
-
         try {
             CWCommand.CommandType commandType = CWCommand.CommandType.valueOf(args[0].toUpperCase());
             switch (commandType) {
