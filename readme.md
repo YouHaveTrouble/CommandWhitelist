@@ -10,16 +10,22 @@ precisely what commands players can see and use.
 ![bStats Servers](https://img.shields.io/bstats/servers/8704?label=Proxy%20servers%20using%20CW&style=flat-square)
 
 <h3>Plugin Features</h3>
-
 <ul>
-<li>You can lock certain commands behind permission
-<li>Overwrites default "no such command" message with your branding
-<li>Blocks tab completion on spigot and bungeecord*</li>
-<li>Blocks command execution on spigot and bungeecord</li>
-<li>Blocks completion and execution of specific subcommands (spigot only)</li>
+<li>Lock selected commands behind permission
+<li>Overwrite default "no such command" message with your branding
+<li>Block tab completion</li>
+<li>Block command execution</li>
+<li>Block completion and execution of specified subcommands</li>
 </ul>
 
-\*This only works on Waterfall and its forks 
+<b>Compatible versions</b>: 1.13+
+
+<b>Compatible software</b>:
+- Bukkit-based servers (Spigot, Paper, Airplane, Purpur, etc)
+- Waterfall (NOT Bungeecord!)
+- Velocity
+
+[Download latest release](https://github.com/YouHaveTrouble/CommandWhitelist/releases/latest)
 
 Having some issues? Make sure to check out <a href="https://github.com/YouHaveTrouble/CommandWhitelist/wiki">Plugin Wiki</a>.
 

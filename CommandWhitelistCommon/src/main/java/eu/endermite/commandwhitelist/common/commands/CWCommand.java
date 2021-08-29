@@ -3,9 +3,7 @@ package eu.endermite.commandwhitelist.common.commands;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.ArrayList;
@@ -55,6 +53,7 @@ public class CWCommand {
     public static List<String> commandSuggestions(ConfigCache config, Collection<String> serverCommands, String[] args, boolean reloadPerm, boolean adminPerm) {
         List<String> list = new ArrayList<>();
         switch (args.length) {
+            default:
             case 0:
             case 1:
                 if ("reload".startsWith(args[0]) && reloadPerm)
