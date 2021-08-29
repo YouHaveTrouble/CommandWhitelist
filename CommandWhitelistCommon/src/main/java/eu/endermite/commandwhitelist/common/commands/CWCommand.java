@@ -34,17 +34,16 @@ public class CWCommand {
     public static Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {
         Component component = MiniMessage.markdown().parse("<rainbow><bold>CommandWhitelist by YouHaveTrouble")
                 .append(Component.newline());
-        component = component.append(Component.text("Hover over the command to see what it does!").color(NamedTextColor.AQUA)).decoration(TextDecoration.BOLD, false).append(Component.newline());
-        component = component.append(Component.text("/" + baseCommand + " help").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Displays this message"))));
+        component = component.append(Component.text("/" + baseCommand + " help").color(NamedTextColor.AQUA).append(Component.text(" - Displays this message").color(NamedTextColor.BLUE)));
         if (showReloadCommand) {
             component = component.append(Component.newline());
-            component = component.append(Component.text("/" + baseCommand + " reload").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Reloads plugin configuration"))));
+            component = component.append(Component.text("/" + baseCommand + " reload").color(NamedTextColor.AQUA).append(Component.text(" - Reloads plugin configuration").color(NamedTextColor.BLUE)));
         }
         if (showAdminCommands) {
             component = component.append(Component.newline());
-            component = component.append(Component.text("/" + baseCommand + " add <group> <command>").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Add a command to selected permission group"))));
+            component = component.append(Component.text("/" + baseCommand + " add <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Add a command to selected permission group").color(NamedTextColor.BLUE)));
             component = component.append(Component.newline());
-            component = component.append(Component.text("/" + baseCommand + " remove <group> <command>").color(NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text("Removes a command from selected permission group"))));
+            component = component.append(Component.text("/" + baseCommand + " remove <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Removes a command from selected permission group").color(NamedTextColor.BLUE)));
         }
         return component;
     }

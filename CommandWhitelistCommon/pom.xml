@@ -59,8 +59,8 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>pluginwiki-repo</id>
+            <url>https://ci.pluginwiki.us/plugin/repository/everything/</url>
         </repository>
         <repository>
             <id>velocitypowered-repo</id>
@@ -70,9 +70,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.Thatsmusic99</groupId>
-            <artifactId>ConfigurationMaster</artifactId>
-            <version>v2.0.0-ALPHA-3</version>
+            <groupId>com.github.thatsmusic99</groupId>
+            <artifactId>ConfigurationMaster-API</artifactId>
+            <version>v2.0.0-BETA-1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
