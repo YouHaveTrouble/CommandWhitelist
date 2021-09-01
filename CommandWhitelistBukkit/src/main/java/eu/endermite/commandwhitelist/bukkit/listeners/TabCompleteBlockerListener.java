@@ -16,9 +16,9 @@ public class TabCompleteBlockerListener implements Listener {
         if (!(event.getSender() instanceof Player)) return;
         Player player = (Player) event.getSender();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
-        if (event.getCompletions().isEmpty()) return;
         String buffer = event.getBuffer();
         if (!buffer.endsWith(" ") && buffer.split(" ").length == 1) event.setCancelled(true);
+        if (event.getCompletions().isEmpty()) return;
         event.setCompletions(
                 CommandUtil.filterSuggestions(
                         buffer,
