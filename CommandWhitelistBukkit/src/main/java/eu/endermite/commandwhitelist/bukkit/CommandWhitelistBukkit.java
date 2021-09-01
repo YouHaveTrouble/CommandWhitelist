@@ -48,9 +48,9 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             // Use paper's async tab completions if possible
             Class.forName("com.destroystokyo.paper.event.server.AsyncTabCompleteEvent");
             getServer().getPluginManager().registerEvents(new AsyncTabCompleteBlockerListener(), this);
-        } catch (ClassNotFoundException e) {
-            getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
+        } catch (ClassNotFoundException ignored) {
         }
+        getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
 
         PluginCommand command = getCommand("commandwhitelist");
         if (command != null) {

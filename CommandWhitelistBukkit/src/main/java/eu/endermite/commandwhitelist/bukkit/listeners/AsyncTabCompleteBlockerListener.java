@@ -9,21 +9,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+
 public class AsyncTabCompleteBlockerListener implements Listener {
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCommandTabComplete(AsyncTabCompleteEvent event) {
         if (!(event.getSender() instanceof Player)) return;
         Player player = (Player) event.getSender();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
-        event.setCompletions(
-                CommandUtil.filterSuggestions(
-                        event.getBuffer(),
-                        event.getCompletions(),
-                        CommandWhitelistBukkit.getSuggestions(player)
-                )
-        );
-        event.setHandled(true);
+        String buffer = event.getBuffer();
+        if (!buffer.endsWith(" ") && buffer.split(" ").length == 1) event.setCancelled(true);
+        event.setCompletions(CommandUtil.filterSuggestions(buffer, event.getCompletions(), CommandWhitelistBukkit.getSuggestions(player)));
     }
 
 }
