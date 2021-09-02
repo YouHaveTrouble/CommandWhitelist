@@ -133,7 +133,7 @@ public class ConfigCache {
     }
 
     public void saveCWGroup(String id, CWGroup group) {
-        config.set("groups." + id + ".", group.serialize());
+        config.set("groups." + id, group.serialize());
         saveConfig();
     }
 
