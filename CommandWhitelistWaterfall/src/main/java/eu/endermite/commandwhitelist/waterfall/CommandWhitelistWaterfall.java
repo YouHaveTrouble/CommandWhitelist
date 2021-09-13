@@ -32,18 +32,21 @@ public final class CommandWhitelistWaterfall extends Plugin {
         getLogger().info("Running on "+ ChatColor.DARK_AQUA+getProxy().getName());
         loadConfig();
         audiences = BungeeAudiences.create(this);
+        Metrics metrics = new Metrics(this, 8704);
+
         this.getProxy().getPluginManager().registerListener(this, new BungeeChatEventListener());
         try {
             Class.forName("io.github.waterfallmc.waterfall.event.ProxyDefineCommandsEvent");
+            metrics.addCustomChart(new SimplePie("proxy", () -> "Waterfall"));
             this.getProxy().getPluginManager().registerListener(this, new WaterfallDefineCommandsListener());
         } catch (ClassNotFoundException e) {
-            getLogger().severe(ChatColor.DARK_RED+"Bungee command completion blocker requires Waterfall other Waterfall fork.");
+            metrics.addCustomChart(new SimplePie("proxy", () -> "Bungee"));
+            getLogger().severe("Bungee command completion blocker requires Waterfall other Waterfall fork.");
         }
         this.getProxy().getPluginManager().registerListener(this, new BungeeTabcompleteListener());
         getProxy().getPluginManager().registerCommand(this, new BungeeMainCommand("bcw"));
 
-        Metrics metrics = new Metrics(this, 8704);
-        metrics.addCustomChart(new SimplePie("proxy", () -> "Bungee/Waterfall"));
+
     }
 
     public static CommandWhitelistWaterfall getPlugin() {
