@@ -11,7 +11,7 @@
 
     <artifactId>Waterfall</artifactId>
     <packaging>jar</packaging>
-    <name>CommandWhitelist</name>
+    <name>CommandWhitelist-Waterfall</name>
 
     <description>You decide what commands players can use or tab complete on your server!</description>
     <properties>
@@ -43,7 +43,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${project.name}-${project.artifactId}-${project.parent.version}</finalName>
+                            <finalName>${project.name}-${project.parent.version}</finalName>
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
@@ -76,16 +76,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.waterfallmc</groupId>
-            <artifactId>waterfall-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>eu.endermite.commandwhitelist</groupId>
             <artifactId>Common</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.waterfallmc</groupId>
+            <artifactId>waterfall-api</artifactId>
+            <version>1.17-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>

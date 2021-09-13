@@ -11,7 +11,7 @@
 
     <artifactId>Common</artifactId>
     <packaging>jar</packaging>
-    <name>CommandWhitelist</name>
+    <name>CommandWhitelist-Common</name>
 
     <description>You decide what commands players can use or tab complete on your server!</description>
     <properties>
@@ -43,7 +43,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${project.name}-${project.artifactId}-${project.parent.version}</finalName>
+                            <finalName>${project.name}-${project.parent.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
@@ -66,6 +66,10 @@
             <id>velocitypowered-repo</id>
             <url>https://repo.velocitypowered.com/releases/</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -82,9 +86,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
