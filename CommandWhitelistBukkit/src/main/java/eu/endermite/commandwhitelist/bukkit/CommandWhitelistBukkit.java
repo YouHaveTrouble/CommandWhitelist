@@ -39,11 +39,11 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
         if (!getConfigCache().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
             getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
-            getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         } else {
             PacketCommandPreProcessListener.protocol(this);
             getLogger().info(ChatColor.AQUA + "Using ProtocolLib for command filter!");
         }
+        getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         try {
             // Use paper's async tab completions if possible
             Class.forName("com.destroystokyo.paper.event.server.AsyncTabCompleteEvent");
