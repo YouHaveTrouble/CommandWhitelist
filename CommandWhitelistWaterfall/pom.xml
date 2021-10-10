@@ -49,6 +49,10 @@
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>eu.endermite.bstats</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>eu.endermite</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -91,6 +95,7 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bungeecord</artifactId>
             <version>4.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
