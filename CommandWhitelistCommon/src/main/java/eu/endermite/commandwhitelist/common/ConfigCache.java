@@ -86,6 +86,7 @@ public class ConfigCache {
         added_to_whitelist = config.getString("messages.added_to_whitelist");
         removed_from_whitelist = config.getString("messages.removed_from_whitelist");
         group_doesnt_exist = config.getString("messages.group_doesnt_exist");
+        useProtocolLib = config.getBoolean("use_protocollib");
 
         ConfigSection groupSection = config.getConfigSection("groups");
         for (String key : groupSection.getKeys(false)) {
