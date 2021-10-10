@@ -16,10 +16,14 @@ public class AsyncTabCompleteBlockerListener implements Listener {
     public void onCommandTabComplete(AsyncTabCompleteEvent event) {
         if (!(event.getSender() instanceof Player)) return;
         Player player = (Player) event.getSender();
+        player.sendMessage("async");
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
+        player.sendMessage("1");
         String buffer = event.getBuffer();
         if (!buffer.endsWith(" ") && buffer.split(" ").length == 1) event.setCancelled(true);
+        player.sendMessage("2");
         if (event.getCompletions().isEmpty()) return;
+        player.sendMessage("3");
         event.setCompletions(CommandUtil.filterSuggestions(buffer, event.getCompletions(), CommandWhitelistBukkit.getSuggestions(player)));
     }
 

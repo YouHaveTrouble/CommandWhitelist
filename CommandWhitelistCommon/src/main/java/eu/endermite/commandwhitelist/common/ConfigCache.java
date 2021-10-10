@@ -16,7 +16,7 @@ public class ConfigCache {
     private final HashMap<String, CWGroup> groupList = new LinkedHashMap<>();
     public String prefix, command_denied, no_permission, no_such_subcommand, config_reloaded, added_to_whitelist,
             removed_from_whitelist, group_doesnt_exist, subcommand_denied;
-    public boolean useProtocolLib;
+    public boolean useProtocolLib = false;
 
     public ConfigCache(File configFile, boolean canDoProtocolLib, Object logger) {
         this.configFile = configFile;
