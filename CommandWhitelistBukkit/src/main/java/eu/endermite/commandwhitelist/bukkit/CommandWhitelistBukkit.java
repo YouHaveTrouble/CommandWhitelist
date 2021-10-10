@@ -2,6 +2,8 @@ package eu.endermite.commandwhitelist.bukkit;
 
 import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
 import eu.endermite.commandwhitelist.bukkit.listeners.*;
+import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandPreProcessListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandSendListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -39,11 +41,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
         if (!getConfigCache().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
             getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
+            getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         } else {
             PacketCommandPreProcessListener.protocol(this);
+            PacketCommandSendListener.protocol(this);
             getLogger().info(ChatColor.AQUA + "Using ProtocolLib for command filter!");
         }
-        getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         try {
             // Use paper's async tab completions if possible
             Class.forName("com.destroystokyo.paper.event.server.AsyncTabCompleteEvent");

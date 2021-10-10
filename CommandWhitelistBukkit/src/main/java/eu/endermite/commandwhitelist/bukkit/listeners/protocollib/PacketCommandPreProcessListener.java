@@ -1,4 +1,4 @@
-package eu.endermite.commandwhitelist.bukkit.listeners;
+package eu.endermite.commandwhitelist.bukkit.listeners.protocollib;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;

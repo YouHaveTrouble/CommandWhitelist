@@ -113,5 +113,11 @@
             <version>2.2.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>brigadier</artifactId>
+            <version>1.0.17</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
