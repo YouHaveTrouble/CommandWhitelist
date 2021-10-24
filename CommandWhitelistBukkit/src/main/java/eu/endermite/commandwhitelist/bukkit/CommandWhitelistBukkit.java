@@ -6,8 +6,8 @@ import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandP
 import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandSendListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -79,7 +79,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.updateCommands();
             }
-            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(configCache.prefix + configCache.config_reloaded));
+            audiences.sender(sender).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.config_reloaded));
         });
     }
 

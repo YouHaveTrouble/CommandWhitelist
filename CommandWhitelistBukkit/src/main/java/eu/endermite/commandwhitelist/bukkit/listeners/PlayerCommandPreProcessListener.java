@@ -3,8 +3,8 @@ package eu.endermite.commandwhitelist.bukkit.listeners;
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,7 +24,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            audiences.player(player).sendMessage(MiniMessage.markdown().parse(config.prefix + config.command_denied));
+            audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.command_denied));
             return;
         }
 
@@ -32,7 +32,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         for (String bannedSubCommand : bannedSubCommands) {
             if (event.getMessage().toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                 event.setCancelled(true);
-                audiences.player(player).sendMessage(MiniMessage.markdown().parse(config.prefix + config.subcommand_denied));
+                audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.subcommand_denied));
                 return;
             }
         }

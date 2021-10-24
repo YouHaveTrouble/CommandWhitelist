@@ -2,6 +2,7 @@ package eu.endermite.commandwhitelist.waterfall;
 
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.command.BungeeMainCommand;
 import eu.endermite.commandwhitelist.waterfall.listeners.BungeeChatEventListener;
 import eu.endermite.commandwhitelist.waterfall.listeners.BungeeTabcompleteListener;
@@ -70,7 +71,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
     public void loadConfigAsync(CommandSender sender) {
         getProxy().getScheduler().runAsync(this, () -> {
             loadConfig();
-            audiences.sender(sender).sendMessage(MiniMessage.markdown().parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().config_reloaded));
+            audiences.sender(sender).sendMessage(CWCommand.miniMessage.parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().config_reloaded));
         });
     }
 
