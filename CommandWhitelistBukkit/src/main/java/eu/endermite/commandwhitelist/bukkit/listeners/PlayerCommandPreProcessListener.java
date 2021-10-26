@@ -24,12 +24,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            String customCommandDeniedMessage = CommandWhitelistBukkit.getCommandDeniedMessage(label);
-            if (!customCommandDeniedMessage.equals("")) {
-                audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + customCommandDeniedMessage));
-            } else {
-                audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.command_denied));
-            }
+            audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
             return;
         }
 

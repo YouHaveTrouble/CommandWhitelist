@@ -41,15 +41,9 @@ public class PacketCommandPreProcessListener {
                 BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
                 if (!commands.contains(label)) {
                     event.setCancelled(true);
-                    String customCommandDeniedMessage = CommandWhitelistBukkit.getCommandDeniedMessage(label);
-                    if (!customCommandDeniedMessage.equals("")) {
-                        audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + customCommandDeniedMessage));
-                    } else {
-                        audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.command_denied));
-                    }
+                    audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
                     return;
                 }
-
                 HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
                 for (String bannedSubCommand : bannedSubCommands) {
                     if (string.toLowerCase().substring(1).startsWith(bannedSubCommand)) {

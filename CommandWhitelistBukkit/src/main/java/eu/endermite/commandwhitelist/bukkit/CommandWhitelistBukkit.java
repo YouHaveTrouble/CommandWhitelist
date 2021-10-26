@@ -130,15 +130,16 @@ public class CommandWhitelistBukkit extends JavaPlugin {
     }
 
     /**
-     * @param command command
-     * @return custom command denied message
+     * @return Command denied message. Will use custom if command exists in any group.
      */
     public static String getCommandDeniedMessage(String command) {
-        String commandDeniedMessage = "";
+        String commandDeniedMessage = configCache.command_denied;
         HashMap<String, CWGroup> groups = configCache.getGroupList();
-        for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
-            if (s.getValue().getCommands().contains(command)) {
-                commandDeniedMessage = s.getValue().getCustomCommandDeniedMessage();
+        for (CWGroup group : groups.values()) {
+            if (group.getCommands().contains(command)) {
+                if (group.getCommandDeniedMessage() == null) continue;
+                commandDeniedMessage = group.getCommandDeniedMessage();
+                break; // get first message we find
             }
         }
         return commandDeniedMessage;
