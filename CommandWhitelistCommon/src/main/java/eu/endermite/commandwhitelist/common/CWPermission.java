@@ -18,6 +18,7 @@ public enum CWPermission {
 
     /**
      * Allows to check specific group permission
+     *
      * @param configCache
      * @param groupId
      * @return

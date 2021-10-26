@@ -1,7 +1,10 @@
 package eu.endermite.commandwhitelist.bukkit;
 
 import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
-import eu.endermite.commandwhitelist.bukkit.listeners.*;
+import eu.endermite.commandwhitelist.bukkit.listeners.AsyncTabCompleteBlockerListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandPreProcessListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandSendListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
@@ -20,7 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import java.util.Map;
 
 public class CommandWhitelistBukkit extends JavaPlugin {

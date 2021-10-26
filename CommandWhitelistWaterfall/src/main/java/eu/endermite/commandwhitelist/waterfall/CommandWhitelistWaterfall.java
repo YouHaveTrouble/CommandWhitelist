@@ -8,7 +8,6 @@ import eu.endermite.commandwhitelist.waterfall.listeners.BungeeChatEventListener
 import eu.endermite.commandwhitelist.waterfall.listeners.BungeeTabcompleteListener;
 import eu.endermite.commandwhitelist.waterfall.listeners.WaterfallDefineCommandsListener;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -30,7 +29,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
     @Override
     public void onEnable() {
         plugin = this;
-        getLogger().info("Running on "+ ChatColor.DARK_AQUA+getProxy().getName());
+        getLogger().info("Running on " + ChatColor.DARK_AQUA + getProxy().getName());
         loadConfig();
         audiences = BungeeAudiences.create(this);
         Metrics metrics = new Metrics(this, 8704);
@@ -53,6 +52,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
     public static CommandWhitelistWaterfall getPlugin() {
         return plugin;
     }
+
     public static ConfigCache getConfigCache() {
         return configCache;
     }

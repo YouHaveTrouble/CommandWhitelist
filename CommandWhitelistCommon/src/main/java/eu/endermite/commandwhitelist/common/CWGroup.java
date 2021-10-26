@@ -10,7 +10,7 @@ public class CWGroup {
 
     public CWGroup(String id, Collection<String> commands, Collection<String> subCommands, String custom_command_denied_message) {
         this.id = id;
-        this.permission = "commandwhitelist.group."+id;
+        this.permission = "commandwhitelist.group." + id;
         this.commands.addAll(commands);
         this.custom_command_denied_message = custom_command_denied_message;
         this.subCommands.addAll(subCommands);
@@ -24,9 +24,13 @@ public class CWGroup {
         return permission;
     }
 
-    public HashSet<String> getCommands() { return commands; }
+    public HashSet<String> getCommands() {
+        return commands;
+    }
 
-    public String getCustomCommandDeniedMessage() { return custom_command_denied_message; }
+    public String getCustomCommandDeniedMessage() {
+        return custom_command_denied_message;
+    }
 
     public void addCommand(String command) {
         commands.add(command);
