@@ -32,7 +32,7 @@ public class BungeeChatEventListener implements Listener {
         HashSet<String> commands = CommandWhitelistWaterfall.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            CommandWhitelistWaterfall.getAudiences().player(player).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.command_denied));
+            CommandWhitelistWaterfall.getAudiences().player(player).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + CommandWhitelistWaterfall.getCommandDeniedMessage(label)));
             return;
         }
 

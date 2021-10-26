@@ -106,4 +106,20 @@ public final class CommandWhitelistWaterfall extends Plugin {
         }
         return suggestionList;
     }
+
+    /**
+     * @return Command denied message. Will use custom if command exists in any group.
+     */
+    public static String getCommandDeniedMessage(String command) {
+        String commandDeniedMessage = configCache.command_denied;
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        for (CWGroup group : groups.values()) {
+            if (group.getCommands().contains(command)) {
+                if (group.getCommandDeniedMessage() == null) continue;
+                commandDeniedMessage = group.getCommandDeniedMessage();
+                break; // get first message we find
+            }
+        }
+        return commandDeniedMessage;
+    }
 }
