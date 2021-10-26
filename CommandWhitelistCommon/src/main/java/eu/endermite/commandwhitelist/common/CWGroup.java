@@ -4,14 +4,15 @@ import java.util.*;
 
 public class CWGroup {
 
-    private final String id, permission;
+    private final String id, permission, custom_command_denied_message;
     private final HashSet<String> commands = new HashSet<>();
     private final HashSet<String> subCommands = new HashSet<>();
 
-    public CWGroup(String id, Collection<String> commands, Collection<String> subCommands) {
+    public CWGroup(String id, Collection<String> commands, Collection<String> subCommands, String custom_command_denied_message) {
         this.id = id;
         this.permission = "commandwhitelist.group."+id;
         this.commands.addAll(commands);
+        this.custom_command_denied_message = custom_command_denied_message;
         this.subCommands.addAll(subCommands);
     }
 
@@ -23,9 +24,9 @@ public class CWGroup {
         return permission;
     }
 
-    public HashSet<String> getCommands() {
-        return commands;
-    }
+    public HashSet<String> getCommands() { return commands; }
+
+    public String getCustomCommandDeniedMessage() { return custom_command_denied_message; }
 
     public void addCommand(String command) {
         commands.add(command);

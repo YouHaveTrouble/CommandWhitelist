@@ -12,6 +12,7 @@ import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -37,9 +38,15 @@ public class PacketCommandPreProcessListener {
                 ConfigCache config = CommandWhitelistBukkit.getConfigCache();
                 String label = CommandUtil.getCommandLabel(string.toLowerCase());
                 HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
+                BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
                 if (!commands.contains(label)) {
                     event.setCancelled(true);
-                    CommandWhitelistBukkit.getAudiences().player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.command_denied));
+                    String customCommandDeniedMessage = CommandWhitelistBukkit.getCommandDeniedMessage(label);
+                    if (!customCommandDeniedMessage.equals("")) {
+                        audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + customCommandDeniedMessage));
+                    } else {
+                        audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.command_denied));
+                    }
                     return;
                 }
 

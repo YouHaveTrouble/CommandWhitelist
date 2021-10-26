@@ -51,9 +51,11 @@ public class ConfigCache {
             exampleCommands.add("example");
             List<String> exampleSubCommands = new ArrayList<>();
             exampleSubCommands.add("example of");
+            String exampleCustomCommandDeniedMessage = "You don't have commandwhitelist.group.example permission.";
 
             config.addExample("groups.example.commands", exampleCommands, "This is the WHITELIST of commands that players will be able to see/use in the group \"example\"");
             config.addExample("groups.example.subcommands", exampleSubCommands, "This is the BLACKLIST of subcommands that players will NOT be able to see/use in the group \"example\"");
+            config.addExample("groups.example.custom_command_denied_message", exampleCustomCommandDeniedMessage, "This is a custom message that players will see if they do not have commandwhitelist.group.<group_name> permission.\ncommandwhitelist.group.example in this case\nIf you don't want to use a custom message, set custom_command_denid_message: \"\"");
             config.addComment("groups.example", "All groups except from default require commandwhitelist.group.<group_name> permission\ncommandwhitelist.group.example in this case\n If you wish to leave the list empty, put \"commands: []\" or \"subcommands: []\"");
         }
 
@@ -75,7 +77,9 @@ public class ConfigCache {
         List<String> defaultSubcommands = new ArrayList<>();
         defaultSubcommands.add("help about");
 
-        config.addDefault("groups.default", new CWGroup("default", defaultCommands, defaultSubcommands).serialize());
+        String defaultCustomCommandDeniedMessage = "";
+
+        config.addDefault("groups.default", new CWGroup("default", defaultCommands, defaultSubcommands, defaultCustomCommandDeniedMessage).serialize());
 
         prefix = config.getString("messages.prefix");
         command_denied = config.getString("messages.command_denied");
@@ -130,7 +134,8 @@ public class ConfigCache {
         }
 
         List<String> subCommands = section.getStringList(id + ".subcommands");
-        return new CWGroup(id, commands, subCommands);
+        String customCommandDeniedMessage = section.getString(id + ".custom_command_denied_message");
+        return new CWGroup(id, commands, subCommands, customCommandDeniedMessage);
     }
 
     public void saveCWGroup(String id, CWGroup group) {

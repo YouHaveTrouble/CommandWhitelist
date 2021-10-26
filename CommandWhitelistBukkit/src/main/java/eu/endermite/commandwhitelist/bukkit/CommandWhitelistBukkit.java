@@ -126,4 +126,19 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         }
         return suggestionList;
     }
+
+    /**
+     * @param command command
+     * @return custom command denied message
+     */
+    public static String getCommandDeniedMessage(String command) {
+        String commandDeniedMessage = "";
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
+            if (s.getValue().getCommands().contains(command)) {
+                commandDeniedMessage = s.getValue().getCustomCommandDeniedMessage();
+            }
+        }
+        return commandDeniedMessage;
+    }
 }
