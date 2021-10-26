@@ -1,10 +1,12 @@
 package eu.endermite.commandwhitelist.common;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 public class CWGroup {
 
-    private final String id, permission, custom_command_denied_message;
+    private final String id, permission, commandDeniedMessage;
     private final HashSet<String> commands = new HashSet<>();
     private final HashSet<String> subCommands = new HashSet<>();
 
@@ -12,7 +14,7 @@ public class CWGroup {
         this.id = id;
         this.permission = "commandwhitelist.group." + id;
         this.commands.addAll(commands);
-        this.custom_command_denied_message = custom_command_denied_message;
+        this.commandDeniedMessage = custom_command_denied_message;
         this.subCommands.addAll(subCommands);
     }
 
@@ -28,8 +30,8 @@ public class CWGroup {
         return commands;
     }
 
-    public String getCustomCommandDeniedMessage() {
-        return custom_command_denied_message;
+    public @Nullable String getCommandDeniedMessage() {
+        return commandDeniedMessage;
     }
 
     public void addCommand(String command) {
