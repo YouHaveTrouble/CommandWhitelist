@@ -6,7 +6,6 @@ import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -33,7 +32,7 @@ public class BungeeChatEventListener implements Listener {
         HashSet<String> commands = CommandWhitelistWaterfall.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            CommandWhitelistWaterfall.getAudiences().player(player).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.command_denied));
+            CommandWhitelistWaterfall.getAudiences().player(player).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + CommandWhitelistWaterfall.getCommandDeniedMessage(label)));
             return;
         }
 

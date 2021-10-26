@@ -52,7 +52,7 @@ public class BungeeMainCommand extends Command implements TabExecutor {
                         else
                             audiences.sender(sender).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.group_doesnt_exist));
                     } else
-                        audiences.sender(sender).sendMessage(Component.text("/"+label+" add <group> <command>"));
+                        audiences.sender(sender).sendMessage(Component.text("/" + label + " add <group> <command>"));
                     return;
                 case REMOVE:
                     if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
@@ -65,7 +65,7 @@ public class BungeeMainCommand extends Command implements TabExecutor {
                         else
                             audiences.sender(sender).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.group_doesnt_exist));
                     } else
-                        audiences.sender(sender).sendMessage(Component.text("/"+label+" remove <group> <command>"));
+                        audiences.sender(sender).sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return;
                 case HELP:
                 default:
@@ -84,6 +84,6 @@ public class BungeeMainCommand extends Command implements TabExecutor {
         for (Map.Entry<String, Command> command : CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().getCommands()) {
             serverCommands.add(command.getValue().getName());
         }
-        return CWCommand.commandSuggestions(CommandWhitelistWaterfall.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()),sender.hasPermission(CWPermission.ADMIN.permission()));
+        return CWCommand.commandSuggestions(CommandWhitelistWaterfall.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()));
     }
 }

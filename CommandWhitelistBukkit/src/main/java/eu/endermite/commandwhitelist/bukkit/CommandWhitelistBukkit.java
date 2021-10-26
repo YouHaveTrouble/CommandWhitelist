@@ -1,7 +1,10 @@
 package eu.endermite.commandwhitelist.bukkit;
 
 import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
-import eu.endermite.commandwhitelist.bukkit.listeners.*;
+import eu.endermite.commandwhitelist.bukkit.listeners.AsyncTabCompleteBlockerListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
+import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandPreProcessListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandSendListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
@@ -20,7 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import java.util.Map;
 
 public class CommandWhitelistBukkit extends JavaPlugin {
@@ -125,5 +127,21 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;
+    }
+
+    /**
+     * @return Command denied message. Will use custom if command exists in any group.
+     */
+    public static String getCommandDeniedMessage(String command) {
+        String commandDeniedMessage = configCache.command_denied;
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        for (CWGroup group : groups.values()) {
+            if (group.getCommands().contains(command)) {
+                if (group.getCommandDeniedMessage() == null || group.getCommandDeniedMessage().isEmpty()) continue;
+                commandDeniedMessage = group.getCommandDeniedMessage();
+                break; // get first message we find
+            }
+        }
+        return commandDeniedMessage;
     }
 }

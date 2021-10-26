@@ -55,7 +55,7 @@ public class CommandWhitelistVelocity {
     public static void reloadConfig(CommandSource source) {
         server.getScheduler().buildTask(plugin, () -> {
             reloadConfig();
-            source.sendMessage(Identity.nil(), CWCommand.miniMessage.parse(getConfigCache().prefix+getConfigCache().config_reloaded));
+            source.sendMessage(Identity.nil(), CWCommand.miniMessage.parse(getConfigCache().prefix + getConfigCache().config_reloaded));
         }).schedule();
     }
 
@@ -65,7 +65,7 @@ public class CommandWhitelistVelocity {
         CommandMeta commandMeta = server.getCommandManager().metaBuilder("vcw").build();
         server.getCommandManager().register(commandMeta, new VelocityMainCommand());
         Metrics metrics = metricsFactory.make(this, 8704);
-        metrics.addCustomChart(new SimplePie("proxy", ()-> "Velocity"));
+        metrics.addCustomChart(new SimplePie("proxy", () -> "Velocity"));
     }
 
     @Subscribe
@@ -74,7 +74,7 @@ public class CommandWhitelistVelocity {
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
         event.getRootNode().getChildren().removeIf((commandNode) ->
-                 server.getCommandManager().hasCommand(commandNode.getName())
+                server.getCommandManager().hasCommand(commandNode.getName())
                         && !allowedCommands.contains(commandNode.getName())
         );
     }
