@@ -115,7 +115,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
         HashMap<String, CWGroup> groups = configCache.getGroupList();
         for (CWGroup group : groups.values()) {
             if (group.getCommands().contains(command)) {
-                if (group.getCommandDeniedMessage() == null) continue;
+                if (group.getCommandDeniedMessage() == null || group.getCommandDeniedMessage().equals("")) continue;
                 commandDeniedMessage = group.getCommandDeniedMessage();
                 break; // get first message we find
             }
