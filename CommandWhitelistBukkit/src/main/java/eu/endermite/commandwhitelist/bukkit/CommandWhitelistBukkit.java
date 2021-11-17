@@ -1,6 +1,7 @@
 package eu.endermite.commandwhitelist.bukkit;
 
 import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
+import eu.endermite.commandwhitelist.bukkit.listeners.AsyncCommandSendListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.AsyncTabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
@@ -43,7 +44,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
         if (!getConfigCache().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
             getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
-            getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
+            try {
+                Class.forName("com.destroystokyo.paper.event.brigadier.AsyncPlayerSendCommandsEvent");
+                getServer().getPluginManager().registerEvents(new AsyncCommandSendListener(), this);
+            } catch (ClassNotFoundException e){
+                getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
+            }
         } else {
             PacketCommandPreProcessListener.protocol(this);
             PacketCommandSendListener.protocol(this);
