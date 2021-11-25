@@ -132,8 +132,10 @@ public class ConfigCache {
             if (commands.contains(cmd)) continue;
             commands.add(cmd);
         }
-
-        List<String> subCommands = section.getStringList(id + ".subcommands");
+        List<String> subCommands = new ArrayList<>();
+        for (String subCmd : section.getStringList(id + ".subcommands")) {
+            subCommands.add(String.valueOf(subCmd));
+        }
         String customCommandDeniedMessage = section.getString(id + ".custom_command_denied_message");
         return new CWGroup(id, commands, subCommands, customCommandDeniedMessage);
     }
@@ -148,6 +150,10 @@ public class ConfigCache {
     }
 
     private void warn(String log) {
+        if (logger == null) {
+            System.out.println("WARNING: "+log);
+            return;
+        }
         if (logger instanceof org.slf4j.Logger) {
             ((org.slf4j.Logger) logger).warn(log);
             return;

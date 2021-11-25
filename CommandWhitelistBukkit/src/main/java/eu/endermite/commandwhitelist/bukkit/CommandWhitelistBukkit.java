@@ -69,8 +69,13 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
     private void reloadPluginConfig() {
         File configFile = new File("plugins/CommandWhitelist/config.yml");
-        if (configCache == null)
-            configCache = new ConfigCache(configFile, true, getSLF4JLogger());
+        if (configCache == null) {
+            try {
+                configCache = new ConfigCache(configFile, true, getSLF4JLogger());
+            } catch (NoSuchMethodError e) {
+                configCache = new ConfigCache(configFile, true, null);
+            }
+        }
         else
             configCache.reloadConfig();
     }
@@ -78,9 +83,11 @@ public class CommandWhitelistBukkit extends JavaPlugin {
     public void reloadPluginConfig(CommandSender sender) {
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
             reloadPluginConfig();
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.updateCommands();
-            }
+            try {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.updateCommands();
+                }
+            } catch (Exception ignored) {}
             audiences.sender(sender).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.config_reloaded));
         });
     }
