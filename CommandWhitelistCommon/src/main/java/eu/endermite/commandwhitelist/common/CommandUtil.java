@@ -17,15 +17,17 @@ public class CommandUtil {
     public static List<String> filterSuggestions(String buffer, Collection<String> suggestions, Collection<String> blockedSubCommands) {
         if (buffer.startsWith("/"))
             buffer = buffer.substring(1);
+        List<String> suggestionsList = new ArrayList<>(suggestions);
+        if (suggestions.isEmpty() || blockedSubCommands.isEmpty()) return suggestionsList;
         for (String s : blockedSubCommands) {
-            String slast = getLastArgument(s);
             String scommand = cutLastArgument(s);
             if (buffer.startsWith(scommand)) {
-                while (suggestions.contains(slast))
-                    suggestions.remove(slast);
+                String slast = getLastArgument(s);
+                while (suggestionsList.contains(slast))
+                    suggestionsList.remove(slast);
             }
         }
-        return new ArrayList<>(suggestions);
+        return suggestionsList;
     }
 
     /**
