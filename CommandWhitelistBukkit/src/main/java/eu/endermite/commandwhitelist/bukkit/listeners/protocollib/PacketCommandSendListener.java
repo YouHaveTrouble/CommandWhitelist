@@ -27,7 +27,8 @@ public class PacketCommandSendListener {
             @Override
             public void onPacketSending(PacketEvent event) {
                 Player player = event.getPlayer();
-                if (!event.isPlayerTemporary() && player.hasPermission(CWPermission.BYPASS.permission())) return;
+                if (event.isPlayerTemporary()) return;
+                if (player.hasPermission(CWPermission.BYPASS.permission())) return;
                 HashSet<String> commandList = CommandWhitelistBukkit.getCommands(player);
                 PacketContainer packet = event.getPacket();
                 RootCommandNode<?> node = (RootCommandNode<?>) packet.getModifier().getValues().get(0);
