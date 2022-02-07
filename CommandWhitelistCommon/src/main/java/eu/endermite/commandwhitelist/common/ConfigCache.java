@@ -17,6 +17,7 @@ public class ConfigCache {
     public String prefix, command_denied, no_permission, no_such_subcommand, config_reloaded, added_to_whitelist,
             removed_from_whitelist, group_doesnt_exist, subcommand_denied;
     public boolean useProtocolLib = false;
+    public boolean debug = false;
 
     public ConfigCache(File configFile, boolean canDoProtocolLib, Object logger) {
         this.configFile = configFile;
@@ -91,6 +92,7 @@ public class ConfigCache {
         removed_from_whitelist = config.getString("messages.removed_from_whitelist");
         group_doesnt_exist = config.getString("messages.group_doesnt_exist");
         useProtocolLib = config.getBoolean("use_protocollib");
+        debug = config.getBoolean("debug", false);
 
         ConfigSection groupSection = config.getConfigSection("groups");
         for (String key : groupSection.getKeys(false)) {
@@ -160,6 +162,22 @@ public class ConfigCache {
         }
         if (logger instanceof java.util.logging.Logger) {
             ((java.util.logging.Logger) logger).warning(log);
+            return;
+        }
+    }
+
+    public void debug(String log) {
+        if (!debug) return;
+        if (logger == null) {
+            System.out.println("DEBUG: "+log);
+            return;
+        }
+        if (logger instanceof org.slf4j.Logger) {
+            ((org.slf4j.Logger) logger).info(log);
+            return;
+        }
+        if (logger instanceof java.util.logging.Logger) {
+            ((java.util.logging.Logger) logger).info(log);
             return;
         }
     }
