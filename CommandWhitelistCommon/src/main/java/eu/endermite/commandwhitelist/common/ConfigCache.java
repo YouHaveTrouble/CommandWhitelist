@@ -42,7 +42,7 @@ public class ConfigCache {
         config.addDefault("messages.removed_from_whitelist", "<yellow>Removed command <gold>%s <yellow>from permission <gold>%s");
         config.addDefault("messages.group_doesnt_exist", "<red>Group doesn't exist or error occured");
 
-        config.addComment("messages", "Messages use MiniMessage formatting (https://docs.adventure.kyori.net/minimessage.html#format)");
+        config.addComment("messages", "Messages use MiniMessage formatting (https://docs.adventure.kyori.net/minimessage/format)");
 
         if (canDoProtocolLib)
             config.addDefault("use_protocollib", false, "Do not enable if you don't have issues with aliased commands.\nThis requires server restart to take effect.");
