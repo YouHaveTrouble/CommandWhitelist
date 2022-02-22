@@ -77,7 +77,7 @@ public class VelocityMainCommand implements SimpleCommand {
         String[] args = invocation.arguments();
         return CompletableFuture.supplyAsync(() -> {
             List<String> serverCommands = new ArrayList<>();
-            return CWCommand.commandSuggestions(CommandWhitelistVelocity.getConfigCache(), serverCommands, args, source.hasPermission(CWPermission.RELOAD.permission()), source.hasPermission(CWPermission.ADMIN.permission()));
+            return CWCommand.commandSuggestions(CommandWhitelistVelocity.getConfigCache(), serverCommands, args, source.hasPermission(CWPermission.RELOAD.permission()), source.hasPermission(CWPermission.ADMIN.permission()), CWCommand.ImplementationType.VELOCITY);
         });
     }
 }

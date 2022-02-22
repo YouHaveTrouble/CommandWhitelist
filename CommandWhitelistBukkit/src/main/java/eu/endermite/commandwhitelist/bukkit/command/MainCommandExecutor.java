@@ -73,6 +73,6 @@ public class MainCommandExecutor implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> serverCommands = new ArrayList<>(Bukkit.getCommandMap().getKnownCommands().keySet());
-        return CWCommand.commandSuggestions(CommandWhitelistBukkit.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()));
+        return CWCommand.commandSuggestions(CommandWhitelistBukkit.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()), CWCommand.ImplementationType.BUKKIT);
     }
 }

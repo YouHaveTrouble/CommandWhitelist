@@ -61,10 +61,34 @@ public class CWCommand {
         ADD, REMOVE, HELP, RELOAD
     }
 
-    public static List<String> commandSuggestions(ConfigCache config, Collection<String> serverCommands, String[] args, boolean reloadPerm, boolean adminPerm) {
+    public enum ImplementationType {
+        BUKKIT, WATERFALL, VELOCITY
+    }
+
+    public static List<String> commandSuggestions(
+            ConfigCache config,
+            Collection<String> serverCommands,
+            String[] args, boolean reloadPerm,
+            boolean adminPerm,
+            ImplementationType implementationType
+    ) {
         List<String> list = new ArrayList<>();
         switch (args.length) {
+            case 0:
+                // thanks velocity for handling completions entirely different from everything else
+                if (implementationType.equals(ImplementationType.VELOCITY)) {
+                    list.add("help");
+                    if (reloadPerm)
+                        list.add("reload");
+                    if (adminPerm) {
+                        list.add("add");
+                        list.add("remove");
+                    }
+                }
+                return list;
             case 1:
+                if ("help".startsWith(args[0]))
+                    list.add("help");
                 if ("reload".startsWith(args[0]) && reloadPerm)
                     list.add("reload");
                 if ("add".startsWith(args[0]) && adminPerm)

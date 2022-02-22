@@ -84,6 +84,6 @@ public class BungeeMainCommand extends Command implements TabExecutor {
         for (Map.Entry<String, Command> command : CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().getCommands()) {
             serverCommands.add(command.getValue().getName());
         }
-        return CWCommand.commandSuggestions(CommandWhitelistWaterfall.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()));
+        return CWCommand.commandSuggestions(CommandWhitelistWaterfall.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()), CWCommand.ImplementationType.WATERFALL);
     }
 }
