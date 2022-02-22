@@ -136,7 +136,11 @@ public class ConfigCache {
         }
         List<String> subCommands = new ArrayList<>();
         for (String subCmd : section.getStringList(id + ".subcommands")) {
-            subCommands.add(String.valueOf(subCmd));
+            if (!subCmd.contains(" ")) {
+                warn("CommandWhitelist - \"" + subCmd + "\" is not a subcommand. Skipping it.");
+                continue;
+            }
+            subCommands.add(subCmd);
         }
         String customCommandDeniedMessage = section.getString(id + ".custom_command_denied_message");
         return new CWGroup(id, commands, subCommands, customCommandDeniedMessage);
