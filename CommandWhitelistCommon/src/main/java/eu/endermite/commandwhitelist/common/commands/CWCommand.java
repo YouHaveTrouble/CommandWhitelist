@@ -64,7 +64,6 @@ public class CWCommand {
     public static List<String> commandSuggestions(ConfigCache config, Collection<String> serverCommands, String[] args, boolean reloadPerm, boolean adminPerm) {
         List<String> list = new ArrayList<>();
         switch (args.length) {
-            case 0:
             case 1:
                 if ("reload".startsWith(args[0]) && reloadPerm)
                     list.add("reload");
