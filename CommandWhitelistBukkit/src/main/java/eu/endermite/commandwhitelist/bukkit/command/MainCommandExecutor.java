@@ -9,8 +9,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.help.HelpTopic;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class MainCommandExecutor implements TabExecutor {
@@ -72,7 +74,18 @@ public class MainCommandExecutor implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> serverCommands = new ArrayList<>(Bukkit.getCommandMap().getKnownCommands().keySet());
+        List<String> serverCommands;
+        try {
+            serverCommands = new ArrayList<>(Bukkit.getCommandMap().getKnownCommands().keySet());
+        } catch (NoSuchMethodError error) {
+            HashSet<String> commands = new HashSet<>();
+            for (HelpTopic topic : Bukkit.getHelpMap().getHelpTopics()) {
+                String cmd = topic.getName();
+                if (Character.isUpperCase(cmd.charAt(0))) continue;
+                commands.add(topic.getName());
+            }
+            serverCommands = new ArrayList<>(commands);
+        }
         return CWCommand.commandSuggestions(CommandWhitelistBukkit.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()), CWCommand.ImplementationType.BUKKIT);
     }
 }
