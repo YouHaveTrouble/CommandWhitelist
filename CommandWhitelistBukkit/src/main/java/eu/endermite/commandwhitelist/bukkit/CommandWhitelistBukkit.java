@@ -88,7 +88,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
                     p.updateCommands();
                 }
             } catch (Exception ignored) {}
-            audiences.sender(sender).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.config_reloaded));
+            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.config_reloaded));
         });
     }
 

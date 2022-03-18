@@ -32,7 +32,7 @@ public class BungeeChatEventListener implements Listener {
         HashSet<String> commands = CommandWhitelistWaterfall.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            CommandWhitelistWaterfall.getAudiences().player(player).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + CommandWhitelistWaterfall.getCommandDeniedMessage(label)));
+            CommandWhitelistWaterfall.getAudiences().player(player).sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + CommandWhitelistWaterfall.getCommandDeniedMessage(label)));
             return;
         }
 
@@ -40,7 +40,7 @@ public class BungeeChatEventListener implements Listener {
         for (String bannedSubCommand : bannedSubCommands) {
             if (command.startsWith(bannedSubCommand)) {
                 event.setCancelled(true);
-                audiences.player(player).sendMessage(CWCommand.miniMessage.parse(configCache.prefix + configCache.subcommand_denied));
+                audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.subcommand_denied));
                 return;
             }
         }

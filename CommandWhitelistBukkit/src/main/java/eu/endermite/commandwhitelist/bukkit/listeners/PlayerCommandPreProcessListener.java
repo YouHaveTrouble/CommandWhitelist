@@ -24,7 +24,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
+            audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
             return;
         }
 
@@ -32,11 +32,10 @@ public class PlayerCommandPreProcessListener implements Listener {
         for (String bannedSubCommand : bannedSubCommands) {
             if (event.getMessage().toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                 event.setCancelled(true);
-                audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.subcommand_denied));
+                audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + config.subcommand_denied));
                 return;
             }
         }
-
 
     }
 }

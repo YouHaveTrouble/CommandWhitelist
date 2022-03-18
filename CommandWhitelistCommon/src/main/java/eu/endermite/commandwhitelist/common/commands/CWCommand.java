@@ -5,7 +5,8 @@ import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,15 +14,17 @@ import java.util.List;
 
 public class CWCommand {
 
-    public static MiniMessage miniMessage = MiniMessage.builder()
-            .removeDefaultTransformations()
-            .transformation(TransformationType.COLOR)
-            .transformation(TransformationType.DECORATION)
-            .transformation(TransformationType.GRADIENT)
-            .transformation(TransformationType.RESET)
-            .transformation(TransformationType.RAINBOW)
-            .transformation(TransformationType.PRE)
-            .build();
+    public static MiniMessage miniMessage = MiniMessage.builder().tags(
+                    TagResolver.builder()
+                            .resolver(StandardTags.color())
+                            .resolver(StandardTags.decorations())
+                            .resolver(StandardTags.gradient())
+                            .resolver(StandardTags.font())
+                            .resolver(StandardTags.reset())
+                            .resolver(StandardTags.rainbow())
+                            .resolver(StandardTags.translatable())
+                            .build()
+            ).build();
 
     public static boolean addToWhitelist(ConfigCache configCache, String command, String group) {
         CWGroup cwGroup = configCache.getGroupList().get(group);
@@ -41,7 +44,7 @@ public class CWCommand {
     }
 
     public static Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {
-        Component component = miniMessage.parse("<rainbow><bold>CommandWhitelist by YouHaveTrouble")
+        Component component = miniMessage.deserialize("<rainbow><bold>CommandWhitelist by YouHaveTrouble")
                 .append(Component.newline());
         component = component.append(Component.text("/" + baseCommand + " help").color(NamedTextColor.AQUA).append(Component.text(" - Displays this message").color(NamedTextColor.BLUE)));
         if (showReloadCommand) {

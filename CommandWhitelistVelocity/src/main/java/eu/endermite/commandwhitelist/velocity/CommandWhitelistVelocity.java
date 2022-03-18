@@ -55,7 +55,7 @@ public class CommandWhitelistVelocity {
     public static void reloadConfig(CommandSource source) {
         server.getScheduler().buildTask(plugin, () -> {
             reloadConfig();
-            source.sendMessage(Identity.nil(), CWCommand.miniMessage.parse(getConfigCache().prefix + getConfigCache().config_reloaded));
+            source.sendMessage(Identity.nil(), CWCommand.miniMessage.deserialize(getConfigCache().prefix + getConfigCache().config_reloaded));
         }).schedule();
     }
 

@@ -41,14 +41,14 @@ public class PacketCommandPreProcessListener {
                 BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
                 if (!commands.contains(label)) {
                     event.setCancelled(true);
-                    audiences.player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
+                    audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
                     return;
                 }
                 HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
                 for (String bannedSubCommand : bannedSubCommands) {
                     if (string.toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                         event.setCancelled(true);
-                        CommandWhitelistBukkit.getAudiences().player(player).sendMessage(CWCommand.miniMessage.parse(config.prefix + config.subcommand_denied));
+                        CommandWhitelistBukkit.getAudiences().player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + config.subcommand_denied));
                         return;
                     }
                 }

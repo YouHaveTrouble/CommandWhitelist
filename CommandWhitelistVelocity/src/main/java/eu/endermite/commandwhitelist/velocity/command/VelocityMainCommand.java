@@ -29,34 +29,34 @@ public class VelocityMainCommand implements SimpleCommand {
             switch (commandType) {
                 case RELOAD:
                     if (!sender.hasPermission(CWPermission.RELOAD.permission())) {
-                        sender.sendMessage(CWCommand.miniMessage.parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
+                        sender.sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
                         return;
                     }
                     CommandWhitelistVelocity.reloadConfig(sender);
                     return;
                 case ADD:
                     if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
-                        sender.sendMessage(CWCommand.miniMessage.parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
+                        sender.sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
                         return;
                     }
                     if (args.length == 3) {
                         if (CWCommand.addToWhitelist(CommandWhitelistVelocity.getConfigCache(), args[2], args[1]))
-                            sender.sendMessage(CWCommand.miniMessage.parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().added_to_whitelist, args[2], args[1])));
+                            sender.sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().added_to_whitelist, args[2], args[1])));
                         else
-                            sender.sendMessage(CWCommand.miniMessage.parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist, args[1])));
+                            sender.sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist, args[1])));
                     } else
                         sender.sendMessage(Component.text("/" + label + " add <group> <command>"));
                     return;
                 case REMOVE:
                     if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
-                        sender.sendMessage(CWCommand.miniMessage.parse(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
+                        sender.sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
                         return;
                     }
                     if (args.length == 3) {
                         if (CWCommand.removeFromWhitelist(CommandWhitelistVelocity.getConfigCache(), args[2], args[1]))
-                            sender.sendMessage(CWCommand.miniMessage.parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().removed_from_whitelist, args[2], args[1])));
+                            sender.sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().removed_from_whitelist, args[2], args[1])));
                         else
-                            sender.sendMessage(CWCommand.miniMessage.parse(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist, args[1])));
+                            sender.sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().group_doesnt_exist, args[1])));
                     } else
                         sender.sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return;

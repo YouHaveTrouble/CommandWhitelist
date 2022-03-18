@@ -71,7 +71,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
     public void loadConfigAsync(CommandSender sender) {
         getProxy().getScheduler().runAsync(this, () -> {
             loadConfig();
-            audiences.sender(sender).sendMessage(CWCommand.miniMessage.parse(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().config_reloaded));
+            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().config_reloaded));
         });
     }
 
