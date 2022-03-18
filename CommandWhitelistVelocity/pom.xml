@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.endermite.commandwhitelist</groupId>
         <artifactId>CommandWhitelist</artifactId>
-        <version>2.2.6</version>
+        <version>2.3.0</version>
     </parent>
 
     <artifactId>Velocity</artifactId>
@@ -65,8 +65,8 @@
 
     <repositories>
         <repository>
-            <id>velocitypowered-repo</id>
-            <url>https://repo.velocitypowered.com/releases/</url>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
             <id>minecraft-libraries</id>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>com.velocitypowered</groupId>
             <artifactId>velocity-api</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
