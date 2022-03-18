@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,18 +43,18 @@ public class CWCommand {
     }
 
     public static Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {
-        Component component = miniMessage.deserialize("<rainbow><bold>CommandWhitelist by YouHaveTrouble")
+        Component component = miniMessage.deserialize("<rainbow><bold>CommandWhitelist by YouHaveTrouble</bold>")
                 .append(Component.newline());
-        component = component.append(Component.text("/" + baseCommand + " help").color(NamedTextColor.AQUA).append(Component.text(" - Displays this message").color(NamedTextColor.BLUE)));
+        component = component.append(Component.text(baseCommand + " help").color(NamedTextColor.AQUA).append(Component.text(" - Displays this message").color(NamedTextColor.BLUE)));
         if (showReloadCommand) {
             component = component.append(Component.newline());
-            component = component.append(Component.text("/" + baseCommand + " reload").color(NamedTextColor.AQUA).append(Component.text(" - Reloads plugin configuration").color(NamedTextColor.BLUE)));
+            component = component.append(Component.text(baseCommand + " reload").color(NamedTextColor.AQUA).append(Component.text(" - Reloads plugin configuration").color(NamedTextColor.BLUE)));
         }
         if (showAdminCommands) {
             component = component.append(Component.newline());
-            component = component.append(Component.text("/" + baseCommand + " add <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Add a command to selected permission group").color(NamedTextColor.BLUE)));
+            component = component.append(Component.text(baseCommand + " add <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Add a command to selected permission group").color(NamedTextColor.BLUE)));
             component = component.append(Component.newline());
-            component = component.append(Component.text("/" + baseCommand + " remove <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Removes a command from selected permission group").color(NamedTextColor.BLUE)));
+            component = component.append(Component.text(baseCommand + " remove <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Removes a command from selected permission group").color(NamedTextColor.BLUE)));
         }
         return component;
     }
