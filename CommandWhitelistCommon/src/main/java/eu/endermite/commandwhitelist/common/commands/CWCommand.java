@@ -22,6 +22,7 @@ public class CWCommand {
                             .resolver(StandardTags.reset())
                             .resolver(StandardTags.rainbow())
                             .resolver(StandardTags.translatable())
+                            .resolver(StandardTags.newline())
                             .build()
             ).build();
 
