@@ -23,6 +23,8 @@ public class CWCommand {
                             .resolver(StandardTags.rainbow())
                             .resolver(StandardTags.translatable())
                             .resolver(StandardTags.newline())
+                            .resolver(StandardTags.clickEvent())
+                            .resolver(StandardTags.keybind())
                             .build()
             ).build();
 
