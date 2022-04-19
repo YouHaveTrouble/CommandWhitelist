@@ -2,20 +2,18 @@ package eu.endermite.commandwhitelist.bukkit.command;
 
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
 import eu.endermite.commandwhitelist.common.CWPermission;
+import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.help.HelpTopic;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.io.File;
 import java.util.List;
 
-public class MainCommandExecutor implements TabExecutor {
+public class BukkitCommandExecutor implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -62,6 +60,18 @@ public class MainCommandExecutor implements TabExecutor {
                     } else
                         audiences.sender(sender).sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return true;
+                case DUMP:
+                    if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
+                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().no_permission));
+                        return true;
+                    }
+                    audiences.sender(sender).sendMessage(Component.text("Dumping all available commands to a file..."));
+                    if (CommandUtil.dumpAllBukkitCommands(CommandWhitelistBukkit.getServerCommands(), new File("plugins/CommandWhitelist/config.yml"))) {
+                        audiences.sender(sender).sendMessage(Component.text("Commands dumped to command_dump.yml"));
+                    } else {
+                        audiences.sender(sender).sendMessage(Component.text("Failed to save the file."));
+                    }
+                    return true;
                 case HELP:
                 default:
                     audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
@@ -74,18 +84,13 @@ public class MainCommandExecutor implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> serverCommands;
-        try {
-            serverCommands = new ArrayList<>(Bukkit.getCommandMap().getKnownCommands().keySet());
-        } catch (NoSuchMethodError error) {
-            HashSet<String> commands = new HashSet<>();
-            for (HelpTopic topic : Bukkit.getHelpMap().getHelpTopics()) {
-                String cmd = topic.getName();
-                if (Character.isUpperCase(cmd.charAt(0))) continue;
-                commands.add(topic.getName());
-            }
-            serverCommands = new ArrayList<>(commands);
-        }
-        return CWCommand.commandSuggestions(CommandWhitelistBukkit.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()), CWCommand.ImplementationType.BUKKIT);
+        return CWCommand.commandSuggestions(
+                CommandWhitelistBukkit.getConfigCache(),
+                CommandWhitelistBukkit.getServerCommands(),
+                args,
+                sender.hasPermission(CWPermission.RELOAD.permission()),
+                sender.hasPermission(CWPermission.ADMIN.permission()),
+                CWCommand.ImplementationType.BUKKIT
+        );
     }
 }

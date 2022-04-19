@@ -11,14 +11,13 @@ import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.bstats.bungeecord.Metrics;
 import org.bstats.charts.SimplePie;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public final class CommandWhitelistWaterfall extends Plugin {
 
@@ -121,5 +120,13 @@ public final class CommandWhitelistWaterfall extends Plugin {
             }
         }
         return commandDeniedMessage;
+    }
+
+    public static ArrayList<String> getServerCommands() {
+        ArrayList<String> serverCommands = new ArrayList<>();
+        for (Map.Entry<String, Command> command : CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().getCommands()) {
+            serverCommands.add(command.getValue().getName());
+        }
+        return serverCommands;
     }
 }

@@ -1,6 +1,7 @@
 package eu.endermite.commandwhitelist.waterfall.command;
 
 import eu.endermite.commandwhitelist.common.CWPermission;
+import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
@@ -10,6 +11,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +69,18 @@ public class BungeeMainCommand extends Command implements TabExecutor {
                     } else
                         audiences.sender(sender).sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return;
+                case DUMP:
+                    if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
+                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().no_permission));
+                        return;
+                    }
+                    audiences.sender(sender).sendMessage(Component.text("Dumping all available commands to a file..."));
+                    if (CommandUtil.dumpAllBukkitCommands(CommandWhitelistWaterfall.getServerCommands(), new File("plugins/CommandWhitelist/config.yml"))) {
+                        audiences.sender(sender).sendMessage(Component.text("Commands dumped to command_dump.yml"));
+                    } else {
+                        audiences.sender(sender).sendMessage(Component.text("Failed to save the file."));
+                    }
+                    return;
                 case HELP:
                 default:
                     audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
@@ -80,10 +94,13 @@ public class BungeeMainCommand extends Command implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        List<String> serverCommands = new ArrayList<>();
-        for (Map.Entry<String, Command> command : CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().getCommands()) {
-            serverCommands.add(command.getValue().getName());
-        }
-        return CWCommand.commandSuggestions(CommandWhitelistWaterfall.getConfigCache(), serverCommands, args, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission()), CWCommand.ImplementationType.WATERFALL);
+        return CWCommand.commandSuggestions(
+                CommandWhitelistWaterfall.getConfigCache(),
+                CommandWhitelistWaterfall.getServerCommands(),
+                args,
+                sender.hasPermission(CWPermission.RELOAD.permission()),
+                sender.hasPermission(CWPermission.ADMIN.permission()),
+                CWCommand.ImplementationType.WATERFALL
+        );
     }
 }

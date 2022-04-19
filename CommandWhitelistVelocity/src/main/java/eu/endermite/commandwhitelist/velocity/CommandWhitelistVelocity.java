@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -97,6 +98,10 @@ public class CommandWhitelistVelocity {
         return configCache;
     }
 
+    public static Path getConfigPath() {
+        return folder;
+    }
+
     /**
      * @param player Velocity Player
      * @return commands available to the player
@@ -127,6 +132,10 @@ public class CommandWhitelistVelocity {
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;
+    }
+
+    public static ArrayList<String> getServerCommands() {
+        return new ArrayList<>(server.getCommandManager().getAliases());
     }
 
 }

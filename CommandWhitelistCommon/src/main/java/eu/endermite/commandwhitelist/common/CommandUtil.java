@@ -1,5 +1,9 @@
 package eu.endermite.commandwhitelist.common;
 
+import io.github.thatsmusic99.configurationmaster.api.ConfigFile;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,6 +65,33 @@ public class CommandUtil {
         if (parts[0].startsWith("/"))
             parts[0] = parts[0].substring(1);
         return parts[0];
+    }
+
+    /**
+     * Dumps command list to a file
+     *
+     * @param serverCommands Commands to dump
+     * @return True on successful file save
+     */
+    public static boolean dumpAllBukkitCommands(ArrayList<String> serverCommands, File file) {
+        try {
+            File parent = new File(file.getParent());
+            if (!parent.exists())
+                parent.mkdir();
+            if (!file.exists())
+                file.createNewFile();
+        } catch (IOException e) {
+            return false;
+        }
+
+        ConfigFile dumpFile = ConfigFile.loadConfig(file);
+        dumpFile.set("commands", serverCommands);
+        try {
+            dumpFile.save();
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
 }

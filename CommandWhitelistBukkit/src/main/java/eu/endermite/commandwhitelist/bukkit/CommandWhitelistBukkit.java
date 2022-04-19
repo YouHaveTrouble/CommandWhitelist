@@ -1,6 +1,6 @@
 package eu.endermite.commandwhitelist.bukkit;
 
-import eu.endermite.commandwhitelist.bukkit.command.MainCommandExecutor;
+import eu.endermite.commandwhitelist.bukkit.command.BukkitCommandExecutor;
 import eu.endermite.commandwhitelist.bukkit.listeners.AsyncTabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
@@ -17,13 +17,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.help.HelpTopic;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class CommandWhitelistBukkit extends JavaPlugin {
 
@@ -59,7 +58,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
         PluginCommand command = getCommand("commandwhitelist");
         if (command != null) {
-            MainCommandExecutor executor = new MainCommandExecutor();
+            BukkitCommandExecutor executor = new BukkitCommandExecutor();
             command.setExecutor(executor);
             command.setTabCompleter(executor);
         }
@@ -150,5 +149,19 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             }
         }
         return commandDeniedMessage;
+    }
+
+    public static ArrayList<String> getServerCommands() {
+        try {
+            return new ArrayList<>(Bukkit.getCommandMap().getKnownCommands().keySet());
+        } catch (NoSuchMethodError error) {
+            HashSet<String> commands = new HashSet<>();
+            for (HelpTopic topic : Bukkit.getHelpMap().getHelpTopics()) {
+                String cmd = topic.getName();
+                if (Character.isUpperCase(cmd.charAt(0))) continue;
+                commands.add(topic.getName());
+            }
+            return new ArrayList<>(commands);
+        }
     }
 }

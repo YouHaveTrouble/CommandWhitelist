@@ -3,10 +3,12 @@ package eu.endermite.commandwhitelist.velocity.command;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import eu.endermite.commandwhitelist.common.CWPermission;
+import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.velocity.CommandWhitelistVelocity;
 import net.kyori.adventure.text.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -60,6 +62,18 @@ public class VelocityMainCommand implements SimpleCommand {
                     } else
                         sender.sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return;
+                case DUMP:
+                    if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
+                        sender.sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistVelocity.getConfigCache().prefix + CommandWhitelistVelocity.getConfigCache().no_permission));
+                        return;
+                    }
+                    sender.sendMessage(Component.text("Dumping all available commands to a file..."));
+                    if (CommandUtil.dumpAllBukkitCommands(CommandWhitelistVelocity.getServerCommands(), new File(String.valueOf(CommandWhitelistVelocity.getConfigPath()), "command_dump.yml"))) {
+                        sender.sendMessage(Component.text("Commands dumped to command_dump.yml"));
+                    } else {
+                       sender.sendMessage(Component.text("Failed to save the file."));
+                    }
+                    return;
                 case HELP:
                 default:
                     sender.sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
@@ -76,8 +90,15 @@ public class VelocityMainCommand implements SimpleCommand {
         CommandSource source = invocation.source();
         String[] args = invocation.arguments();
         return CompletableFuture.supplyAsync(() -> {
-            List<String> serverCommands = new ArrayList<>();
-            return CWCommand.commandSuggestions(CommandWhitelistVelocity.getConfigCache(), serverCommands, args, source.hasPermission(CWPermission.RELOAD.permission()), source.hasPermission(CWPermission.ADMIN.permission()), CWCommand.ImplementationType.VELOCITY);
+            List<String> serverCommands = CommandWhitelistVelocity.getServerCommands();
+            return CWCommand.commandSuggestions(
+                    CommandWhitelistVelocity.getConfigCache(),
+                    serverCommands,
+                    args,
+                    source.hasPermission(CWPermission.RELOAD.permission()),
+                    source.hasPermission(CWPermission.ADMIN.permission()),
+                    CWCommand.ImplementationType.VELOCITY
+            );
         });
     }
 }

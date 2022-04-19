@@ -63,7 +63,7 @@ public class CWCommand {
     }
 
     public enum CommandType {
-        ADD, REMOVE, HELP, RELOAD
+        ADD, REMOVE, HELP, RELOAD, DUMP
     }
 
     public enum ImplementationType {
@@ -88,6 +88,7 @@ public class CWCommand {
                     if (adminPerm) {
                         list.add("add");
                         list.add("remove");
+                        list.add("dump");
                     }
                 }
                 return list;
@@ -100,6 +101,8 @@ public class CWCommand {
                     list.add("add");
                 if ("remove".startsWith(args[0]) && adminPerm)
                     list.add("remove");
+                if ("dump".startsWith(args[0]) && adminPerm)
+                    list.add("dump");
                 return list;
             case 2:
                 if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")) {
