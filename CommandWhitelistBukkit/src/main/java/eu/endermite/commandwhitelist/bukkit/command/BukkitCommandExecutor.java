@@ -66,7 +66,7 @@ public class BukkitCommandExecutor implements TabExecutor {
                         return true;
                     }
                     audiences.sender(sender).sendMessage(Component.text("Dumping all available commands to a file..."));
-                    if (CommandUtil.dumpAllBukkitCommands(CommandWhitelistBukkit.getServerCommands(), new File("plugins/CommandWhitelist/config.yml"))) {
+                    if (CommandUtil.dumpAllBukkitCommands(CommandWhitelistBukkit.getServerCommands(), new File("plugins/CommandWhitelist/command_dump.yml"))) {
                         audiences.sender(sender).sendMessage(Component.text("Commands dumped to command_dump.yml"));
                     } else {
                         audiences.sender(sender).sendMessage(Component.text("Failed to save the file."));
