@@ -6,7 +6,6 @@ import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandPreProcessLis
 import eu.endermite.commandwhitelist.bukkit.listeners.PlayerCommandSendListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener;
 import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandPreProcessListener;
-import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandSendListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
@@ -42,10 +41,8 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
         if (!getConfigCache().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
             getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
-            getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
         } else {
             PacketCommandPreProcessListener.protocol(this);
-            PacketCommandSendListener.protocol(this);
             getLogger().info(ChatColor.AQUA + "Using ProtocolLib for command filter!");
         }
         try {
@@ -55,6 +52,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         } catch (ClassNotFoundException ignored) {
         }
         getServer().getPluginManager().registerEvents(new TabCompleteBlockerListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerCommandSendListener(), this);
 
         PluginCommand command = getCommand("commandwhitelist");
         if (command != null) {
@@ -74,9 +72,9 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             } catch (NoSuchMethodError e) {
                 configCache = new ConfigCache(configFile, true, null);
             }
+            return;
         }
-        else
-            configCache.reloadConfig();
+        configCache.reloadConfig();
     }
 
     public void reloadPluginConfig(CommandSender sender) {
