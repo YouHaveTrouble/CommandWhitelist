@@ -12,7 +12,6 @@ import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
@@ -43,7 +42,8 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
         } else {
             PacketCommandPreProcessListener.protocol(this);
-            getLogger().info(ChatColor.AQUA + "Using ProtocolLib for command filter!");
+            getLogger().warning("Using ProtocolLib for command filter!");
+            getLogger().warning("Please make sure you actually need this. This is not a \"better way to do it\".");
         }
         try {
             // Use paper's async tab completions if possible
