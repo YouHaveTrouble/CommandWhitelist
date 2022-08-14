@@ -73,7 +73,7 @@ public class CommandWhitelistVelocity {
     public void onUserCommandSendEvent(PlayerAvailableCommandsEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
-        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
+        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommandSuggestions(player);
         event.getRootNode().getChildren().removeIf((commandNode) ->
                 server.getCommandManager().hasCommand(commandNode.getName())
                         && !allowedCommands.contains(commandNode.getName())
@@ -115,6 +115,23 @@ public class CommandWhitelistVelocity {
                 commandList.addAll(group.getCommands());
             else if (player.hasPermission(group.getPermission()))
                 commandList.addAll(group.getCommands());
+        }
+        return commandList;
+    }
+
+    /**
+     * @param player Velocity Player
+     * @return command suggestions available to the player
+     */
+    public static HashSet<String> getCommandSuggestions(Player player) {
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        HashSet<String> commandList = new HashSet<>();
+        for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
+            CWGroup group = s.getValue();
+            if (s.getKey().equalsIgnoreCase("default"))
+                commandList.addAll(group.getCommandSuggestions());
+            else if (player.hasPermission(group.getPermission()))
+                commandList.addAll(group.getCommandSuggestions());
         }
         return commandList;
     }

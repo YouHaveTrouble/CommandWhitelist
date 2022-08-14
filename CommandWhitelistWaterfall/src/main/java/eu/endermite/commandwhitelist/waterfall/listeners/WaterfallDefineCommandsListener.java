@@ -17,7 +17,7 @@ public class WaterfallDefineCommandsListener implements Listener {
             ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
             if (player.hasPermission(CWPermission.BYPASS.permission())) return;
             HashMap<String, Command> commandHashMap = new HashMap<>();
-            CommandWhitelistWaterfall.getCommands(player).forEach(cmdName ->
+            CommandWhitelistWaterfall.getCommandSuggestions(player).forEach(cmdName ->
                     CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().getCommands()
                             .stream()
                             .filter(commandEntry -> cmdName.equalsIgnoreCase(commandEntry.getValue().getName()))

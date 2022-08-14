@@ -119,6 +119,22 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
     /**
      * @param player Bukkit Player
+     * @return command suggestions available to the player
+     */
+    public static HashSet<String> getCommandSuggestions(org.bukkit.entity.Player player) {
+        HashSet<String> commandList = new HashSet<>();
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
+            if (s.getKey().equalsIgnoreCase("default"))
+                commandList.addAll(s.getValue().getCommandSuggestions());
+            else if (player.hasPermission(s.getValue().getPermission()))
+                commandList.addAll(s.getValue().getCommandSuggestions());
+        }
+        return commandList;
+    }
+
+    /**
+     * @param player Bukkit Player
      * @return subcommands unavailable for the player
      */
     public static HashSet<String> getSuggestions(org.bukkit.entity.Player player) {
