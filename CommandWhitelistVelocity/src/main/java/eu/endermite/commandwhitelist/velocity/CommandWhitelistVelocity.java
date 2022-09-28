@@ -11,6 +11,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.CWPermission;
+import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
@@ -87,10 +88,12 @@ public class CommandWhitelistVelocity {
 
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
 
+        // Workaround for velocity executing "/ command" as valid command
+        String command = event.getCommand().trim();
+
         HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
-        String command = event.getCommand().split(" ")[0];
-        if (server.getCommandManager().hasCommand(command)
-                && !allowedCommands.contains(command))
+        String label = CommandUtil.getCommandLabel(command);
+        if (server.getCommandManager().hasCommand(label) && !allowedCommands.contains(label))
             event.setResult(CommandExecuteEvent.CommandResult.forwardToServer());
     }
 

@@ -1,6 +1,7 @@
 package eu.endermite.commandwhitelist.bukkit.listeners;
 
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
+import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
@@ -16,7 +17,7 @@ public class PlayerCommandPreProcessListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (player.hasPermission("commandwhitelist.bypass")) return;
+        if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         String caseSensitiveLabel = CommandUtil.getCommandLabel(event.getMessage());
         String label = caseSensitiveLabel.toLowerCase();
         event.setMessage(event.getMessage().replaceFirst(caseSensitiveLabel, label));
