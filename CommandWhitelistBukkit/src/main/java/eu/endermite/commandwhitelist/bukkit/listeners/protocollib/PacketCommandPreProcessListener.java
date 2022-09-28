@@ -34,9 +34,11 @@ public class PacketCommandPreProcessListener {
                 if (!string.startsWith("/")) return;
                 Player player = event.getPlayer();
                 if (player.hasPermission(CWPermission.BYPASS.permission())) return;
-
                 ConfigCache config = CommandWhitelistBukkit.getConfigCache();
-                String label = CommandUtil.getCommandLabel(string.toLowerCase());
+                String caseSensitiveLabel = CommandUtil.getCommandLabel(string);
+                String label = caseSensitiveLabel.toLowerCase();
+                packet.getStrings().write(0, string.replaceFirst(caseSensitiveLabel, label));
+
                 HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
                 BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
                 if (!commands.contains(label)) {

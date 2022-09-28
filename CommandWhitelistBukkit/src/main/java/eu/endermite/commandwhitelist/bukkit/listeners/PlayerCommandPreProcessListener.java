@@ -17,7 +17,9 @@ public class PlayerCommandPreProcessListener implements Listener {
     public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("commandwhitelist.bypass")) return;
-        String label = CommandUtil.getCommandLabel(event.getMessage().toLowerCase());
+        String caseSensitiveLabel = CommandUtil.getCommandLabel(event.getMessage());
+        String label = caseSensitiveLabel.toLowerCase();
+        event.setMessage(event.getMessage().replaceFirst(caseSensitiveLabel, label));
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
         ConfigCache config = CommandWhitelistBukkit.getConfigCache();
 
