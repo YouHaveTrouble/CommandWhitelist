@@ -20,7 +20,11 @@ public class PlayerCommandPreProcessListener implements Listener {
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         String caseSensitiveLabel = CommandUtil.getCommandLabel(event.getMessage());
         String label = caseSensitiveLabel.toLowerCase();
-        event.setMessage(event.getMessage().replaceFirst(caseSensitiveLabel, label));
+
+        String fullCommand = event.getMessage().substring(label.length()+1);
+        fullCommand = "/"+label+fullCommand;
+
+        event.setMessage(fullCommand);
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
         ConfigCache config = CommandWhitelistBukkit.getConfigCache();
 
