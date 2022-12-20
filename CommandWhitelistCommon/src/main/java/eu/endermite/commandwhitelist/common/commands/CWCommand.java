@@ -5,28 +5,13 @@ import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class CWCommand {
 
-    public static MiniMessage miniMessage = MiniMessage.builder().tags(
-                    TagResolver.builder()
-                            .resolver(StandardTags.color())
-                            .resolver(StandardTags.decorations())
-                            .resolver(StandardTags.gradient())
-                            .resolver(StandardTags.font())
-                            .resolver(StandardTags.reset())
-                            .resolver(StandardTags.rainbow())
-                            .resolver(StandardTags.translatable())
-                            .resolver(StandardTags.newline())
-                            .resolver(StandardTags.clickEvent())
-                            .resolver(StandardTags.keybind())
-                            .build()
-            ).build();
+    public static MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public static boolean addToWhitelist(ConfigCache configCache, String command, String group) {
         CWGroup cwGroup = configCache.getGroupList().get(group);
