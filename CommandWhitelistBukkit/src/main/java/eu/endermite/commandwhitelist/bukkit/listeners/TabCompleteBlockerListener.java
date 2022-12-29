@@ -17,13 +17,12 @@ public class TabCompleteBlockerListener implements Listener {
         Player player = (Player) event.getSender();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         String buffer = event.getBuffer();
-        if (!buffer.endsWith(" ") && buffer.split(" ").length == 1) {
-            CommandWhitelistBukkit.getConfigCache().debug("Actively prevented "+event.getSender().getName()+"'s tab completion (/[tab] packet)");
+        if ((buffer.split(" ").length == 1 && !buffer.endsWith(" ")) || !buffer.startsWith("/")) {
+            CommandWhitelistBukkit.getConfigCache().debug("Actively prevented "+event.getSender().getName()+"'s tab completion (sus packet)");
             event.setCancelled(true);
             return;
         }
         if (event.getCompletions().isEmpty()) {
-            CommandWhitelistBukkit.getConfigCache().debug("Tab completion not provided");
             return;
         }
         event.setCompletions(

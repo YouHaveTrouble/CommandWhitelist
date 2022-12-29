@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-
 public class AsyncTabCompleteBlockerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -18,8 +17,14 @@ public class AsyncTabCompleteBlockerListener implements Listener {
         Player player = (Player) event.getSender();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         String buffer = event.getBuffer();
-        if (!buffer.endsWith(" ") && buffer.split(" ").length == 1) event.setCancelled(true);
-        if (event.getCompletions().isEmpty()) return;
+        if ((buffer.split(" ").length == 1 && !buffer.endsWith(" ")) || !buffer.startsWith("/")) {
+            CommandWhitelistBukkit.getConfigCache().debug("Actively prevented "+event.getSender().getName()+"'s tab completion (sus packet)");
+            event.setCancelled(true);
+            return;
+        }
+        if (event.getCompletions().isEmpty()) {
+            return;
+        }
         event.setCompletions(CommandUtil.filterSuggestions(buffer, event.getCompletions(), CommandWhitelistBukkit.getSuggestions(player)));
     }
 
