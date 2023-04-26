@@ -5,6 +5,7 @@ api-version: 1.13
 main: eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit
 authors: [YouHaveTrouble]
 website: youhavetrouble.me
+folia-supported: true
 softdepend:
   - ProtocolLib
 description: Control what commands players can use

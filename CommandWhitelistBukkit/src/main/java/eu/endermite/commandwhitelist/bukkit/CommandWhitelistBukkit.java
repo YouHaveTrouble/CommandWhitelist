@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class CommandWhitelistBukkit extends JavaPlugin {
 
@@ -78,7 +79,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
     }
 
     public void reloadPluginConfig(CommandSender sender) {
-        getServer().getScheduler().runTaskAsynchronously(this, () -> {
+        CompletableFuture.runAsync(() -> {
             reloadPluginConfig();
             try {
                 for (Player p : Bukkit.getOnlinePlayers()) {
