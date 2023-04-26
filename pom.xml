@@ -10,6 +10,7 @@
     <modules>
         <module>CommandWhitelistCommon</module>
         <module>CommandWhitelistBukkit</module>
+        <module>CommandWhitelistFolia</module>
         <module>CommandWhitelistVelocity</module>
         <module>CommandWhitelistWaterfall</module>
     </modules>
