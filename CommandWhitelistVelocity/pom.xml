@@ -50,6 +50,16 @@
                                     <shadedPattern>eu.endermite.bstats</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>net.kyori:adventure-api</exclude>
+                                    <exclude>net.kyori:adventure-key</exclude>
+                                    <exclude>net.kyori:examination-api</exclude>
+                                    <exclude>net.kyori:examination-string</exclude>
+                                    <exclude>org.jetbrains:annotations</exclude>
+                                    <exclude>org.intellij.lang:annotations</exclude>
+                                </excludes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
