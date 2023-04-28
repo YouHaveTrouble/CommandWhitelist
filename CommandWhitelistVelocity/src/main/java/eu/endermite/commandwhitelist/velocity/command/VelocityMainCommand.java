@@ -5,7 +5,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandManager;
@@ -21,8 +20,6 @@ import eu.endermite.commandwhitelist.velocity.CommandWhitelistVelocity;
 import net.kyori.adventure.text.Component;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class VelocityMainCommand {
     @Inject
@@ -50,8 +47,7 @@ public final class VelocityMainCommand {
                     .requires(src -> src.hasPermission(CWPermission.ADMIN.permission()))
                     .then(RequiredArgumentBuilder.<CommandSource, String>argument("group", StringArgumentType.word())
                         .suggests((ctx, builder) -> {
-                            groupSuggestions(plugin.getConfigCache(), ctx.getArguments().get("group"))
-                                    .forEach(builder::suggest);
+                            plugin.getConfigCache().getGroupList().keySet().forEach(builder::suggest);
                             return builder.buildFuture();
                         })
                         .then(RequiredArgumentBuilder.<CommandSource, String>argument("command", StringArgumentType.word())
@@ -59,7 +55,6 @@ public final class VelocityMainCommand {
                                 CWGroup group = plugin.getConfigCache().getGroupList().get(ctx.getArgument("group", String.class));
                                 if (group == null) return builder.buildFuture();
 
-                                String stringArgument = stringArgument(ctx.getArguments().get("command"));
                                 for (String cmd : plugin.getServerCommands()) {
                                     if (cmd.charAt(0) == '/')
                                         cmd = cmd.substring(1);
@@ -69,8 +64,7 @@ public final class VelocityMainCommand {
                                         cmd = cmdSplit[1];
                                     }
                                     if (group.getCommands().contains(cmd)) continue;
-                                    if (stringArgument == null || cmd.startsWith(stringArgument))
-                                        builder.suggest(cmd);
+                                    builder.suggest(cmd);
                                 }
                                 return builder.buildFuture();
                             })
@@ -93,8 +87,7 @@ public final class VelocityMainCommand {
                     .requires(src -> src.hasPermission(CWPermission.ADMIN.permission()))
                     .then(RequiredArgumentBuilder.<CommandSource, String>argument("group", StringArgumentType.word())
                         .suggests((ctx, builder) -> {
-                            groupSuggestions(plugin.getConfigCache(), ctx.getArguments().get("group"))
-                                    .forEach(builder::suggest);
+                            plugin.getConfigCache().getGroupList().keySet().forEach(builder::suggest);
                             return builder.buildFuture();
                         })
                         .then(RequiredArgumentBuilder.<CommandSource, String>argument("command", StringArgumentType.word())
@@ -102,10 +95,8 @@ public final class VelocityMainCommand {
                                 CWGroup group = plugin.getConfigCache().getGroupList().get(ctx.getArgument("group", String.class));
                                 if (group == null) return builder.buildFuture();
 
-                                String stringArgument = stringArgument(ctx.getArguments().get("command"));
                                 for (String s : group.getCommands()) {
-                                    if (stringArgument == null || s.startsWith(stringArgument))
-                                        builder.suggest(s);
+                                    builder.suggest(s);
                                 }
                                 return builder.buildFuture();
                             })
@@ -148,20 +139,5 @@ public final class VelocityMainCommand {
 
         final BrigadierCommand command = new BrigadierCommand(node);
         commandManager.register(commandManager.metaBuilder(command).plugin(plugin).build(), command);
-    }
-
-    private List<String> groupSuggestions(ConfigCache configCache, ParsedArgument<CommandSource, ?> argument) {
-        final String stringArgument = stringArgument(argument);
-        List<String> groups = new ArrayList<>();
-        for (String s : configCache.getGroupList().keySet()) {
-            if (stringArgument == null || s.startsWith(stringArgument))
-                groups.add(s);
-        }
-        return groups;
-    }
-
-    private String stringArgument(ParsedArgument<CommandSource, ?> argument) {
-        return argument == null
-                ? null : (String) argument.getResult();
     }
 }
