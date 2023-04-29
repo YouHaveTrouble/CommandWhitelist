@@ -1,6 +1,7 @@
 package eu.endermite.commandwhitelist.velocity;
 
-import com.velocitypowered.api.command.CommandMeta;
+import com.google.inject.Injector;
+import com.mojang.brigadier.Command;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -15,13 +16,11 @@ import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
-import net.kyori.adventure.identity.Identity;
 import org.bstats.charts.SimplePie;
 import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,51 +29,57 @@ import java.util.Map;
 
 public class CommandWhitelistVelocity {
 
-    private static CommandWhitelistVelocity plugin;
-    private static ProxyServer server;
-    private static ConfigCache configCache;
-    private static Path folder;
-    private static Logger logger;
+    private final ProxyServer server;
+    private ConfigCache configCache;
+    private final Path folder;
+    private final Logger logger;
     private final Metrics.Factory metricsFactory;
+    private final Injector injector;
 
     @Inject
-    public CommandWhitelistVelocity(ProxyServer server, Logger logger, @DataDirectory final Path folder, Metrics.Factory metricsFactory) {
-        CommandWhitelistVelocity.server = server;
-        CommandWhitelistVelocity.folder = folder;
-        CommandWhitelistVelocity.plugin = this;
-        CommandWhitelistVelocity.logger = logger;
+    public CommandWhitelistVelocity(
+            ProxyServer server,
+            Logger logger,
+            @DataDirectory final Path folder,
+            Metrics.Factory metricsFactory,
+            Injector injector
+    ) {
+        this.server = server;
+        this.folder = folder;
+        this.logger = logger;
         this.metricsFactory = metricsFactory;
-
+        this.injector = injector;
     }
 
-    private static void reloadConfig() {
+    private void reloadConfig() {
         if (configCache == null)
-            configCache = new ConfigCache(new File(String.valueOf(folder), "config.yml"), false, logger);
+            configCache = new ConfigCache(folder.resolve("config.yml").toFile(), false, logger);
         else
             configCache.reloadConfig();
     }
 
-    public static void reloadConfig(CommandSource source) {
-        server.getScheduler().buildTask(plugin, () -> {
+    public int reloadConfig(CommandSource source) {
+        server.getScheduler().buildTask(this, () -> {
             reloadConfig();
-            source.sendMessage(Identity.nil(), CWCommand.miniMessage.deserialize(getConfigCache().prefix + getConfigCache().config_reloaded));
+            source.sendMessage(CWCommand.miniMessage.deserialize(getConfigCache().prefix + getConfigCache().config_reloaded));
         }).schedule();
+        return Command.SINGLE_SUCCESS;
     }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         reloadConfig();
-        CommandMeta commandMeta = server.getCommandManager().metaBuilder("vcw").build();
-        server.getCommandManager().register(commandMeta, new VelocityMainCommand());
+        injector.getInstance(VelocityMainCommand.class).register();
         Metrics metrics = metricsFactory.make(this, 8704);
         metrics.addCustomChart(new SimplePie("proxy", () -> "Velocity"));
     }
 
     @Subscribe
+    @SuppressWarnings("UnstableApiUsage")
     public void onUserCommandSendEvent(PlayerAvailableCommandsEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
-        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
+        HashSet<String> allowedCommands = getCommands(player);
         event.getRootNode().getChildren().removeIf((commandNode) ->
                 server.getCommandManager().hasCommand(commandNode.getName())
                         && !allowedCommands.contains(commandNode.getName())
@@ -82,7 +87,7 @@ public class CommandWhitelistVelocity {
     }
 
     @Subscribe
-    public void onUserCommandExecuteEvent(com.velocitypowered.api.event.command.CommandExecuteEvent event) {
+    public void onUserCommandExecuteEvent(CommandExecuteEvent event) {
         if (!(event.getCommandSource() instanceof Player)) return;
         Player player = (Player) event.getCommandSource();
 
@@ -91,25 +96,21 @@ public class CommandWhitelistVelocity {
         // Workaround for velocity executing "/ command" as valid command
         String command = event.getCommand().trim();
 
-        HashSet<String> allowedCommands = CommandWhitelistVelocity.getCommands(player);
+        HashSet<String> allowedCommands = getCommands(player);
         String label = CommandUtil.getCommandLabel(command);
         if (server.getCommandManager().hasCommand(label) && !allowedCommands.contains(label))
             event.setResult(CommandExecuteEvent.CommandResult.forwardToServer());
     }
 
-    public static ConfigCache getConfigCache() {
+    public ConfigCache getConfigCache() {
         return configCache;
-    }
-
-    public static Path getConfigPath() {
-        return folder;
     }
 
     /**
      * @param player Velocity Player
      * @return commands available to the player
      */
-    public static HashSet<String> getCommands(Player player) {
+    public HashSet<String> getCommands(Player player) {
         HashMap<String, CWGroup> groups = configCache.getGroupList();
         HashSet<String> commandList = new HashSet<>();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
@@ -126,7 +127,7 @@ public class CommandWhitelistVelocity {
      * @param player Velocity Player
      * @return subcommands unavailable for the player
      */
-    public static HashSet<String> getSuggestions(Player player, HashMap<String, CWGroup> groups) {
+    public HashSet<String> getSuggestions(Player player, HashMap<String, CWGroup> groups) {
         HashSet<String> suggestionList = new HashSet<>();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
@@ -137,7 +138,7 @@ public class CommandWhitelistVelocity {
         return suggestionList;
     }
 
-    public static ArrayList<String> getServerCommands() {
+    public ArrayList<String> getServerCommands() {
         return new ArrayList<>(server.getCommandManager().getAliases());
     }
 

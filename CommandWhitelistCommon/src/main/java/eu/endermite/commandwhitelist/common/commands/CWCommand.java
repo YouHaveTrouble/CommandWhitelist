@@ -3,6 +3,7 @@ package eu.endermite.commandwhitelist.common.commands;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import java.util.ArrayList;
@@ -31,20 +32,20 @@ public class CWCommand {
     }
 
     public static Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {
-        Component component = miniMessage.deserialize("<rainbow><bold>CommandWhitelist by YouHaveTrouble</bold>")
-                .append(Component.newline());
-        component = component.append(Component.text(baseCommand + " help").color(NamedTextColor.AQUA).append(Component.text(" - Displays this message").color(NamedTextColor.BLUE)));
+        final TextComponent.Builder builder = Component.text();
+        builder.append(miniMessage.deserialize("<rainbow><bold>CommandWhitelist by YouHaveTrouble</bold>"), Component.newline());
+        builder.append(Component.text(baseCommand + " help", NamedTextColor.AQUA), Component.text(" - Displays this message", NamedTextColor.BLUE));
         if (showReloadCommand) {
-            component = component.append(Component.newline());
-            component = component.append(Component.text(baseCommand + " reload").color(NamedTextColor.AQUA).append(Component.text(" - Reloads plugin configuration").color(NamedTextColor.BLUE)));
+            builder.append(Component.newline());
+            builder.append(Component.text(baseCommand + " reload", NamedTextColor.AQUA), Component.text(" - Reloads plugin configuration", NamedTextColor.BLUE));
         }
         if (showAdminCommands) {
-            component = component.append(Component.newline());
-            component = component.append(Component.text(baseCommand + " add <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Add a command to selected permission group").color(NamedTextColor.BLUE)));
-            component = component.append(Component.newline());
-            component = component.append(Component.text(baseCommand + " remove <group> <command>").color(NamedTextColor.AQUA).append(Component.text(" - Removes a command from selected permission group").color(NamedTextColor.BLUE)));
+            builder.append(Component.newline());
+            builder.append(Component.text(baseCommand + " add <group> <command>", NamedTextColor.AQUA), Component.text(" - Add a command to selected permission group", NamedTextColor.BLUE));
+            builder.append(Component.newline());
+            builder.append(Component.text(baseCommand + " remove <group> <command>", NamedTextColor.AQUA), Component.text(" - Removes a command from selected permission group", NamedTextColor.BLUE));
         }
-        return component;
+        return builder.build();
     }
 
     public enum CommandType {
