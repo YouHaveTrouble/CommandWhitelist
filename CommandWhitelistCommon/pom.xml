@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.github.thatsmusic99</groupId>
             <artifactId>ConfigurationMaster-API</artifactId>
-            <version>v2.0.0-BETA-1</version>
+            <version>v2.0.0-BETA-6</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
