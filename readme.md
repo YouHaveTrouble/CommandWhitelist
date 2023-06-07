@@ -1,6 +1,8 @@
 Command  Whitelist is a plugin that allows you to control 
 precisely what commands players can see and use.
 
+<h1>WARNING: This is an experimental branch, literally everything here is subject to change</h1>
+
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/youhavetrouble/commandwhitelist?style=flat-square)](https://www.codefactor.io/repository/github/youhavetrouble/commandwhitelist)
 [![GitHub all releases](https://img.shields.io/github/downloads/youhavetrouble/commandwhitelist/total?style=flat-square&label=direct%20release%20downloads)](https://github.com/YouHaveTrouble/CommandWhitelist/releases)
 [![Discord](https://img.shields.io/discord/821565102108573706?style=flat-square&color=%237289da&label=Discord)](https://discord.gg/j8KK5dGBps)
@@ -15,7 +17,6 @@ precisely what commands players can see and use.
 <li>Overwrite default "no such command" message with your branding
 <li>Block tab completion</li>
 <li>Block command execution</li>
-<li>Block completion and execution of specified subcommands</li>
 </ul>
 
 <b>Compatible versions</b>: 1.13+

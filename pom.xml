@@ -6,21 +6,15 @@
 
     <groupId>eu.endermite.commandwhitelist</groupId>
     <artifactId>CommandWhitelist</artifactId>
-    <version>2.7.0</version>
-    <modules>
-        <module>CommandWhitelistCommon</module>
-        <module>CommandWhitelistBukkit</module>
-        <module>CommandWhitelistVelocity</module>
-        <module>CommandWhitelistWaterfall</module>
-    </modules>
-    <packaging>pom</packaging>
+    <version>3.0.0</version>
 
     <name>CommandWhitelist</name>
-
     <description>Control what commands players can use</description>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <website>https://youhavetrouble.me</website>
     </properties>
 
     <build>
@@ -47,6 +41,16 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <finalName>${project.name}-${project.version}</finalName>
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>me.youhavetrouble</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.thatsmusic99</pattern>
+                                    <shadedPattern>me.youhavetrouble</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -62,17 +66,75 @@
 
     <repositories>
         <repository>
+            <id>pluginwiki-repo</id>
+            <url>https://ci.pluginwiki.us/plugin/repository/everything/</url>
+        </repository>
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>velocitypowered-repo</id>
+            <url>https://repo.velocitypowered.com/releases/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
+            <groupId>com.github.thatsmusic99</groupId>
+            <artifactId>ConfigurationMaster-API</artifactId>
+            <version>v2.0.0-BETA-6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.11.0</version>
+            <version>4.13.1</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>4.13.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.velocitypowered</groupId>
+            <artifactId>velocity-api</artifactId>
+            <version>3.1.2-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.19-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.waterfallmc</groupId>
+            <artifactId>waterfall-api</artifactId>
+            <version>1.19-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>5.0.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

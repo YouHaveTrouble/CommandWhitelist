@@ -1,0 +1,5 @@
+groups:
+  default:
+    commands:
+      - "spawn"
+      - "help version"

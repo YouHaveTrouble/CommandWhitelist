@@ -1,0 +1,23 @@
+name: "${project.name}"
+version: ${project.version}
+api-version: 1.13
+main: "${project.groupId}.bukkit.CommandWhitelistBukkit"
+authors:
+  - "YouHaveTrouble"
+website: "${project.url}"
+folia-supported: true
+softdepend:
+  - ProtocolLib
+description: "${project.description}"
+commands:
+  commandwhitelist:
+    aliases:
+      - cw
+    usage: /commandwhitelist [args]
+permissions:
+  commandwhitelist.reload:
+    default: op
+  commandwhitelist.admin:
+    default: op
+  commandwhitelist.bypass:
+    default: op
