@@ -84,11 +84,12 @@ public class CommandUtil {
             return false;
         }
 
-        ConfigFile dumpFile = ConfigFile.loadConfig(file);
-        dumpFile.set("commands", serverCommands);
+
         try {
+            ConfigFile dumpFile = ConfigFile.loadConfig(file);
+            dumpFile.set("commands", serverCommands);
             dumpFile.save();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
         }
         return true;

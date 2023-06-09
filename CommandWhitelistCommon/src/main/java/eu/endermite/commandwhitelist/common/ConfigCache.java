@@ -24,13 +24,22 @@ public class ConfigCache {
         this.canDoProtocolLib = canDoProtocolLib;
         this.logger = logger;
 
-        reloadConfig();
+        try {
+            reloadConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean reloadConfig() {
 
         createFiles();
-        config = ConfigFile.loadConfig(configFile);
+        try {
+            config = ConfigFile.loadConfig(configFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
         config.addDefault("messages.prefix", "CommandWhitelist > ");
         config.addDefault("messages.command_denied", "No such command.");
@@ -106,7 +115,7 @@ public class ConfigCache {
         try {
             config.save();
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
         }
     }
