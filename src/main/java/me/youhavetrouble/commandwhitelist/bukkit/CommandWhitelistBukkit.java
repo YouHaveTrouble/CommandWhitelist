@@ -1,9 +1,9 @@
 package me.youhavetrouble.commandwhitelist.bukkit;
 
+import me.youhavetrouble.commandwhitelist.bukkit.listeners.CommandExecuteListener;
 import me.youhavetrouble.commandwhitelist.bukkit.listeners.CommandSendListener;
-import me.youhavetrouble.commandwhitelist.common.CWCommandEntry;
-import me.youhavetrouble.commandwhitelist.common.CWGroup;
-import me.youhavetrouble.commandwhitelist.common.ConfigCache;
+import me.youhavetrouble.commandwhitelist.bukkit.listeners.CommandTabCompleteListener;
+import me.youhavetrouble.commandwhitelist.common.CWConfig;
 import me.youhavetrouble.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
@@ -12,14 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandWhitelistBukkit extends JavaPlugin {
 
-    private ConfigCache configCache;
+    private CWConfig CWConfig;
     private BukkitAudiences audiences;
 
     @Override
@@ -27,30 +24,20 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         reloadPluginConfig();
         audiences = BukkitAudiences.create(this);
         getServer().getPluginManager().registerEvents(new CommandSendListener(this), this);
-    }
-
-    public Set<CWCommandEntry> getCommands(Player player) {
-        HashSet<CWCommandEntry> commands = new HashSet<>();
-        Map<String, CWGroup> groups = configCache.getGroupList();
-        for (Map.Entry<String, CWGroup> groupEntry : groups.entrySet()) {
-            CWGroup group = groupEntry.getValue();
-            String groupId = groupEntry.getKey();
-            if (groupId.equalsIgnoreCase("default")) commands.addAll(group.getCommands());
-            else if (player.hasPermission(group.getPermission())) commands.addAll(group.getCommands());
-        }
-        return commands;
+        getServer().getPluginManager().registerEvents(new CommandExecuteListener(this), this);
+        getServer().getPluginManager().registerEvents(new CommandTabCompleteListener(this), this);
     }
 
     private void reloadPluginConfig() {
         File configFile = new File("plugins/CommandWhitelist/config.yml");
-        if (configCache != null) {
-            configCache.reloadConfig();
+        if (CWConfig != null) {
+            CWConfig.reloadConfig();
             return;
         }
         try {
-            configCache = new ConfigCache(configFile, true, getSLF4JLogger());
+            CWConfig = new CWConfig(configFile, true, getSLF4JLogger());
         } catch (NoSuchMethodError e) {
-            configCache = new ConfigCache(configFile, true, null);
+            CWConfig = new CWConfig(configFile, true, null);
         }
     }
 
@@ -62,8 +49,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
                     p.updateCommands();
                 }
             } catch (Exception ignored) {}
-            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.config_reloaded));
+            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CWConfig.prefix + CWConfig.config_reloaded));
         });
+    }
+
+    public CWConfig getCWConfig() {
+        return CWConfig;
     }
 
 }

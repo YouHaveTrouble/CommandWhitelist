@@ -1,8 +1,7 @@
 package me.youhavetrouble.commandwhitelist.common.commands;
 
-import me.youhavetrouble.commandwhitelist.common.CWCommandEntry;
 import me.youhavetrouble.commandwhitelist.common.CWGroup;
-import me.youhavetrouble.commandwhitelist.common.ConfigCache;
+import me.youhavetrouble.commandwhitelist.common.CWConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,20 +14,20 @@ public class CWCommand {
 
     public static MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    public static boolean addToWhitelist(ConfigCache configCache, String command, String group) {
-        CWGroup cwGroup = configCache.getGroupList().get(group);
+    public static boolean addToWhitelist(CWConfig CWConfig, String command, String group) {
+        CWGroup cwGroup = CWConfig.getGroupList().get(group);
         if (cwGroup == null) return false;
         cwGroup.addCommand(command);
-        configCache.saveCWGroup(group, cwGroup);
+        CWConfig.saveCWGroup(group, cwGroup);
         return true;
     }
 
-    public static boolean removeFromWhitelist(ConfigCache configCache, String command, String group) {
-        CWGroup cwGroup = configCache.getGroupList().get(group);
+    public static boolean removeFromWhitelist(CWConfig CWConfig, String command, String group) {
+        CWGroup cwGroup = CWConfig.getGroupList().get(group);
         if (cwGroup == null)
             return false;
         cwGroup.removeCommand(command);
-        configCache.saveCWGroup(group, cwGroup);
+        CWConfig.saveCWGroup(group, cwGroup);
         return true;
     }
 
@@ -58,7 +57,7 @@ public class CWCommand {
     }
 
     public static List<String> commandSuggestions(
-            ConfigCache config,
+            CWConfig config,
             Collection<String> serverCommands,
             String[] args, boolean reloadPerm,
             boolean adminPerm,

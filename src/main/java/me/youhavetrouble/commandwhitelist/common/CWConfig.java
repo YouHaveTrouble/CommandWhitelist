@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class ConfigCache {
+public class CWConfig {
 
     private final File configFile;
     private ConfigFile config;
@@ -19,7 +19,7 @@ public class ConfigCache {
     public boolean useProtocolLib = false;
     public boolean debug = false;
 
-    public ConfigCache(File configFile, boolean canDoProtocolLib, Object logger) {
+    public CWConfig(File configFile, boolean canDoProtocolLib, Object logger) {
         this.configFile = configFile;
         this.canDoProtocolLib = canDoProtocolLib;
         this.logger = logger;

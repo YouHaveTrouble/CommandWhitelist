@@ -37,7 +37,8 @@ public class CWCommandEntry {
     }
 
     /**
-     * Checks if a full command input matches this command entry.
+     * Checks if a full command input matches this command entry. Input is a match if all entry slices match the
+     * corresponding command slices, even if there are more command slices than entry slices.
      * @param command full command input
      * @return true if the command matches this command entry
      */
@@ -45,9 +46,24 @@ public class CWCommandEntry {
         if (command == null) return false;
         if (command.startsWith("/")) command = command.substring(1); // Remove leading slash (if present)
         String[] parts = command.split(" ");
-        if (parts.length != this.parts.size()) return false;
-        for (int i = 0; i < parts.length; i++) {
-            if (!this.parts.get(i).matcher(parts[i]).matches()) return false;
+        if (parts.length < this.parts.size()) return false;
+        for (int i = 0; i < this.parts.size(); i++) {
+            if (!argumentMatches(parts[i], i)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a command input partially matches this command entry.
+     * @param command command input
+     * @return true if the command partially matches this command entry
+     */
+    public boolean partiallyMatches(String command) {
+        if (command == null) return false;
+        if (command.startsWith("/")) command = command.substring(1); // Remove leading slash (if present)
+        String[] parts = command.split(" ");
+        for (int i = 0; i < this.parts.size() || i < parts.length; i++) {
+            if (!argumentMatches(parts[i], i)) return false;
         }
         return true;
     }

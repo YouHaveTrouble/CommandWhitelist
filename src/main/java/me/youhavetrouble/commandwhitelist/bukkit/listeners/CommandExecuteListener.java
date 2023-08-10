@@ -8,32 +8,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandSendEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.Iterator;
-
-public class CommandSendListener implements Listener {
+public class CommandExecuteListener implements Listener {
 
     private final CommandWhitelistBukkit plugin;
 
-    public CommandSendListener(CommandWhitelistBukkit plugin) {
+    public CommandExecuteListener(CommandWhitelistBukkit plugin ) {
         this.plugin = plugin;
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onCommandSend(PlayerCommandSendEvent event) {
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
-        Iterator<String> iterator = event.getCommands().iterator();
         CWPlayer cwPlayer = new CWPlayer(player);
-        while (iterator.hasNext()) {
-            String command = iterator.next();
-            for (CWCommandEntry entry : cwPlayer.getCommands(plugin.getCWConfig())) {
-                if (entry.argumentMatches(command, 0)) continue;
-                iterator.remove();
-                break;
-            }
+        for (CWCommandEntry entry : cwPlayer.getCommands(plugin.getCWConfig())) {
+            if (entry.matches(event.getMessage())) return;
         }
+        event.setCancelled(true);
     }
+
 
 }
