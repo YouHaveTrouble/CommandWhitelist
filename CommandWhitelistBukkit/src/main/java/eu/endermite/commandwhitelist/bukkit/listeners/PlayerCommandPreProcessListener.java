@@ -21,10 +21,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         String caseSensitiveLabel = CommandUtil.getCommandLabel(event.getMessage());
         String label = caseSensitiveLabel.toLowerCase();
 
-        String fullCommand = event.getMessage().substring(label.length()+1);
-        fullCommand = "/"+label+fullCommand;
-
-        event.setMessage(fullCommand);
+        CommandWhitelistBukkit.getPlugin().getLogger().info("Message after: "+event.getMessage());
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
         ConfigCache config = CommandWhitelistBukkit.getConfigCache();
 
@@ -36,8 +33,9 @@ public class PlayerCommandPreProcessListener implements Listener {
         }
 
         HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
+        String messageWithoutSlash = event.getMessage().startsWith("/") ? event.getMessage().substring(1) : event.getMessage();
         for (String bannedSubCommand : bannedSubCommands) {
-            if (event.getMessage().toLowerCase().substring(1).startsWith(bannedSubCommand)) {
+            if (messageWithoutSlash.startsWith(bannedSubCommand)) {
                 event.setCancelled(true);
                 audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + config.subcommand_denied));
                 return;
