@@ -21,7 +21,6 @@ public class PlayerCommandPreProcessListener implements Listener {
         String caseSensitiveLabel = CommandUtil.getCommandLabel(event.getMessage());
         String label = caseSensitiveLabel.toLowerCase();
 
-        CommandWhitelistBukkit.getPlugin().getLogger().info("Message after: "+event.getMessage());
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
         ConfigCache config = CommandWhitelistBukkit.getConfigCache();
 
