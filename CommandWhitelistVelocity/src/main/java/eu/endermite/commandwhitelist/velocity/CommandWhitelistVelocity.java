@@ -1,5 +1,6 @@
 package eu.endermite.commandwhitelist.velocity;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.mojang.brigadier.Command;
 import com.velocitypowered.api.command.CommandSource;
@@ -20,7 +21,6 @@ import org.bstats.charts.SimplePie;
 import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
