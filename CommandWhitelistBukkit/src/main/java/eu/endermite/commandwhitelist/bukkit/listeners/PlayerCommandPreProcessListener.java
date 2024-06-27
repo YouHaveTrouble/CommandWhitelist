@@ -6,6 +6,7 @@ import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,6 +21,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         String caseSensitiveLabel = CommandUtil.getCommandLabel(event.getMessage());
         String label = caseSensitiveLabel.toLowerCase();
+        String messageWithoutSlash = event.getMessage().startsWith("/") ? event.getMessage().substring(1) : event.getMessage();
 
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
         ConfigCache config = CommandWhitelistBukkit.getConfigCache();
@@ -27,12 +29,16 @@ public class PlayerCommandPreProcessListener implements Listener {
         HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
         if (!commands.contains(label)) {
             event.setCancelled(true);
-            audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
+            Component message = CWCommand.getParsedErrorMessage(
+                    messageWithoutSlash,
+                    config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)
+            );
+            audiences.player(player).sendMessage(message);
             return;
         }
 
         HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
-        String messageWithoutSlash = event.getMessage().startsWith("/") ? event.getMessage().substring(1) : event.getMessage();
+
         for (String bannedSubCommand : bannedSubCommands) {
             if (messageWithoutSlash.startsWith(bannedSubCommand)) {
                 event.setCancelled(true);

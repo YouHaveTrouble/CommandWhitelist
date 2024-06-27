@@ -6,6 +6,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -131,6 +135,25 @@ public class CWCommand {
             default:
                 return list;
         }
+    }
+
+    /**
+     * Get a message component for a command denied message
+     * @param inputCommandString command that was denied as string
+     * @param message raw message to display
+     * @return parsed message component
+     */
+    public static Component getParsedErrorMessage(String inputCommandString, String message) {
+        MiniMessage miniMessage = MiniMessage.builder()
+                .tags(TagResolver.builder()
+                        .resolvers(StandardTags.defaults(), commandContentResolver(inputCommandString))
+                        .build())
+                .build();
+        return miniMessage.deserialize(message);
+    }
+
+    private static TagResolver commandContentResolver(String rawCommand) {
+        return TagResolver.resolver("command", (context, builder) -> Tag.selfClosingInserting(Component.text(rawCommand)));
     }
 
 }
