@@ -11,12 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.HashSet;
 
 public class PlayerCommandPreProcessListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
-    public void PlayerCommandSendEvent(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
+    public void PlayerExecuteCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         String caseSensitiveLabel = CommandUtil.getCommandLabel(event.getMessage());

@@ -122,7 +122,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
      * @param player Bukkit Player
      * @return subcommands unavailable for the player
      */
-    public static HashSet<String> getSuggestions(org.bukkit.entity.Player player) {
+    public static HashSet<String> getSuggestions(Player player) {
         HashSet<String> suggestionList = new HashSet<>();
         HashMap<String, CWGroup> groups = configCache.getGroupList();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
