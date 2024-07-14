@@ -4,9 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.mojang.brigadier.Command;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.PlayerAvailableCommandsEvent;
+import com.velocitypowered.api.event.player.TabCompleteEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
@@ -22,10 +24,7 @@ import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class CommandWhitelistVelocity {
 
@@ -74,7 +73,7 @@ public class CommandWhitelistVelocity {
         metrics.addCustomChart(new SimplePie("proxy", () -> "Velocity"));
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.LAST)
     @SuppressWarnings("UnstableApiUsage")
     public void onUserCommandSendEvent(PlayerAvailableCommandsEvent event) {
         Player player = event.getPlayer();
@@ -95,11 +94,45 @@ public class CommandWhitelistVelocity {
 
         // Workaround for velocity executing "/ command" as valid command
         String command = event.getCommand().trim();
+        if (command.startsWith("/")) command = command.substring(1);
 
         HashSet<String> allowedCommands = getCommands(player);
         String label = CommandUtil.getCommandLabel(command);
-        if (server.getCommandManager().hasCommand(label) && !allowedCommands.contains(label))
+        if (server.getCommandManager().hasCommand(label) && !allowedCommands.contains(label)) {
             event.setResult(CommandExecuteEvent.CommandResult.forwardToServer());
+            return;
+        }
+
+        HashSet<String> bannedSubCommands = getSuggestions(player);
+
+        for (String bannedSubCommand : bannedSubCommands) {
+            if (command.startsWith(bannedSubCommand)) {
+                event.setResult(CommandExecuteEvent.CommandResult.denied());
+                player.sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.subcommand_denied));
+                return;
+            }
+        }
+    }
+
+    /**
+     * THIS IS FOR CLIENTS ON 1.12 AND BELOW, NOT GUARANTEED TO WORK, IF IT DOESN'T, PR OF GTFO
+     */
+    @Subscribe
+    public void onUserTabCompleteEvent(TabCompleteEvent event) {
+        Player player = event.getPlayer();
+        if (player.hasPermission(CWPermission.BYPASS.permission())) return;
+        String buffer = event.getPartialMessage();
+
+        if (event.getSuggestions().isEmpty()) return;
+
+        List<String> newSuggestions = CommandUtil.filterSuggestions(
+                buffer,
+                event.getSuggestions(),
+                getSuggestions(player)
+        );
+
+        event.getSuggestions().clear();
+        event.getSuggestions().addAll(newSuggestions);
     }
 
     public ConfigCache getConfigCache() {
