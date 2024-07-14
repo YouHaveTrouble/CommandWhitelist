@@ -128,7 +128,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());
-            if (player.hasPermission(s.getValue().getPermission())) continue;
+            if (!player.hasPermission(s.getValue().getPermission())) continue;
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;

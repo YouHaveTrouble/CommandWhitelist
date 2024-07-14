@@ -127,12 +127,13 @@ public class CommandWhitelistVelocity {
      * @param player Velocity Player
      * @return subcommands unavailable for the player
      */
-    public HashSet<String> getSuggestions(Player player, HashMap<String, CWGroup> groups) {
+    public HashSet<String> getSuggestions(Player player) {
         HashSet<String> suggestionList = new HashSet<>();
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());
-            if (player.hasPermission(s.getValue().getPermission())) continue;
+            if (!player.hasPermission(s.getValue().getPermission())) continue;
             suggestionList.addAll(s.getValue().getSubCommands());
         }
         return suggestionList;
