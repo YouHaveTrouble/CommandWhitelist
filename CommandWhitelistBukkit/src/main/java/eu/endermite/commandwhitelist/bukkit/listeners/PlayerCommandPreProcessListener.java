@@ -34,7 +34,14 @@ public class PlayerCommandPreProcessListener implements Listener {
                     messageWithoutSlash,
                     config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)
             );
-            audiences.player(player).sendMessage(message);
+            switch (config.messageType) {
+                case CHAT:
+                    audiences.player(player).sendMessage(message);
+                    break;
+                case ACTIONBAR:
+                    audiences.player(player).sendActionBar(message);
+                    break;
+            }
             return;
         }
 

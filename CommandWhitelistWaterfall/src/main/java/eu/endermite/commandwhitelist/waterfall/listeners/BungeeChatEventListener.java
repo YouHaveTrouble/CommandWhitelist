@@ -38,7 +38,14 @@ public class BungeeChatEventListener implements Listener {
                     command,
                     configCache.prefix + CommandWhitelistWaterfall.getCommandDeniedMessage(label)
             );
-            audiences.player(player).sendMessage(message);
+            switch (configCache.messageType) {
+                case CHAT:
+                    audiences.player(player).sendMessage(message);
+                    break;
+                case ACTIONBAR:
+                    audiences.player(player).sendActionBar(message);
+                    break;
+            }
             return;
         }
 

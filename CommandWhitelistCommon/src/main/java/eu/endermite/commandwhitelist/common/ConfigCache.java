@@ -17,6 +17,7 @@ public class ConfigCache {
     public String prefix, command_denied, no_permission, no_such_subcommand, config_reloaded, added_to_whitelist,
             removed_from_whitelist, group_doesnt_exist, subcommand_denied;
     public boolean useProtocolLib = false;
+    public MessageType messageType = MessageType.CHAT;
     public boolean debug = false;
 
     public ConfigCache(File configFile, boolean canDoProtocolLib, Object logger) {
@@ -55,6 +56,8 @@ public class ConfigCache {
 
         if (canDoProtocolLib)
             config.addDefault("use_protocollib", false, "Do not enable if you don't have issues with aliased commands.\nThis requires server restart to take effect.");
+
+        config.addDefault("message_type", MessageType.CHAT.toString(), "Valid message types are CHAT and ACTIONBAR. Does nothing on velocity.");
 
         if (config.isNew()) {
             List<String> exampleCommands = new ArrayList<>();
@@ -102,6 +105,16 @@ public class ConfigCache {
         group_doesnt_exist = config.getString("messages.group_doesnt_exist");
         useProtocolLib = config.getBoolean("use_protocollib");
         debug = config.getBoolean("debug", false);
+        try {
+            String chatTypeId = config.getString("message_type");
+            if (chatTypeId == null) {
+                warn("Invalid message type. Using CHAT.");
+            } else {
+                messageType = MessageType.valueOf(chatTypeId.toUpperCase(Locale.ENGLISH));
+            }
+        } catch (IllegalArgumentException e) {
+            warn("Invalid message type. Using CHAT.");
+        }
 
         ConfigSection groupSection = config.getConfigSection("groups");
         for (String key : groupSection.getKeys(false)) {
