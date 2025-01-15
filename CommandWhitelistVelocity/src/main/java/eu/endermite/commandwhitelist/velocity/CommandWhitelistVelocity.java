@@ -112,6 +112,12 @@ public class CommandWhitelistVelocity {
                 return;
             }
         }
+
+        HashSet<String> blacklistedCommands = getBlacklistedCommands(player);
+        if (blacklistedCommands.contains(label)) {
+            event.setResult(CommandExecuteEvent.CommandResult.denied());
+            player.sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.command_denied));
+        }
     }
 
     /**
@@ -133,6 +139,9 @@ public class CommandWhitelistVelocity {
 
         event.getSuggestions().clear();
         event.getSuggestions().addAll(newSuggestions);
+
+        HashSet<String> blacklistedCommands = getBlacklistedCommands(player);
+        event.getSuggestions().removeIf(blacklistedCommands::contains);
     }
 
     public ConfigCache getConfigCache() {
@@ -176,4 +185,16 @@ public class CommandWhitelistVelocity {
         return new ArrayList<>(server.getCommandManager().getAliases());
     }
 
+    public HashSet<String> getBlacklistedCommands(Player player) {
+        HashSet<String> blacklistedCommands = new HashSet<>();
+        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
+            CWGroup group = s.getValue();
+            if (s.getKey().equalsIgnoreCase("default"))
+                blacklistedCommands.addAll(group.getBlacklist());
+            else if (player.hasPermission(group.getPermission()))
+                blacklistedCommands.addAll(group.getBlacklist());
+        }
+        return blacklistedCommands;
+    }
 }

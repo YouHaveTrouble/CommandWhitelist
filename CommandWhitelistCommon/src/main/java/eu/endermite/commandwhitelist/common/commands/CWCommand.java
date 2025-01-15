@@ -35,6 +35,23 @@ public class CWCommand {
         return true;
     }
 
+    public static boolean addToBlacklist(ConfigCache configCache, String command, String group) {
+        CWGroup cwGroup = configCache.getGroupList().get(group);
+        if (cwGroup == null) return false;
+        cwGroup.addToBlacklist(command);
+        configCache.saveCWGroup(group, cwGroup);
+        return true;
+    }
+
+    public static boolean removeFromBlacklist(ConfigCache configCache, String command, String group) {
+        CWGroup cwGroup = configCache.getGroupList().get(group);
+        if (cwGroup == null)
+            return false;
+        cwGroup.removeFromBlacklist(command);
+        configCache.saveCWGroup(group, cwGroup);
+        return true;
+    }
+
     public static Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {
         final TextComponent.Builder builder = Component.text();
         builder.append(miniMessage.deserialize("<rainbow><bold>CommandWhitelist by YouHaveTrouble</bold>"), Component.newline());
@@ -48,12 +65,16 @@ public class CWCommand {
             builder.append(Component.text(baseCommand + " add <group> <command>", NamedTextColor.AQUA), Component.text(" - Add a command to selected permission group", NamedTextColor.BLUE));
             builder.append(Component.newline());
             builder.append(Component.text(baseCommand + " remove <group> <command>", NamedTextColor.AQUA), Component.text(" - Removes a command from selected permission group", NamedTextColor.BLUE));
+            builder.append(Component.newline());
+            builder.append(Component.text(baseCommand + " blacklist add <group> <command>", NamedTextColor.AQUA), Component.text(" - Add a command to the blacklist of selected permission group", NamedTextColor.BLUE));
+            builder.append(Component.newline());
+            builder.append(Component.text(baseCommand + " blacklist remove <group> <command>", NamedTextColor.AQUA), Component.text(" - Removes a command from the blacklist of selected permission group", NamedTextColor.BLUE));
         }
         return builder.build();
     }
 
     public enum CommandType {
-        ADD, REMOVE, HELP, RELOAD, DUMP
+        ADD, REMOVE, HELP, RELOAD, DUMP, BLACKLIST
     }
 
     public enum ImplementationType {
@@ -79,6 +100,8 @@ public class CWCommand {
                         list.add("add");
                         list.add("remove");
                         list.add("dump");
+                        list.add("blacklist add");
+                        list.add("blacklist remove");
                     }
                 }
                 return list;
@@ -93,9 +116,13 @@ public class CWCommand {
                     list.add("remove");
                 if ("dump".startsWith(args[0]) && adminPerm)
                     list.add("dump");
+                if ("blacklist".startsWith(args[0]) && adminPerm) {
+                    list.add("blacklist add");
+                    list.add("blacklist remove");
+                }
                 return list;
             case 2:
-                if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")) {
+                if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("blacklist add") || args[0].equalsIgnoreCase("blacklist remove")) {
                     if (!adminPerm) return list;
                     for (String s : config.getGroupList().keySet()) {
                         if (s.startsWith(args[1]))
@@ -104,7 +131,7 @@ public class CWCommand {
                 }
                 return list;
             case 3:
-                if (args[0].equalsIgnoreCase("remove")) {
+                if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("blacklist remove")) {
                     if (!adminPerm) return list;
                     CWGroup group = config.getGroupList().get(args[1]);
                     if (group == null) return list;
@@ -114,7 +141,7 @@ public class CWCommand {
                     }
                     return list;
                 }
-                if (args[0].equalsIgnoreCase("add")) {
+                if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("blacklist add")) {
                     if (!adminPerm) return list;
                     CWGroup group = config.getGroupList().get(args[1]);
                     if (group == null) return list;

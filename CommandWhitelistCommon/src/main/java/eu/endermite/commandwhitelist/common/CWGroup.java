@@ -9,6 +9,7 @@ public class CWGroup {
     private final String id, permission, commandDeniedMessage;
     private final HashSet<String> commands = new HashSet<>();
     private final HashSet<String> subCommands = new HashSet<>();
+    private final HashSet<String> blacklist = new HashSet<>();
 
     public CWGroup(String id, Collection<String> commands, Collection<String> subCommands, String custom_command_denied_message) {
         this.id = id;
@@ -54,12 +55,26 @@ public class CWGroup {
         subCommands.remove(subCommand);
     }
 
+    public HashSet<String> getBlacklist() {
+        return blacklist;
+    }
+
+    public void addToBlacklist(String command) {
+        blacklist.add(command);
+    }
+
+    public void removeFromBlacklist(String command) {
+        blacklist.remove(command);
+    }
+
     public HashMap<String, Object> serialize() {
         HashMap<String, Object> serializedGroup = new LinkedHashMap<>();
         List<String> commands = new ArrayList<>(this.commands);
         List<String> subCommands = new ArrayList<>(this.subCommands);
+        List<String> blacklist = new ArrayList<>(this.blacklist);
         serializedGroup.put("commands", commands);
         serializedGroup.put("subcommands", subCommands);
+        serializedGroup.put("blacklist", blacklist);
         return serializedGroup;
     }
 }

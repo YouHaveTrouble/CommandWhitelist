@@ -115,6 +115,79 @@ public final class VelocityMainCommand {
                         )
                     )
                 )
+                .then(LiteralArgumentBuilder.<CommandSource>literal("blacklist")
+                    .requires(src -> src.hasPermission(CWPermission.ADMIN.permission()))
+                    .then(LiteralArgumentBuilder.<CommandSource>literal("add")
+                        .then(RequiredArgumentBuilder.<CommandSource, String>argument("group", StringArgumentType.word())
+                            .suggests((ctx, builder) -> {
+                                plugin.getConfigCache().getGroupList().keySet().forEach(builder::suggest);
+                                return builder.buildFuture();
+                            })
+                            .then(RequiredArgumentBuilder.<CommandSource, String>argument("command", StringArgumentType.word())
+                                .suggests((ctx, builder) -> {
+                                    CWGroup group = plugin.getConfigCache().getGroupList().get(ctx.getArgument("group", String.class));
+                                    if (group == null) return builder.buildFuture();
+
+                                    for (String cmd : plugin.getServerCommands()) {
+                                        if (cmd.charAt(0) == '/')
+                                            cmd = cmd.substring(1);
+                                        if (cmd.indexOf(':') != -1) {
+                                            String[] cmdSplit = cmd.split(":");
+                                            if (cmdSplit.length < 2) continue;
+                                            cmd = cmdSplit[1];
+                                        }
+                                        if (group.getBlacklist().contains(cmd)) continue;
+                                        builder.suggest(cmd);
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .executes(ctx -> {
+                                    CommandSource source = ctx.getSource();
+                                    ConfigCache configCache = plugin.getConfigCache();
+                                    String arg1 = ctx.getArgument("group", String.class);
+                                    String arg2 = ctx.getArgument("command", String.class);
+
+                                    if (CWCommand.addToBlacklist(configCache, arg2, arg1))
+                                        source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.added_to_whitelist, arg2, arg1)));
+                                    else
+                                        source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.group_doesnt_exist, arg1)));
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                            )
+                        )
+                    )
+                    .then(LiteralArgumentBuilder.<CommandSource>literal("remove")
+                        .then(RequiredArgumentBuilder.<CommandSource, String>argument("group", StringArgumentType.word())
+                            .suggests((ctx, builder) -> {
+                                plugin.getConfigCache().getGroupList().keySet().forEach(builder::suggest);
+                                return builder.buildFuture();
+                            })
+                            .then(RequiredArgumentBuilder.<CommandSource, String>argument("command", StringArgumentType.word())
+                                .suggests((ctx, builder) -> {
+                                    CWGroup group = plugin.getConfigCache().getGroupList().get(ctx.getArgument("group", String.class));
+                                    if (group == null) return builder.buildFuture();
+
+                                    for (String s : group.getBlacklist()) {
+                                        builder.suggest(s);
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .executes(ctx -> {
+                                    CommandSource source = ctx.getSource();
+                                    ConfigCache configCache = plugin.getConfigCache();
+                                    String arg1 = ctx.getArgument("group", String.class);
+                                    String arg2 = ctx.getArgument("command", String.class);
+
+                                    if (CWCommand.removeFromBlacklist(configCache, arg2, arg1))
+                                        source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.removed_from_whitelist, arg2, arg1)));
+                                    else
+                                        source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.group_doesnt_exist, arg1)));
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                            )
+                        )
+                    )
+                )
                 .then(LiteralArgumentBuilder.<CommandSource>literal("dump")
                     .requires(src -> src.hasPermission(CWPermission.ADMIN.permission()))
                     .executes(ctx -> {
