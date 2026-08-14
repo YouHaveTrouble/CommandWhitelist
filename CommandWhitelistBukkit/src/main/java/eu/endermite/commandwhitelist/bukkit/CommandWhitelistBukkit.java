@@ -20,7 +20,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandWhitelistBukkit extends JavaPlugin {
@@ -85,7 +88,8 @@ public class CommandWhitelistBukkit extends JavaPlugin {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.updateCommands();
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.config_reloaded));
         });
     }

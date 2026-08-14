@@ -13,14 +13,13 @@ public class AsyncTabCompleteBlockerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCommandTabComplete(AsyncTabCompleteEvent event) {
-        if (!(event.getSender() instanceof Player)) return;
-        Player player = (Player) event.getSender();
+        if (!(event.getSender() instanceof Player player)) return;
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
         String buffer = event.getBuffer();
         int commandEnd = buffer.indexOf(' ');
         if (commandEnd < 0 || buffer.charAt(0) != '/' || !CommandWhitelistBukkit.getCommands(player)
                 .contains(buffer.substring(1, commandEnd).toLowerCase())) {
-            CommandWhitelistBukkit.getConfigCache().debug("Actively prevented "+event.getSender().getName()+"'s tab completion (sus packet)");
+            CommandWhitelistBukkit.getConfigCache().debug("Actively prevented " + event.getSender().getName() + "'s tab completion (sus packet)");
             event.setCancelled(true);
             return;
         }
