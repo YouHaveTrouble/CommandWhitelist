@@ -162,7 +162,7 @@ public class ConfigCache {
             groupList.put(key, loadCWGroup(key, groupSection));
         }
 
-        if (canDoProtocolLib) {
+        if (useProtocolLib) {
             warn("Protocollib support is deprecated and will be removed in future versions. If you have an actual" +
                     " use case for it (aka plugin does not work without it), please reach out via discord (https://discord.youhavetrouble.me).");
         }
