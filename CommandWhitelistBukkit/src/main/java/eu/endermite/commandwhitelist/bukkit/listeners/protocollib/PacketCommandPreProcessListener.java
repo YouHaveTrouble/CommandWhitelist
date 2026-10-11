@@ -18,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.HashSet;
 
+@Deprecated(forRemoval = true)
 public class PacketCommandPreProcessListener {
 
     public static void protocol(CommandWhitelistBukkit plugin) {
