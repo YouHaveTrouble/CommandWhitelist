@@ -47,7 +47,7 @@ public class BungeeChatEventListener implements Listener {
                 case ACTIONBAR:
                     audiences.player(player).sendActionBar(message);
                     break;
-                case CHAT_AND_ACTION:
+                case CHAT_AND_ACTIONBAR:
                     audiences.player(player).sendMessage(message);
                     audiences.player(player).sendActionBar(message);
                     break;

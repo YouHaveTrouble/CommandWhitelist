@@ -72,9 +72,9 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         File configFile = new File("plugins/CommandWhitelist/config.yml");
         if (configCache == null) {
             try {
-                configCache = new ConfigCache(configFile, true, getSLF4JLogger());
+                configCache = new ConfigCache(configFile, true, true, getSLF4JLogger());
             } catch (NoSuchMethodError e) {
-                configCache = new ConfigCache(configFile, true, null);
+                configCache = new ConfigCache(configFile, true, true, null);
             }
             return;
         }
