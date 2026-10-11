@@ -5,7 +5,9 @@ import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -45,6 +47,21 @@ public class BungeeChatEventListener implements Listener {
                 case ACTIONBAR:
                     audiences.player(player).sendActionBar(message);
                     break;
+                case CHAT_AND_ACTIONBAR:
+                    audiences.player(player).sendMessage(message);
+                    audiences.player(player).sendActionBar(message);
+                    break;
+            }
+            if(configCache.command_denied_sound_enabled) {
+                try {
+                    String soundKey = configCache.command_denied_sound_key;
+                    Key sound = Key.key(soundKey);
+                    float soundVolume = configCache.command_denied_sound_volume;
+                    float soundPitch = configCache.command_denied_sound_pitch;
+                    audiences.player(player).playSound(Sound.sound(sound, Sound.Source.UI, soundVolume, soundPitch));
+                } catch (Exception e) {
+                    configCache.warn("Invalid sound. unable to play sound!");
+                }
             }
             return;
         }

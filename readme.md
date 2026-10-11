@@ -13,6 +13,7 @@ precisely what commands players can see and use.
 <ul>
 <li>Lock selected commands behind permission
 <li>Overwrite default "no such command" message with your branding
+<li>Play configurable sounds when a command is denied</li>
 <li>Block tab completion</li>
 <li>Block command execution</li>
 <li>Block completion and execution of specified subcommands</li>

@@ -2,6 +2,7 @@ package eu.endermite.commandwhitelist.common;
 
 import io.github.thatsmusic99.configurationmaster.api.ConfigFile;
 import io.github.thatsmusic99.configurationmaster.api.ConfigSection;
+import net.kyori.adventure.key.Key;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,17 +13,22 @@ public class ConfigCache {
     private final File configFile;
     private ConfigFile config;
     private final Object logger;
-    private final boolean canDoProtocolLib;
+    private final boolean canDoProtocolLib, supportsCommandDeniedMessage;
     private final HashMap<String, CWGroup> groupList = new LinkedHashMap<>();
     public String prefix, command_denied, no_permission, no_such_subcommand, config_reloaded, added_to_whitelist,
-            removed_from_whitelist, group_doesnt_exist, subcommand_denied;
+            removed_from_whitelist, group_doesnt_exist, subcommand_denied, command_denied_sound_key;
     public boolean useProtocolLib = false;
+    public boolean command_denied_sound_enabled = false;
+    public float command_denied_sound_volume = 1.0f;
+    public float command_denied_sound_pitch = 1.0f;
     public MessageType messageType = MessageType.CHAT;
     public boolean debug = false;
+    private final String default_command_denied_sound_key = "entity.villager.no";
 
-    public ConfigCache(File configFile, boolean canDoProtocolLib, Object logger) {
+    public ConfigCache(File configFile, boolean canDoProtocolLib, boolean supportsCommandDeniedMessage, Object logger) {
         this.configFile = configFile;
         this.canDoProtocolLib = canDoProtocolLib;
+        this.supportsCommandDeniedMessage = supportsCommandDeniedMessage;
         this.logger = logger;
 
         try {
@@ -43,8 +49,11 @@ public class ConfigCache {
         }
 
         config.addDefault("messages.prefix", "CommandWhitelist > ");
-        config.addDefault("messages.command_denied", "No such command.");
-        config.addDefault("messages.subcommand_denied", "You cannot use this subcommand");
+        if (supportsCommandDeniedMessage) {
+            config.addDefault("messages.command_denied", "No such command.");
+            config.addDefault("messages.subcommand_denied", "You cannot use this subcommand");
+        }
+
         config.addDefault("messages.no_permission", "<red>You don't have permission to do this.");
         config.addDefault("messages.no_such_subcommand", "<red>No subcommand by that name.");
         config.addDefault("messages.config_reloaded", "<yellow>Configuration reloaded.");
@@ -57,7 +66,13 @@ public class ConfigCache {
         if (canDoProtocolLib)
             config.addDefault("use_protocollib", false, "Do not enable if you don't have issues with aliased commands.\nThis requires server restart to take effect.");
 
-        config.addDefault("message_type", MessageType.CHAT.toString(), "Valid message types are CHAT and ACTIONBAR. Does nothing on velocity.");
+        if (supportsCommandDeniedMessage) {
+            config.addDefault("message_type", MessageType.CHAT.toString(), "Valid message types are CHAT and ACTIONBAR and CHAT_AND_ACTIONBAR.");
+            config.addDefault("command_denied_sound.enabled", false);
+            config.addDefault("command_denied_sound.key", "entity.villager.no");
+            config.addDefault("command_denied_sound.volume", 1.0f);
+            config.addDefault("command_denied_sound.pitch", 1.0f);
+        }
 
         if (config.isNew()) {
             List<String> exampleCommands = new ArrayList<>();
@@ -95,8 +110,8 @@ public class ConfigCache {
         config.addDefault("groups.default", new CWGroup("default", defaultCommands, defaultSubcommands, defaultCustomCommandDeniedMessage).serialize());
 
         prefix = config.getString("messages.prefix");
-        command_denied = config.getString("messages.command_denied");
-        subcommand_denied = config.getString("messages.subcommand_denied");
+        command_denied = config.getString("messages.command_denied", "No such command.");
+        subcommand_denied = config.getString("messages.subcommand_denied", "You cannot use this subcommand");
         no_permission = config.getString("messages.no_permission");
         no_such_subcommand = config.getString("messages.no_such_subcommand");
         config_reloaded = config.getString("messages.config_reloaded");
@@ -104,6 +119,32 @@ public class ConfigCache {
         removed_from_whitelist = config.getString("messages.removed_from_whitelist");
         group_doesnt_exist = config.getString("messages.group_doesnt_exist");
         useProtocolLib = config.getBoolean("use_protocollib");
+        command_denied_sound_enabled =  config.getBoolean("command_denied_sound.enabled", false);
+        if(command_denied_sound_enabled) {
+            try {
+                String temp_command_denied_sound_key = config.getString("command_denied_sound.key");
+                if(temp_command_denied_sound_key == null) {
+                    warn("Invalid sound key. Using " + default_command_denied_sound_key);
+                    command_denied_sound_key = default_command_denied_sound_key;
+                } else {
+                    try {
+                    Key isSound = Key.key(temp_command_denied_sound_key);
+                    command_denied_sound_key = isSound.asString();
+                    } catch (Exception e) {
+                        warn("Invalid sound key. Using " + default_command_denied_sound_key);
+                        command_denied_sound_key = default_command_denied_sound_key;
+                    }
+                    command_denied_sound_key = command_denied_sound_key.toLowerCase(Locale.ENGLISH);
+                }
+                command_denied_sound_volume = config.getFloat("command_denied_sound.volume");
+                command_denied_sound_pitch = config.getFloat("command_denied_sound.pitch");
+            } catch (Exception e) {
+                warn("Invalid sound. Using default sound configurations.");
+                command_denied_sound_key = default_command_denied_sound_key;
+                command_denied_sound_volume = 1.0f;
+                command_denied_sound_pitch = 1.0f;
+            }
+        }
         debug = config.getBoolean("debug", false);
         try {
             String chatTypeId = config.getString("message_type");
@@ -177,7 +218,7 @@ public class ConfigCache {
         return groupList;
     }
 
-    private void warn(String log) {
+    public void warn(String log) {
         if (logger == null) {
             System.out.println("WARNING: "+log);
             return;

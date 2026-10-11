@@ -52,7 +52,7 @@ public class CommandWhitelistVelocity {
 
     private void reloadConfig() {
         if (configCache == null)
-            configCache = new ConfigCache(folder.resolve("config.yml").toFile(), false, logger);
+            configCache = new ConfigCache(folder.resolve("config.yml").toFile(), false, false, logger);
         else
             configCache.reloadConfig();
     }

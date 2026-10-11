@@ -62,7 +62,7 @@ public final class CommandWhitelistWaterfall extends Plugin {
 
     public void loadConfig() {
         if (configCache == null)
-            configCache = new ConfigCache(new File(getDataFolder(), "config.yml"), false, getLogger());
+            configCache = new ConfigCache(new File(getDataFolder(), "config.yml"), false, true, getLogger());
         else
             configCache.reloadConfig();
     }
