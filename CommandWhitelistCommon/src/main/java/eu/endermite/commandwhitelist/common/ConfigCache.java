@@ -146,15 +146,17 @@ public class ConfigCache {
             }
         }
         debug = config.getBoolean("debug", false);
-        try {
-            String chatTypeId = config.getString("message_type");
-            if (chatTypeId == null) {
+        if (supportsCommandDeniedMessage) {
+            try {
+                String chatTypeId = config.getString("message_type");
+                if (chatTypeId == null) {
+                    warn("Invalid message type. Using CHAT.");
+                } else {
+                    messageType = MessageType.valueOf(chatTypeId.toUpperCase(Locale.ENGLISH));
+                }
+            } catch (IllegalArgumentException e) {
                 warn("Invalid message type. Using CHAT.");
-            } else {
-                messageType = MessageType.valueOf(chatTypeId.toUpperCase(Locale.ENGLISH));
             }
-        } catch (IllegalArgumentException e) {
-            warn("Invalid message type. Using CHAT.");
         }
 
         ConfigSection groupSection = config.getConfigSection("groups");
