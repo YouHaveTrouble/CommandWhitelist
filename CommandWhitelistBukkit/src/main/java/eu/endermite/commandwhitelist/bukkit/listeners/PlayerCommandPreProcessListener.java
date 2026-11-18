@@ -3,7 +3,7 @@ package eu.endermite.commandwhitelist.bukkit.listeners;
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
 import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
-import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -27,14 +27,14 @@ public class PlayerCommandPreProcessListener implements Listener {
         String messageWithoutSlash = event.getMessage().startsWith("/") ? event.getMessage().substring(1) : event.getMessage();
 
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
-        ConfigCache config = CommandWhitelistBukkit.getConfigCache();
+        ConfigSnapshot config = CommandWhitelistBukkit.getConfigCache().getSnapshot();
 
-        HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
+        HashSet<String> commands = CommandWhitelistBukkit.getCommands(player, config);
         if (!commands.contains(label)) {
             event.setCancelled(true);
             Component message = CWCommand.getParsedErrorMessage(
                     messageWithoutSlash,
-                    config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)
+                    config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label, config)
             );
             switch (config.messageType) {
                 case CHAT:
@@ -57,13 +57,13 @@ public class PlayerCommandPreProcessListener implements Listener {
                     float soundPitch = config.command_denied_sound_pitch;
                     audiences.player(player).playSound(Sound.sound(sound, Sound.Source.UI, soundVolume, soundPitch));
                 } catch (Exception e) {
-                    config.warn("Invalid sound. unable to play sound!");
+                    CommandWhitelistBukkit.getConfigCache().warn("Invalid sound. unable to play sound!");
                 }
             }
             return;
         }
 
-        HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
+        HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player, config);
 
         for (String bannedSubCommand : bannedSubCommands) {
             if (messageWithoutSlash.startsWith(bannedSubCommand)) {

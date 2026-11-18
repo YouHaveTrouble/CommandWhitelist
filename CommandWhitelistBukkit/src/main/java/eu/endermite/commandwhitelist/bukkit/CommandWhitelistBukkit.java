@@ -8,6 +8,7 @@ import eu.endermite.commandwhitelist.bukkit.listeners.TabCompleteBlockerListener
 import eu.endermite.commandwhitelist.bukkit.listeners.protocollib.PacketCommandPreProcessListener;
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
@@ -21,10 +22,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class CommandWhitelistBukkit extends JavaPlugin {
 
@@ -42,7 +41,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
 
         Plugin protocollib = getServer().getPluginManager().getPlugin("ProtocolLib");
 
-        if (!getConfigCache().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
+        if (!getConfigCache().getSnapshot().useProtocolLib || protocollib == null || !protocollib.isEnabled()) {
             getServer().getPluginManager().registerEvents(new PlayerCommandPreProcessListener(), this);
         } else {
             PacketCommandPreProcessListener.protocol(this);
@@ -68,7 +67,7 @@ public class CommandWhitelistBukkit extends JavaPlugin {
         new Metrics(this, 8705);
     }
 
-    private void reloadPluginConfig() {
+    private boolean reloadPluginConfig() {
         File configFile = new File("plugins/CommandWhitelist/config.yml");
         if (configCache == null) {
             try {
@@ -76,21 +75,30 @@ public class CommandWhitelistBukkit extends JavaPlugin {
             } catch (NoSuchMethodError e) {
                 configCache = new ConfigCache(configFile, true, true, null);
             }
-            return;
+            return true;
         }
-        configCache.reloadConfig();
+        return configCache.reloadConfig();
     }
 
     public void reloadPluginConfig(CommandSender sender) {
-        CompletableFuture.runAsync(() -> {
-            reloadPluginConfig();
-            try {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.updateCommands();
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            boolean reloaded = reloadPluginConfig();
+            Bukkit.getScheduler().runTask(this, () -> {
+                ConfigSnapshot snapshot = configCache.getSnapshot();
+                if (!reloaded) {
+                    audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(
+                            snapshot.prefix + "<red>Configuration reload failed. Check the server console."
+                    ));
+                    return;
                 }
-            } catch (Exception ignored) {
-            }
-            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.config_reloaded));
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.updateCommands();
+                }
+                audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(
+                        snapshot.prefix + snapshot.config_reloaded
+                ));
+            });
         });
     }
 
@@ -111,8 +119,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
      * @return commands available to the player
      */
     public static HashSet<String> getCommands(org.bukkit.entity.Player player) {
+        return getCommands(player, configCache.getSnapshot());
+    }
+
+    public static HashSet<String> getCommands(org.bukkit.entity.Player player, ConfigSnapshot snapshot) {
         HashSet<String> commandList = new HashSet<>();
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        Map<String, CWGroup> groups = snapshot.groups;
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue().getCommands());
@@ -127,8 +139,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
      * @return subcommands unavailable for the player
      */
     public static HashSet<String> getSuggestions(Player player) {
+        return getSuggestions(player, configCache.getSnapshot());
+    }
+
+    public static HashSet<String> getSuggestions(Player player, ConfigSnapshot snapshot) {
         HashSet<String> suggestionList = new HashSet<>();
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        Map<String, CWGroup> groups = snapshot.groups;
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());
@@ -142,9 +158,12 @@ public class CommandWhitelistBukkit extends JavaPlugin {
      * @return Command denied message. Will use custom if command exists in any group.
      */
     public static String getCommandDeniedMessage(String command) {
-        String commandDeniedMessage = configCache.command_denied;
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
-        for (CWGroup group : groups.values()) {
+        return getCommandDeniedMessage(command, configCache.getSnapshot());
+    }
+
+    public static String getCommandDeniedMessage(String command, ConfigSnapshot snapshot) {
+        String commandDeniedMessage = snapshot.command_denied;
+        for (CWGroup group : snapshot.groups.values()) {
             if (group.getCommands().contains(command)) {
                 if (group.getCommandDeniedMessage() == null || group.getCommandDeniedMessage().isEmpty()) continue;
                 commandDeniedMessage = group.getCommandDeniedMessage();

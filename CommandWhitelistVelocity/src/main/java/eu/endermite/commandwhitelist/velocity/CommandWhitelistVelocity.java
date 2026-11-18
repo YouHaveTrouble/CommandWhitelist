@@ -17,6 +17,7 @@ import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.velocity.command.VelocityMainCommand;
 import org.bstats.charts.SimplePie;
@@ -50,17 +51,22 @@ public class CommandWhitelistVelocity {
         this.injector = injector;
     }
 
-    private void reloadConfig() {
-        if (configCache == null)
+    private boolean reloadConfig() {
+        if (configCache == null) {
             configCache = new ConfigCache(folder.resolve("config.yml").toFile(), false, false, logger);
-        else
-            configCache.reloadConfig();
+            return true;
+        }
+        return configCache.reloadConfig();
     }
 
     public int reloadConfig(CommandSource source) {
         server.getScheduler().buildTask(this, () -> {
-            reloadConfig();
-            source.sendMessage(CWCommand.miniMessage.deserialize(getConfigCache().prefix + getConfigCache().config_reloaded));
+            boolean reloaded = reloadConfig();
+            ConfigSnapshot snapshot = getConfigCache().getSnapshot();
+            String message = reloaded
+                    ? snapshot.config_reloaded
+                    : "<red>Configuration reload failed. Check the proxy console.";
+            source.sendMessage(CWCommand.miniMessage.deserialize(snapshot.prefix + message));
         }).schedule();
         return Command.SINGLE_SUCCESS;
     }
@@ -91,24 +97,25 @@ public class CommandWhitelistVelocity {
         Player player = (Player) event.getCommandSource();
 
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
+        ConfigSnapshot snapshot = configCache.getSnapshot();
 
         // Workaround for velocity executing "/ command" as valid command
         String command = event.getCommand().trim();
         if (command.startsWith("/")) command = command.substring(1);
 
-        HashSet<String> allowedCommands = getCommands(player);
+        HashSet<String> allowedCommands = getCommands(player, snapshot);
         String label = CommandUtil.getCommandLabel(command);
         if (server.getCommandManager().hasCommand(label) && !allowedCommands.contains(label)) {
             event.setResult(CommandExecuteEvent.CommandResult.forwardToServer());
             return;
         }
 
-        HashSet<String> bannedSubCommands = getSuggestions(player);
+        HashSet<String> bannedSubCommands = getSuggestions(player, snapshot);
 
         for (String bannedSubCommand : bannedSubCommands) {
             if (command.startsWith(bannedSubCommand)) {
                 event.setResult(CommandExecuteEvent.CommandResult.denied());
-                player.sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.subcommand_denied));
+                player.sendMessage(CWCommand.miniMessage.deserialize(snapshot.prefix + snapshot.subcommand_denied));
                 return;
             }
         }
@@ -144,7 +151,11 @@ public class CommandWhitelistVelocity {
      * @return commands available to the player
      */
     public HashSet<String> getCommands(Player player) {
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        return getCommands(player, configCache.getSnapshot());
+    }
+
+    public HashSet<String> getCommands(Player player, ConfigSnapshot snapshot) {
+        Map<String, CWGroup> groups = snapshot.groups;
         HashSet<String> commandList = new HashSet<>();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             CWGroup group = s.getValue();
@@ -161,8 +172,12 @@ public class CommandWhitelistVelocity {
      * @return subcommands unavailable for the player
      */
     public HashSet<String> getSuggestions(Player player) {
+        return getSuggestions(player, configCache.getSnapshot());
+    }
+
+    public HashSet<String> getSuggestions(Player player, ConfigSnapshot snapshot) {
         HashSet<String> suggestionList = new HashSet<>();
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        Map<String, CWGroup> groups = snapshot.groups;
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 suggestionList.addAll(s.getValue().getSubCommands());

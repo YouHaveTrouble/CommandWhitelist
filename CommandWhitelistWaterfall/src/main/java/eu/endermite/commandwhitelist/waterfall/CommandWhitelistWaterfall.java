@@ -2,6 +2,7 @@ package eu.endermite.commandwhitelist.waterfall;
 
 import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.command.BungeeMainCommand;
 import eu.endermite.commandwhitelist.waterfall.listeners.BungeeChatEventListener;
@@ -60,17 +61,22 @@ public final class CommandWhitelistWaterfall extends Plugin {
         return audiences;
     }
 
-    public void loadConfig() {
-        if (configCache == null)
+    public boolean loadConfig() {
+        if (configCache == null) {
             configCache = new ConfigCache(new File(getDataFolder(), "config.yml"), false, true, getLogger());
-        else
-            configCache.reloadConfig();
+            return true;
+        }
+        return configCache.reloadConfig();
     }
 
     public void loadConfigAsync(CommandSender sender) {
         getProxy().getScheduler().runAsync(this, () -> {
-            loadConfig();
-            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistWaterfall.getConfigCache().prefix + CommandWhitelistWaterfall.getConfigCache().config_reloaded));
+            boolean reloaded = loadConfig();
+            ConfigSnapshot snapshot = CommandWhitelistWaterfall.getConfigCache().getSnapshot();
+            String message = reloaded
+                    ? snapshot.config_reloaded
+                    : "<red>Configuration reload failed. Check the proxy console.";
+            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(snapshot.prefix + message));
         });
     }
 
@@ -79,8 +85,12 @@ public final class CommandWhitelistWaterfall extends Plugin {
      * @return commands available to the player
      */
     public static HashSet<String> getCommands(ProxiedPlayer player) {
+        return getCommands(player, configCache.getSnapshot());
+    }
+
+    public static HashSet<String> getCommands(ProxiedPlayer player, ConfigSnapshot snapshot) {
         HashSet<String> commandList = new HashSet<>();
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        Map<String, CWGroup> groups = snapshot.groups;
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
                 commandList.addAll(s.getValue().getCommands());
@@ -95,7 +105,11 @@ public final class CommandWhitelistWaterfall extends Plugin {
      * @return subcommands unavailable for the player
      */
     public static HashSet<String> getSuggestions(ProxiedPlayer player) {
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
+        return getSuggestions(player, configCache.getSnapshot());
+    }
+
+    public static HashSet<String> getSuggestions(ProxiedPlayer player, ConfigSnapshot snapshot) {
+        Map<String, CWGroup> groups = snapshot.groups;
         HashSet<String> suggestionList = new HashSet<>();
         for (Map.Entry<String, CWGroup> s : groups.entrySet()) {
             if (s.getKey().equalsIgnoreCase("default"))
@@ -110,9 +124,12 @@ public final class CommandWhitelistWaterfall extends Plugin {
      * @return Command denied message. Will use custom if command exists in any group.
      */
     public static String getCommandDeniedMessage(String command) {
-        String commandDeniedMessage = configCache.command_denied;
-        HashMap<String, CWGroup> groups = configCache.getGroupList();
-        for (CWGroup group : groups.values()) {
+        return getCommandDeniedMessage(command, configCache.getSnapshot());
+    }
+
+    public static String getCommandDeniedMessage(String command, ConfigSnapshot snapshot) {
+        String commandDeniedMessage = snapshot.command_denied;
+        for (CWGroup group : snapshot.groups.values()) {
             if (group.getCommands().contains(command)) {
                 if (group.getCommandDeniedMessage() == null || group.getCommandDeniedMessage().isEmpty()) continue;
                 commandDeniedMessage = group.getCommandDeniedMessage();

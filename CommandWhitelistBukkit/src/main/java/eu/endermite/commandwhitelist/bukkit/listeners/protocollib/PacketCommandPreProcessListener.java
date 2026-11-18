@@ -10,7 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
 import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
-import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.entity.Player;
@@ -35,19 +35,19 @@ public class PacketCommandPreProcessListener {
                 if (!string.startsWith("/")) return;
                 Player player = event.getPlayer();
                 if (player.hasPermission(CWPermission.BYPASS.permission())) return;
-                ConfigCache config = CommandWhitelistBukkit.getConfigCache();
+                ConfigSnapshot config = CommandWhitelistBukkit.getConfigCache().getSnapshot();
                 String caseSensitiveLabel = CommandUtil.getCommandLabel(string);
                 String label = caseSensitiveLabel.toLowerCase();
                 packet.getStrings().write(0, string.replaceFirst(caseSensitiveLabel, label));
 
-                HashSet<String> commands = CommandWhitelistBukkit.getCommands(player);
+                HashSet<String> commands = CommandWhitelistBukkit.getCommands(player, config);
                 BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
                 if (!commands.contains(label)) {
                     event.setCancelled(true);
-                    audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label)));
+                    audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + CommandWhitelistBukkit.getCommandDeniedMessage(label, config)));
                     return;
                 }
-                HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player);
+                HashSet<String> bannedSubCommands = CommandWhitelistBukkit.getSuggestions(player, config);
                 for (String bannedSubCommand : bannedSubCommands) {
                     if (string.toLowerCase().substring(1).startsWith(bannedSubCommand)) {
                         event.setCancelled(true);

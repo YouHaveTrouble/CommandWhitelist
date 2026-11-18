@@ -3,6 +3,7 @@ package eu.endermite.commandwhitelist.waterfall.listeners;
 import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
 import net.kyori.adventure.key.Key;
@@ -26,21 +27,22 @@ public class BungeeChatEventListener implements Listener {
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
 
-        String command = event.getMessage().toLowerCase();
+        String command = event.getMessage().toLowerCase(java.util.Locale.ROOT);
         if (command.startsWith("/"))
             command = command.substring(1);
         ConfigCache configCache = CommandWhitelistWaterfall.getConfigCache();
+        ConfigSnapshot snapshot = configCache.getSnapshot();
         BungeeAudiences audiences = CommandWhitelistWaterfall.getAudiences();
 
         String label = CommandUtil.getCommandLabel(command);
-        HashSet<String> commands = CommandWhitelistWaterfall.getCommands(player);
+        HashSet<String> commands = CommandWhitelistWaterfall.getCommands(player, snapshot);
         if (!commands.contains(label)) {
             event.setCancelled(true);
             Component message = CWCommand.getParsedErrorMessage(
                     command,
-                    configCache.prefix + CommandWhitelistWaterfall.getCommandDeniedMessage(label)
+                    snapshot.prefix + CommandWhitelistWaterfall.getCommandDeniedMessage(label, snapshot)
             );
-            switch (configCache.messageType) {
+            switch (snapshot.messageType) {
                 case CHAT:
                     audiences.player(player).sendMessage(message);
                     break;
@@ -52,12 +54,12 @@ public class BungeeChatEventListener implements Listener {
                     audiences.player(player).sendActionBar(message);
                     break;
             }
-            if(configCache.command_denied_sound_enabled) {
+            if(snapshot.command_denied_sound_enabled) {
                 try {
-                    String soundKey = configCache.command_denied_sound_key;
+                    String soundKey = snapshot.command_denied_sound_key;
                     Key sound = Key.key(soundKey);
-                    float soundVolume = configCache.command_denied_sound_volume;
-                    float soundPitch = configCache.command_denied_sound_pitch;
+                    float soundVolume = snapshot.command_denied_sound_volume;
+                    float soundPitch = snapshot.command_denied_sound_pitch;
                     audiences.player(player).playSound(Sound.sound(sound, Sound.Source.UI, soundVolume, soundPitch));
                 } catch (Exception e) {
                     configCache.warn("Invalid sound. unable to play sound!");
@@ -66,11 +68,11 @@ public class BungeeChatEventListener implements Listener {
             return;
         }
 
-        HashSet<String> bannedSubCommands = CommandWhitelistWaterfall.getSuggestions(player);
+        HashSet<String> bannedSubCommands = CommandWhitelistWaterfall.getSuggestions(player, snapshot);
         for (String bannedSubCommand : bannedSubCommands) {
             if (command.startsWith(bannedSubCommand)) {
                 event.setCancelled(true);
-                audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(configCache.prefix + configCache.subcommand_denied));
+                audiences.player(player).sendMessage(CWCommand.miniMessage.deserialize(snapshot.prefix + snapshot.subcommand_denied));
                 return;
             }
         }

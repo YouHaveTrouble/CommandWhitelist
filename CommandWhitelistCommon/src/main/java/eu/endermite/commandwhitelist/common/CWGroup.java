@@ -7,15 +7,15 @@ import java.util.*;
 public class CWGroup {
 
     private final String id, permission, commandDeniedMessage;
-    private final HashSet<String> commands = new HashSet<>();
-    private final HashSet<String> subCommands = new HashSet<>();
+    private final Set<String> commands;
+    private final Set<String> subCommands;
 
     public CWGroup(String id, Collection<String> commands, Collection<String> subCommands, String custom_command_denied_message) {
         this.id = id;
         this.permission = "commandwhitelist.group." + id;
-        this.commands.addAll(commands);
+        this.commands = Collections.unmodifiableSet(new LinkedHashSet<>(commands));
         this.commandDeniedMessage = custom_command_denied_message;
-        this.subCommands.addAll(subCommands);
+        this.subCommands = Collections.unmodifiableSet(new LinkedHashSet<>(subCommands));
     }
 
     public String getId() {
@@ -26,7 +26,7 @@ public class CWGroup {
         return permission;
     }
 
-    public HashSet<String> getCommands() {
+    public Set<String> getCommands() {
         return commands;
     }
 
@@ -34,32 +34,26 @@ public class CWGroup {
         return commandDeniedMessage;
     }
 
-    public void addCommand(String command) {
-        commands.add(command);
+    public CWGroup withCommandAdded(String command) {
+        Set<String> updatedCommands = new LinkedHashSet<>(commands);
+        updatedCommands.add(command);
+        return new CWGroup(id, updatedCommands, subCommands, commandDeniedMessage);
     }
 
-    public void removeCommand(String command) {
-        commands.remove(command);
+    public CWGroup withCommandRemoved(String command) {
+        Set<String> updatedCommands = new LinkedHashSet<>(commands);
+        updatedCommands.remove(command);
+        return new CWGroup(id, updatedCommands, subCommands, commandDeniedMessage);
     }
 
-    public HashSet<String> getSubCommands() {
+    public Set<String> getSubCommands() {
         return subCommands;
-    }
-
-    public void addSubCommand(String subCommand) {
-        subCommands.add(subCommand);
-    }
-
-    public void removeSubCommand(String subCommand) {
-        subCommands.remove(subCommand);
     }
 
     public HashMap<String, Object> serialize() {
         HashMap<String, Object> serializedGroup = new LinkedHashMap<>();
-        List<String> commands = new ArrayList<>(this.commands);
-        List<String> subCommands = new ArrayList<>(this.subCommands);
-        serializedGroup.put("commands", commands);
-        serializedGroup.put("subcommands", subCommands);
+        serializedGroup.put("commands", new ArrayList<>(commands));
+        serializedGroup.put("subcommands", new ArrayList<>(subCommands));
         return serializedGroup;
     }
 }

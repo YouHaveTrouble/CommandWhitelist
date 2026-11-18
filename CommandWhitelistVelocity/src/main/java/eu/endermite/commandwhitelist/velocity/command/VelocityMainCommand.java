@@ -15,6 +15,7 @@ import eu.endermite.commandwhitelist.common.CWGroup;
 import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.ConfigCache;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import eu.endermite.commandwhitelist.velocity.CommandWhitelistVelocity;
 import net.kyori.adventure.text.Component;
@@ -71,13 +72,14 @@ public final class VelocityMainCommand {
                             .executes(ctx -> {
                                 CommandSource source = ctx.getSource();
                                 ConfigCache configCache = plugin.getConfigCache();
+                                ConfigSnapshot snapshot = configCache.getSnapshot();
                                 String arg1 = ctx.getArgument("group", String.class);
                                 String arg2 = ctx.getArgument("command", String.class);
 
                                 if (CWCommand.addToWhitelist(configCache, arg2, arg1))
-                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.added_to_whitelist, arg2, arg1)));
+                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(snapshot.prefix + snapshot.added_to_whitelist, arg2, arg1)));
                                 else
-                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.group_doesnt_exist, arg1)));
+                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(snapshot.prefix + snapshot.group_doesnt_exist, arg1)));
                                 return Command.SINGLE_SUCCESS;
                             })
                         )
@@ -103,13 +105,14 @@ public final class VelocityMainCommand {
                             .executes(ctx -> {
                                 CommandSource source = ctx.getSource();
                                 ConfigCache configCache = plugin.getConfigCache();
+                                ConfigSnapshot snapshot = configCache.getSnapshot();
                                 String arg1 = ctx.getArgument("group", String.class);
                                 String arg2 = ctx.getArgument("command", String.class);
 
                                 if (CWCommand.removeFromWhitelist(configCache, arg2, arg1))
-                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.removed_from_whitelist, arg2, arg1)));
+                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(snapshot.prefix + snapshot.removed_from_whitelist, arg2, arg1)));
                                 else
-                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(configCache.prefix + configCache.group_doesnt_exist, arg1)));
+                                    source.sendMessage(CWCommand.miniMessage.deserialize(String.format(snapshot.prefix + snapshot.group_doesnt_exist, arg1)));
                                 return Command.SINGLE_SUCCESS;
                             })
                         )

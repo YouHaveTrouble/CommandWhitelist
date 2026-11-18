@@ -2,6 +2,7 @@ package eu.endermite.commandwhitelist.bukkit.command;
 
 import eu.endermite.commandwhitelist.bukkit.CommandWhitelistBukkit;
 import eu.endermite.commandwhitelist.common.CWPermission;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.common.CommandUtil;
 import eu.endermite.commandwhitelist.common.commands.CWCommand;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -19,6 +20,7 @@ public class BukkitCommandExecutor implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         BukkitAudiences audiences = CommandWhitelistBukkit.getAudiences();
+        ConfigSnapshot config = CommandWhitelistBukkit.getConfigCache().getSnapshot();
 
         if (args.length == 0) {
             audiences.sender(sender).sendMessage(CWCommand.helpComponent(label, sender.hasPermission(CWPermission.RELOAD.permission()), sender.hasPermission(CWPermission.ADMIN.permission())));
@@ -29,40 +31,40 @@ public class BukkitCommandExecutor implements TabExecutor {
             switch (commandType) {
                 case RELOAD:
                     if (!sender.hasPermission(CWPermission.RELOAD.permission())) {
-                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().no_permission));
+                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + config.no_permission));
                         return true;
                     }
                     CommandWhitelistBukkit.getPlugin().reloadPluginConfig(sender);
                     return true;
                 case ADD:
                     if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
-                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().no_permission));
+                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + config.no_permission));
                         return true;
                     }
                     if (args.length == 3) {
                         if (CWCommand.addToWhitelist(CommandWhitelistBukkit.getConfigCache(), args[2], args[1]))
-                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().added_to_whitelist, args[2], args[1])));
+                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(config.prefix + config.added_to_whitelist, args[2], args[1])));
                         else
-                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().group_doesnt_exist, args[1])));
+                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(config.prefix + config.group_doesnt_exist, args[1])));
                     } else
                         audiences.sender(sender).sendMessage(Component.text("/" + label + " add <group> <command>"));
                     return true;
                 case REMOVE:
                     if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
-                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().no_permission));
+                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + config.no_permission));
                         return true;
                     }
                     if (args.length == 3) {
                         if (CWCommand.removeFromWhitelist(CommandWhitelistBukkit.getConfigCache(), args[2], args[1]))
-                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().removed_from_whitelist, args[2], args[1])));
+                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(config.prefix + config.removed_from_whitelist, args[2], args[1])));
                         else
-                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().group_doesnt_exist, args[1])));
+                            audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(String.format(config.prefix + config.group_doesnt_exist, args[1])));
                     } else
                         audiences.sender(sender).sendMessage(Component.text("/" + label + " remove <group> <command>"));
                     return true;
                 case DUMP:
                     if (!sender.hasPermission(CWPermission.ADMIN.permission())) {
-                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(CommandWhitelistBukkit.getConfigCache().prefix + CommandWhitelistBukkit.getConfigCache().no_permission));
+                        audiences.sender(sender).sendMessage(CWCommand.miniMessage.deserialize(config.prefix + config.no_permission));
                         return true;
                     }
                     audiences.sender(sender).sendMessage(Component.text("Dumping all available commands to a file..."));
