@@ -19,20 +19,11 @@ public class CWCommand {
     public static MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public static boolean addToWhitelist(ConfigCache configCache, String command, String group) {
-        CWGroup cwGroup = configCache.getGroupList().get(group);
-        if (cwGroup == null) return false;
-        cwGroup.addCommand(command);
-        configCache.saveCWGroup(group, cwGroup);
-        return true;
+        return configCache.addCommandToGroup(group, command);
     }
 
     public static boolean removeFromWhitelist(ConfigCache configCache, String command, String group) {
-        CWGroup cwGroup = configCache.getGroupList().get(group);
-        if (cwGroup == null)
-            return false;
-        cwGroup.removeCommand(command);
-        configCache.saveCWGroup(group, cwGroup);
-        return true;
+        return configCache.removeCommandFromGroup(group, command);
     }
 
     public static Component helpComponent(String baseCommand, boolean showReloadCommand, boolean showAdminCommands) {

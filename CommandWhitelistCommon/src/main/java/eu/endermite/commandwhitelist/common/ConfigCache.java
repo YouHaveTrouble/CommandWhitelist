@@ -10,20 +10,13 @@ import java.util.*;
 
 public class ConfigCache {
 
+    private static final String DEFAULT_COMMAND_DENIED_SOUND_KEY = "entity.villager.no";
+
     private final File configFile;
     private ConfigFile config;
     private final Object logger;
     private final boolean canDoProtocolLib, supportsCommandDeniedMessage;
-    private final HashMap<String, CWGroup> groupList = new LinkedHashMap<>();
-    public String prefix, command_denied, no_permission, no_such_subcommand, config_reloaded, added_to_whitelist,
-            removed_from_whitelist, group_doesnt_exist, subcommand_denied, command_denied_sound_key;
-    public boolean useProtocolLib = false;
-    public boolean command_denied_sound_enabled = false;
-    public float command_denied_sound_volume = 1.0f;
-    public float command_denied_sound_pitch = 1.0f;
-    public MessageType messageType = MessageType.CHAT;
-    public boolean debug = false;
-    private final String default_command_denied_sound_key = "entity.villager.no";
+    private volatile ConfigSnapshot snapshot = ConfigSnapshot.empty();
 
     public ConfigCache(File configFile, boolean canDoProtocolLib, boolean supportsCommandDeniedMessage, Object logger) {
         this.configFile = configFile;
@@ -38,128 +31,129 @@ public class ConfigCache {
         }
     }
 
-    public boolean reloadConfig() {
-
+    public synchronized boolean reloadConfig() {
         createFiles();
+
+        final ConfigFile loadedConfig;
         try {
-            config = ConfigFile.loadConfig(configFile);
+            loadedConfig = ConfigFile.loadConfig(configFile);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
 
-        config.addDefault("messages.prefix", "CommandWhitelist > ");
+        loadedConfig.addDefault("messages.prefix", "CommandWhitelist > ");
         if (supportsCommandDeniedMessage) {
-            config.addDefault("messages.command_denied", "No such command.");
-            config.addDefault("messages.subcommand_denied", "You cannot use this subcommand");
+            loadedConfig.addDefault("messages.command_denied", "No such command.");
+            loadedConfig.addDefault("messages.subcommand_denied", "You cannot use this subcommand");
         }
 
-        config.addDefault("messages.no_permission", "<red>You don't have permission to do this.");
-        config.addDefault("messages.no_such_subcommand", "<red>No subcommand by that name.");
-        config.addDefault("messages.config_reloaded", "<yellow>Configuration reloaded.");
-        config.addDefault("messages.added_to_whitelist", "<yellow>Whitelisted command <gold>%s <yellow>for permission <gold>%s");
-        config.addDefault("messages.removed_from_whitelist", "<yellow>Removed command <gold>%s <yellow>from permission <gold>%s");
-        config.addDefault("messages.group_doesnt_exist", "<red>Group doesn't exist or error occured");
+        loadedConfig.addDefault("messages.no_permission", "<red>You don't have permission to do this.");
+        loadedConfig.addDefault("messages.no_such_subcommand", "<red>No subcommand by that name.");
+        loadedConfig.addDefault("messages.config_reloaded", "<yellow>Configuration reloaded.");
+        loadedConfig.addDefault("messages.added_to_whitelist", "<yellow>Whitelisted command <gold>%s <yellow>for permission <gold>%s");
+        loadedConfig.addDefault("messages.removed_from_whitelist", "<yellow>Removed command <gold>%s <yellow>from permission <gold>%s");
+        loadedConfig.addDefault("messages.group_doesnt_exist", "<red>Group doesn't exist or error occured");
+        loadedConfig.addComment("messages", "Messages use MiniMessage formatting (https://docs.adventure.kyori.net/minimessage/format)");
 
-        config.addComment("messages", "Messages use MiniMessage formatting (https://docs.adventure.kyori.net/minimessage/format)");
-
-        if (canDoProtocolLib)
-            config.addDefault("use_protocollib", false, "Do not enable if you don't have issues with aliased commands.\nThis requires server restart to take effect.");
-
-        if (supportsCommandDeniedMessage) {
-            config.addDefault("message_type", MessageType.CHAT.toString(), "Valid message types are CHAT and ACTIONBAR and CHAT_AND_ACTIONBAR.");
-            config.addDefault("command_denied_sound.enabled", false);
-            config.addDefault("command_denied_sound.key", "entity.villager.no");
-            config.addDefault("command_denied_sound.volume", 1.0f);
-            config.addDefault("command_denied_sound.pitch", 1.0f);
+        if (canDoProtocolLib) {
+            loadedConfig.addDefault("use_protocollib", false,
+                    "Do not enable if you don't have issues with aliased commands.\nThis requires server restart to take effect.");
         }
 
-        if (config.isNew()) {
+        if (supportsCommandDeniedMessage) {
+            loadedConfig.addDefault("message_type", MessageType.CHAT.toString(),
+                    "Valid message types are CHAT and ACTIONBAR and CHAT_AND_ACTIONBAR.");
+            loadedConfig.addDefault("command_denied_sound.enabled", false);
+            loadedConfig.addDefault("command_denied_sound.key", DEFAULT_COMMAND_DENIED_SOUND_KEY);
+            loadedConfig.addDefault("command_denied_sound.volume", 1.0f);
+            loadedConfig.addDefault("command_denied_sound.pitch", 1.0f);
+        }
+
+        if (loadedConfig.isNew()) {
             List<String> exampleCommands = new ArrayList<>();
             exampleCommands.add("example");
             List<String> exampleSubCommands = new ArrayList<>();
             exampleSubCommands.add("example of");
             String exampleCustomCommandDeniedMessage = "You don't have commandwhitelist.group.example permission.";
 
-            config.addExample("groups.example.commands", exampleCommands, "This is the WHITELIST of commands that players will be able to see/use in the group \"example\"");
-            config.addExample("groups.example.subcommands", exampleSubCommands, "This is the BLACKLIST of subcommands that players will NOT be able to see/use in the group \"example\"");
-            config.addExample("groups.example.custom_command_denied_message", exampleCustomCommandDeniedMessage, "This is a custom message that players will see if they do not have commandwhitelist.group.<group_name> permission.\ncommandwhitelist.group.example in this case\nIf you don't want to use a custom message, set custom_command_denid_message: \"\"");
-            config.addComment("groups.example", "All groups except from default require commandwhitelist.group.<group_name> permission\ncommandwhitelist.group.example in this case\n If you wish to leave the list empty, put \"commands: []\" or \"subcommands: []\"");
+            loadedConfig.addExample("groups.example.commands", exampleCommands,
+                    "This is the WHITELIST of commands that players will be able to see/use in the group \"example\"");
+            loadedConfig.addExample("groups.example.subcommands", exampleSubCommands,
+                    "This is the BLACKLIST of subcommands that players will NOT be able to see/use in the group \"example\"");
+            loadedConfig.addExample("groups.example.custom_command_denied_message", exampleCustomCommandDeniedMessage,
+                    "This is a custom message that players will see if they do not have commandwhitelist.group.<group_name> permission.\n" +
+                            "commandwhitelist.group.example in this case\n" +
+                            "If you don't want to use a custom message, set custom_command_denid_message: \"\"");
+            loadedConfig.addComment("groups.example",
+                    "All groups except from default require commandwhitelist.group.<group_name> permission\n" +
+                            "commandwhitelist.group.example in this case\n" +
+                            "If you wish to leave the list empty, put \"commands: []\" or \"subcommands: []\"");
         }
 
-        config.makeSectionLenient("groups");
-        List<String> defaultCommands = new ArrayList<>();
-        defaultCommands.add("help");
-        defaultCommands.add("spawn");
-        defaultCommands.add("bal");
-        defaultCommands.add("balance");
-        defaultCommands.add("baltop");
-        defaultCommands.add("pay");
-        defaultCommands.add("r");
-        defaultCommands.add("msg");
-        defaultCommands.add("tpa");
-        defaultCommands.add("tpahere");
-        defaultCommands.add("tpaccept");
-        defaultCommands.add("tpdeny");
-        defaultCommands.add("warp");
-        List<String> defaultSubcommands = new ArrayList<>();
-        defaultSubcommands.add("help about");
+        loadedConfig.makeSectionLenient("groups");
+        List<String> defaultCommands = Arrays.asList(
+                "help", "spawn", "bal", "balance", "baltop", "pay", "r", "msg",
+                "tpa", "tpahere", "tpaccept", "tpdeny", "warp"
+        );
+        List<String> defaultSubcommands = Collections.singletonList("help about");
+        loadedConfig.addDefault("groups.default",
+                new CWGroup("default", defaultCommands, defaultSubcommands, "").serialize());
 
-        String defaultCustomCommandDeniedMessage = "";
+        String prefix = loadedConfig.getString("messages.prefix");
+        String commandDenied = loadedConfig.getString("messages.command_denied", "No such command.");
+        String subcommandDenied = loadedConfig.getString("messages.subcommand_denied", "You cannot use this subcommand");
+        String noPermission = loadedConfig.getString("messages.no_permission");
+        String noSuchSubcommand = loadedConfig.getString("messages.no_such_subcommand");
+        String configReloaded = loadedConfig.getString("messages.config_reloaded");
+        String addedToWhitelist = loadedConfig.getString("messages.added_to_whitelist");
+        String removedFromWhitelist = loadedConfig.getString("messages.removed_from_whitelist");
+        String groupDoesntExist = loadedConfig.getString("messages.group_doesnt_exist");
+        boolean useProtocolLib = loadedConfig.getBoolean("use_protocollib", false);
+        boolean commandDeniedSoundEnabled = loadedConfig.getBoolean("command_denied_sound.enabled", false);
+        String commandDeniedSoundKey = DEFAULT_COMMAND_DENIED_SOUND_KEY;
+        float commandDeniedSoundVolume = 1.0f;
+        float commandDeniedSoundPitch = 1.0f;
 
-        config.addDefault("groups.default", new CWGroup("default", defaultCommands, defaultSubcommands, defaultCustomCommandDeniedMessage).serialize());
-
-        prefix = config.getString("messages.prefix");
-        command_denied = config.getString("messages.command_denied", "No such command.");
-        subcommand_denied = config.getString("messages.subcommand_denied", "You cannot use this subcommand");
-        no_permission = config.getString("messages.no_permission");
-        no_such_subcommand = config.getString("messages.no_such_subcommand");
-        config_reloaded = config.getString("messages.config_reloaded");
-        added_to_whitelist = config.getString("messages.added_to_whitelist");
-        removed_from_whitelist = config.getString("messages.removed_from_whitelist");
-        group_doesnt_exist = config.getString("messages.group_doesnt_exist");
-        useProtocolLib = config.getBoolean("use_protocollib");
-        command_denied_sound_enabled =  config.getBoolean("command_denied_sound.enabled", false);
-        if(command_denied_sound_enabled) {
+        if (commandDeniedSoundEnabled) {
             try {
-                String temp_command_denied_sound_key = config.getString("command_denied_sound.key");
-                if(temp_command_denied_sound_key == null) {
-                    warn("Invalid sound key. Using " + default_command_denied_sound_key);
-                    command_denied_sound_key = default_command_denied_sound_key;
+                String configuredSoundKey = loadedConfig.getString("command_denied_sound.key");
+                if (configuredSoundKey == null) {
+                    warn("Invalid sound key. Using " + DEFAULT_COMMAND_DENIED_SOUND_KEY);
                 } else {
                     try {
-                    Key isSound = Key.key(temp_command_denied_sound_key);
-                    command_denied_sound_key = isSound.asString();
+                        commandDeniedSoundKey = Key.key(configuredSoundKey).asString().toLowerCase(Locale.ROOT);
                     } catch (Exception e) {
-                        warn("Invalid sound key. Using " + default_command_denied_sound_key);
-                        command_denied_sound_key = default_command_denied_sound_key;
+                        warn("Invalid sound key. Using " + DEFAULT_COMMAND_DENIED_SOUND_KEY);
                     }
-                    command_denied_sound_key = command_denied_sound_key.toLowerCase(Locale.ENGLISH);
                 }
-                command_denied_sound_volume = config.getFloat("command_denied_sound.volume");
-                command_denied_sound_pitch = config.getFloat("command_denied_sound.pitch");
+                commandDeniedSoundVolume = loadedConfig.getFloat("command_denied_sound.volume");
+                commandDeniedSoundPitch = loadedConfig.getFloat("command_denied_sound.pitch");
             } catch (Exception e) {
                 warn("Invalid sound. Using default sound configurations.");
-                command_denied_sound_key = default_command_denied_sound_key;
-                command_denied_sound_volume = 1.0f;
-                command_denied_sound_pitch = 1.0f;
+                commandDeniedSoundKey = DEFAULT_COMMAND_DENIED_SOUND_KEY;
+                commandDeniedSoundVolume = 1.0f;
+                commandDeniedSoundPitch = 1.0f;
             }
         }
-        debug = config.getBoolean("debug", false);
+
+        boolean debug = loadedConfig.getBoolean("debug", false);
+        MessageType messageType = MessageType.CHAT;
         try {
-            String chatTypeId = config.getString("message_type");
-            if (chatTypeId == null) {
-                warn("Invalid message type. Using CHAT.");
+            String chatTypeId = loadedConfig.getString("message_type");
+            if (chatTypeId != null) {
+                messageType = MessageType.valueOf(chatTypeId.toUpperCase(Locale.ROOT));
             } else {
-                messageType = MessageType.valueOf(chatTypeId.toUpperCase(Locale.ENGLISH));
+                warn("Invalid message type. Using CHAT.");
             }
         } catch (IllegalArgumentException e) {
             warn("Invalid message type. Using CHAT.");
         }
 
-        ConfigSection groupSection = config.getConfigSection("groups");
+        Map<String, CWGroup> loadedGroups = new LinkedHashMap<>();
+        ConfigSection groupSection = loadedConfig.getConfigSection("groups");
         for (String key : groupSection.getKeys(false)) {
-            groupList.put(key, loadCWGroup(key, groupSection));
+            loadedGroups.put(key, loadCWGroup(key, groupSection));
         }
 
         if (useProtocolLib) {
@@ -167,65 +161,143 @@ public class ConfigCache {
                     " use case for it (aka plugin does not work without it), please reach out via discord (https://discord.youhavetrouble.me).");
         }
 
-        return saveConfig();
+        if (!saveConfig(loadedConfig)) return false;
+
+        ConfigSnapshot loadedSnapshot = new ConfigSnapshot(
+                prefix,
+                commandDenied,
+                noPermission,
+                noSuchSubcommand,
+                configReloaded,
+                addedToWhitelist,
+                removedFromWhitelist,
+                groupDoesntExist,
+                subcommandDenied,
+                commandDeniedSoundKey,
+                useProtocolLib,
+                commandDeniedSoundEnabled,
+                commandDeniedSoundVolume,
+                commandDeniedSoundPitch,
+                messageType,
+                debug,
+                loadedGroups
+        );
+
+        config = loadedConfig;
+        snapshot = loadedSnapshot;
+        return true;
     }
 
-    private boolean saveConfig() {
+    private boolean saveConfig(ConfigFile target) {
         try {
-            config.save();
+            target.save();
             return true;
         } catch (Exception e) {
+            warn("CommandWhitelist - Failed to save configuration: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
     private void createFiles() {
         try {
-            File parent = new File(configFile.getParent());
-            if (!parent.exists())
-                parent.mkdir();
-            if (!configFile.exists())
-                configFile.createNewFile();
+            File parent = configFile.getParentFile();
+            if (parent != null && !parent.exists() && !parent.mkdirs()) {
+                throw new IOException("Could not create configuration directory: " + parent);
+            }
+            if (!configFile.exists() && !configFile.createNewFile()) {
+                throw new IOException("Could not create configuration file: " + configFile);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            warn("CommandWhitelist - Failed to create configuration file: " + e.getMessage());
         }
     }
 
     public CWGroup loadCWGroup(String id, ConfigSection section) {
         HashSet<String> commands = new HashSet<>();
-        for (String cmd : section.getStringList(id + ".commands")) {
-            if (cmd.contains(" ")) {
-                String[] cmdSplit = cmd.split(" ");
-                warn("CommandWhitelist - \"" + cmd + "\" is not a command. Loading it as \"" + cmdSplit[0] + "\".");
-                cmd = cmdSplit[0];
+        for (String command : section.getStringList(id + ".commands")) {
+            if (command.contains(" ")) {
+                String[] commandSplit = command.split(" ");
+                warn("CommandWhitelist - \"" + command + "\" is not a command. Loading it as \"" + commandSplit[0] + "\".");
+                command = commandSplit[0];
             }
-            if (commands.contains(cmd)) continue;
-            commands.add(cmd);
+            commands.add(command);
         }
+
         List<String> subCommands = new ArrayList<>();
-        for (String subCmd : section.getStringList(id + ".subcommands")) {
-            if (!subCmd.contains(" ")) {
-                warn("CommandWhitelist - \"" + subCmd + "\" is not a subcommand. Skipping it.");
+        for (String subCommand : section.getStringList(id + ".subcommands")) {
+            if (!subCommand.contains(" ")) {
+                warn("CommandWhitelist - \"" + subCommand + "\" is not a subcommand. Skipping it.");
                 continue;
             }
-            subCommands.add(subCmd);
+            subCommands.add(subCommand);
         }
+
         String customCommandDeniedMessage = section.getString(id + ".custom_command_denied_message");
         return new CWGroup(id, commands, subCommands, customCommandDeniedMessage);
     }
 
-    public void saveCWGroup(String id, CWGroup group) {
-        config.set("groups." + id, group.serialize());
-        saveConfig();
+    public synchronized boolean addCommandToGroup(String id, String command) {
+        ConfigSnapshot current = snapshot;
+        CWGroup currentGroup = current.groups.get(id);
+        if (currentGroup == null || config == null) return false;
+
+        CWGroup updatedGroup = currentGroup.withCommandAdded(command);
+        Map<String, CWGroup> updatedGroups = new LinkedHashMap<>(current.groups);
+        updatedGroups.put(id, updatedGroup);
+
+        final ConfigFile updatedConfig;
+        try {
+            // Work on a fresh instance so a failed save cannot leak uncommitted edits.
+            updatedConfig = ConfigFile.loadConfig(configFile);
+        } catch (Exception e) {
+            warn("CommandWhitelist - Failed to reload configuration before saving a group: " + e.getMessage());
+            return false;
+        }
+        updatedConfig.set("groups." + id, updatedGroup.serialize());
+        if (!saveConfig(updatedConfig)) return false;
+
+        config = updatedConfig;
+        snapshot = current.withGroups(updatedGroups);
+        return true;
     }
 
-    public HashMap<String, CWGroup> getGroupList() {
-        return groupList;
+    public synchronized boolean removeCommandFromGroup(String id, String command) {
+        ConfigSnapshot current = snapshot;
+        CWGroup currentGroup = current.groups.get(id);
+        if (currentGroup == null || config == null) return false;
+
+        CWGroup updatedGroup = currentGroup.withCommandRemoved(command);
+        Map<String, CWGroup> updatedGroups = new LinkedHashMap<>(current.groups);
+        updatedGroups.put(id, updatedGroup);
+
+        final ConfigFile updatedConfig;
+        try {
+            // Work on a fresh instance so a failed save cannot leak uncommitted edits.
+            updatedConfig = ConfigFile.loadConfig(configFile);
+        } catch (Exception e) {
+            warn("CommandWhitelist - Failed to reload configuration before saving a group: " + e.getMessage());
+            return false;
+        }
+        updatedConfig.set("groups." + id, updatedGroup.serialize());
+        if (!saveConfig(updatedConfig)) return false;
+
+        config = updatedConfig;
+        snapshot = current.withGroups(updatedGroups);
+        return true;
+    }
+
+    public ConfigSnapshot getSnapshot() {
+        return snapshot;
+    }
+
+    public Map<String, CWGroup> getGroupList() {
+        return snapshot.groups;
     }
 
     public void warn(String log) {
         if (logger == null) {
-            System.out.println("WARNING: "+log);
+            System.out.println("WARNING: " + log);
             return;
         }
         if (logger instanceof org.slf4j.Logger) {
@@ -234,14 +306,13 @@ public class ConfigCache {
         }
         if (logger instanceof java.util.logging.Logger) {
             ((java.util.logging.Logger) logger).warning(log);
-            return;
         }
     }
 
     public void debug(String log) {
-        if (!debug) return;
+        if (!snapshot.debug) return;
         if (logger == null) {
-            System.out.println("DEBUG: "+log);
+            System.out.println("DEBUG: " + log);
             return;
         }
         if (logger instanceof org.slf4j.Logger) {
@@ -250,8 +321,6 @@ public class ConfigCache {
         }
         if (logger instanceof java.util.logging.Logger) {
             ((java.util.logging.Logger) logger).info(log);
-            return;
         }
     }
-
 }

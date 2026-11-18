@@ -2,6 +2,7 @@ package eu.endermite.commandwhitelist.waterfall.listeners;
 
 import eu.endermite.commandwhitelist.common.CWPermission;
 import eu.endermite.commandwhitelist.common.CommandUtil;
+import eu.endermite.commandwhitelist.common.ConfigSnapshot;
 import eu.endermite.commandwhitelist.waterfall.CommandWhitelistWaterfall;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
@@ -17,12 +18,13 @@ public class BungeeTabcompleteListener implements Listener {
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         if (player.hasPermission(CWPermission.BYPASS.permission())) return;
 
+        ConfigSnapshot snapshot = CommandWhitelistWaterfall.getConfigCache().getSnapshot();
         String cursor = event.getCursor();
         int commandEnd = cursor.indexOf(' ');
         if (commandEnd >= 0 && cursor.charAt(0) == '/') {
-            String command = cursor.substring(1, commandEnd).toLowerCase();
+            String command = cursor.substring(1, commandEnd).toLowerCase(java.util.Locale.ROOT);
             if (CommandWhitelistWaterfall.getPlugin().getProxy().getPluginManager().isExecutableCommand(command, player)
-                    && !CommandWhitelistWaterfall.getCommands(player).contains(command)) {
+                    && !CommandWhitelistWaterfall.getCommands(player, snapshot).contains(command)) {
                 event.setCancelled(true);
                 return;
             }
@@ -32,7 +34,7 @@ public class BungeeTabcompleteListener implements Listener {
         List<String> suggestions = CommandUtil.filterSuggestions(
                 event.getCursor(),
                 event.getSuggestions(),
-                CommandWhitelistWaterfall.getSuggestions(player)
+                CommandWhitelistWaterfall.getSuggestions(player, snapshot)
         );
         event.getSuggestions().clear();
         event.getSuggestions().addAll(suggestions);
